@@ -1,16 +1,13 @@
 {
   "name": "NEXUS 2.0",
   "short_name": "NEXUS",
-  "description": "Personal OS / All-in-One Data Management",
+  "description": "NEXUS 2.0 Personal OS",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0b1020",
-  "theme_color": "#6366f1",
+  "background_color": "#080b14",
+  "theme_color": "#6c7cff",
   "lang": "ja",
-  "categories": [
-    "productivity",
-    "utilities"
-  ]
+  "categories": ["productivity", "utilities", "lifestyle"]
 }
