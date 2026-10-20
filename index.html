@@ -9,2798 +9,607 @@
 <meta name="apple-mobile-web-app-title" content="NEXUS">
 <link rel="manifest" href="manifest.json">
 <title>NEXUS 2.0</title>
-
 <style>
-:root{
-  --bg:#0b1020;
-  --panel:#121a2d;
-  --panel2:#182238;
-  --panel3:#202c46;
-  --text:#f3f6ff;
-  --muted:#8e9ab5;
-  --line:#293653;
-  --accent:#6c7cff;
-  --accent2:#8d9aff;
-  --danger:#ff5f6d;
-  --success:#38d39f;
-  --warning:#ffbd59;
-  --radius:18px;
-  --shadow:0 12px 35px rgba(0,0,0,.2);
-}
-
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;background:var(--bg);color:var(--text)}
+:root{
+ --accent:#6366f1;--bg:#0b1020;--panel:rgba(20,27,48,.82);
+ --panel2:rgba(30,40,68,.78);--text:#f5f7ff;--muted:#9ca8c7;
+ --border:rgba(255,255,255,.1);--radius:18px;
+}
+body.light{--bg:#eef2ff;--panel:rgba(255,255,255,.86);--panel2:#fff;--text:#182033;--muted:#65708a;--border:rgba(0,0,0,.09)}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:var(--text);background:var(--bg);min-height:100vh;overflow-x:hidden;transition:.3s}
+body.noanim *{transition:none!important;animation:none!important}
+#wallpaper{position:fixed;inset:0;z-index:-3;background:#0b1020;transition:.5s}
+#overlay{position:fixed;inset:0;z-index:-2;background:rgba(4,8,20,.35);pointer-events:none}
+body.light #overlay{background:rgba(255,255,255,.28)}
 button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-a{color:inherit}
-.hidden{display:none!important}
-
-.app{
-  min-height:100vh;
-  display:flex;
-}
-
-.sidebar{
-  width:260px;
-  background:rgba(12,18,34,.96);
-  border-right:1px solid var(--line);
-  position:fixed;
-  inset:0 auto 0 0;
-  z-index:100;
-  padding:18px 12px;
-  overflow:auto;
-  transition:.25s;
-}
-
-.logo{
-  font-size:25px;
-  font-weight:900;
-  padding:8px 12px 18px;
-  letter-spacing:2px;
-}
-
-.logo small{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:1px;
-  margin-top:3px;
-}
-
-.nav{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
-
-.nav button{
-  border:0;
-  background:transparent;
-  color:#aeb8cf;
-  text-align:left;
-  padding:11px 13px;
-  border-radius:12px;
-  transition:.15s;
-}
-
-.nav button:hover,
-.nav button.active{
-  background:var(--panel2);
-  color:white;
-}
-
-.nav-group{
-  color:#586680;
-  font-size:10px;
-  padding:14px 12px 5px;
-  letter-spacing:1px;
-  text-transform:uppercase;
-}
-
-.main{
-  margin-left:260px;
-  width:calc(100% - 260px);
-  min-width:0;
-}
-
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:50;
-  height:70px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 22px;
-  background:rgba(11,16,32,.86);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--line);
-}
-
-.menu-btn{display:none}
-
-.search{
-  flex:1;
-  max-width:600px;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:11px 15px;
-  color:white;
-  outline:none;
-}
-
-.top-actions{
-  margin-left:auto;
-  display:flex;
-  gap:8px;
-}
-
-.icon-btn{
-  width:42px;
-  height:42px;
-  border:1px solid var(--line);
-  background:var(--panel);
-  color:white;
-  border-radius:12px;
-}
-
-.content{
-  max-width:1600px;
-  margin:auto;
-  padding:25px;
-}
-
-.page-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-bottom:20px;
-}
-
-.page-head h1{
-  margin:0;
-  font-size:28px;
-}
-
-.page-head p{
-  margin:5px 0 0;
-  color:var(--muted);
-}
-
-.btn{
-  border:1px solid var(--line);
-  background:var(--panel2);
-  color:white;
-  border-radius:11px;
-  padding:10px 14px;
-}
-
-.btn:hover{filter:brightness(1.12)}
-.btn.primary{background:var(--accent);border-color:var(--accent)}
-.btn.danger{background:rgba(255,95,109,.15);color:#ff8791}
-.btn.success{background:rgba(56,211,159,.14);color:#5ee6b8}
-.btn.warning{background:rgba(255,189,89,.13);color:#ffd27d}
-
-.grid{
-  display:grid;
-  gap:16px;
-}
-
-.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-
-.card{
-  background:linear-gradient(145deg,var(--panel),rgba(18,26,45,.75));
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:18px;
-  box-shadow:var(--shadow);
-}
-
-.card h2,.card h3{
-  margin:0 0 12px;
-}
-
-.stat{
-  min-height:120px;
-}
-
-.stat-label{
-  color:var(--muted);
-  font-size:13px;
-}
-
-.stat-value{
-  font-size:31px;
-  font-weight:800;
-  margin-top:12px;
-}
-
-.stat-sub{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:4px;
-}
-
-.progress{
-  height:8px;
-  background:#28334d;
-  border-radius:99px;
-  overflow:hidden;
-}
-
-.progress i{
-  display:block;
-  height:100%;
-  background:var(--accent);
-  border-radius:99px;
-}
-
-.list{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.list-item{
-  padding:12px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:rgba(255,255,255,.02);
-}
-
-.list-item:hover{background:rgba(255,255,255,.04)}
-
-.row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.between{
-  justify-content:space-between;
-}
-
-.wrap{flex-wrap:wrap}
-
-.muted{color:var(--muted)}
-.small{font-size:12px}
-.tiny{font-size:10px}
-
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:4px;
-  padding:4px 8px;
-  border-radius:99px;
-  font-size:11px;
-  background:var(--panel3);
-  color:#c8d1e8;
-}
-
-.badge.accent{background:rgba(108,124,255,.15);color:#aab3ff}
-.badge.success{background:rgba(56,211,159,.14);color:#64e9bb}
-.badge.warning{background:rgba(255,189,89,.14);color:#ffd07a}
-.badge.danger{background:rgba(255,95,109,.14);color:#ff9099}
-
-input,textarea,select{
-  width:100%;
-  background:#0d1527;
-  border:1px solid var(--line);
-  color:white;
-  border-radius:10px;
-  padding:10px 11px;
-  outline:none;
-}
-
-textarea{
-  min-height:140px;
-  resize:vertical;
-}
-
-input:focus,textarea:focus,select:focus{
-  border-color:var(--accent);
-}
-
-label{
-  display:block;
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:5px;
-}
-
-.field{
-  margin-bottom:13px;
-}
-
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.62);
-  backdrop-filter:blur(5px);
-  z-index:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-}
-
-.modal{
-  width:min(720px,100%);
-  max-height:92vh;
-  overflow:auto;
-  background:#111a2e;
-  border:1px solid var(--line);
-  border-radius:22px;
-  padding:22px;
-  box-shadow:0 30px 80px rgba(0,0,0,.5);
-}
-
-.modal-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
-}
-
-.modal-head h2{margin:0}
-
-.close{
-  border:0;
-  background:transparent;
-  color:#aeb8cf;
-  font-size:24px;
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
-}
-
-.full{grid-column:1/-1}
-
-.toast{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  z-index:3000;
-  background:#151f35;
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:13px 17px;
-  box-shadow:var(--shadow);
-  transform:translateY(20px);
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-}
-
-.toast.show{
-  transform:none;
-  opacity:1;
-}
-
-.empty{
-  padding:35px;
-  text-align:center;
-  color:var(--muted);
-}
-
-.check{
-  width:20px;
-  height:20px;
-  accent-color:var(--accent);
-}
-
-.task-done{
-  text-decoration:line-through;
-  opacity:.55;
-}
-
-.priority-high{border-left:4px solid var(--danger)}
-.priority-mid{border-left:4px solid var(--warning)}
-.priority-low{border-left:4px solid var(--success)}
-
-.calendar-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
-}
-
-.calendar-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  border-top:1px solid var(--line);
-  border-left:1px solid var(--line);
-}
-
-.cal-day{
-  min-height:120px;
-  padding:8px;
-  border-right:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-  background:rgba(255,255,255,.01);
-}
-
-.cal-day.other{opacity:.35}
-.cal-day.today{background:rgba(108,124,255,.09)}
-
-.cal-num{
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:5px;
-}
-
-.cal-event{
-  font-size:10px;
-  padding:4px 5px;
-  border-radius:6px;
-  background:rgba(108,124,255,.18);
-  margin-top:4px;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-}
-
-.view-tabs{
-  display:flex;
-  gap:5px;
-  margin-bottom:12px;
-}
-
-.view-tabs button{
-  border:1px solid var(--line);
-  background:var(--panel);
-  color:#aab5ce;
-  padding:8px 12px;
-  border-radius:9px;
-}
-
-.view-tabs button.active{
-  background:var(--accent);
-  color:white;
-}
-
-.timer{
-  text-align:center;
-  padding:35px;
-}
-
-.timer-display{
-  font-size:80px;
-  font-weight:900;
-  letter-spacing:3px;
-  margin:20px 0;
-}
-
-.timer-mode{
-  display:flex;
-  justify-content:center;
-  gap:6px;
-}
-
-.timer-mode button{
-  border:1px solid var(--line);
-  background:var(--panel2);
-  color:white;
-  border-radius:10px;
-  padding:9px 13px;
-}
-
-.timer-mode button.active{
-  background:var(--accent);
-}
-
-.chart{
-  width:100%;
-  height:230px;
-  display:flex;
-  align-items:flex-end;
-  gap:8px;
-  padding-top:15px;
-}
-
-.bar{
-  flex:1;
-  min-width:4px;
-  position:relative;
-  background:var(--accent);
-  border-radius:6px 6px 0 0;
-}
-
-.bar span{
-  position:absolute;
-  bottom:-20px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:9px;
-  color:var(--muted);
-}
-
-.bar em{
-  position:absolute;
-  top:-17px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:9px;
-  color:var(--muted);
-  font-style:normal;
-}
-
-.drag{
-  cursor:grab;
-}
-
-.dashboard-card.dragging{
-  opacity:.35;
-}
-
-.custom-field{
-  display:grid;
-  grid-template-columns:1fr 130px 1fr auto;
-  gap:8px;
-  align-items:end;
-}
-
-.toggle{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:11px 0;
-  border-bottom:1px solid var(--line);
-}
-
-.toggle input{
-  width:auto;
-}
-
-.quick{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-
-.quick button{
-  padding:15px 8px;
-  border:1px solid var(--line);
-  background:var(--panel2);
-  color:white;
-  border-radius:14px;
-}
-
-.kpi{
-  font-size:12px;
-  color:var(--muted);
-}
-
-.level{
-  font-size:14px;
-  color:#bfc8ff;
-}
-
-@media(max-width:1100px){
-  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-
-@media(max-width:850px){
-  .sidebar{
-    transform:translateX(-100%);
-  }
-  .sidebar.open{transform:none}
-  .main{
-    margin-left:0;
-    width:100%;
-  }
-  .menu-btn{display:block}
-  .g2,.g3{grid-template-columns:1fr}
-  .content{padding:16px}
-  .topbar{padding:10px 13px}
-  .search{max-width:none}
-  .form-grid{grid-template-columns:1fr}
-  .full{grid-column:auto}
-  .calendar-grid{min-width:700px}
-  .calendar-wrap{overflow:auto}
-  .quick{grid-template-columns:repeat(2,1fr)}
-}
-
-@media(max-width:520px){
-  .g4{grid-template-columns:1fr}
-  .top-actions .icon-btn:nth-child(2){display:none}
-  .timer-display{font-size:55px}
+button{border:0;cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{position:fixed;z-index:20;left:0;top:0;bottom:0;width:250px;padding:18px 12px;background:rgba(9,14,28,.86);backdrop-filter:blur(24px);border-right:1px solid var(--border);overflow:auto}
+.light .sidebar{background:rgba(255,255,255,.9)}
+.logo{font-size:25px;font-weight:900;padding:8px 12px 18px;letter-spacing:2px}
+.logo span{color:var(--accent)}
+.nav{display:flex;flex-direction:column;gap:5px}
+.nav button{background:transparent;color:#aeb9d5;text-align:left;padding:12px 13px;border-radius:12px;font-weight:700}
+.nav button:hover,.nav button.active{background:var(--accent);color:white}
+.main{margin-left:250px;width:calc(100% - 250px);padding:22px;max-width:1800px}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.search{flex:1;max-width:600px;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:13px 17px;border-radius:14px;outline:none}
+.iconbtn,.btn{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:12px;font-weight:700}
+.btn.primary{background:var(--accent);color:white;border-color:transparent}
+.btn.danger{background:#ef4444;color:#fff;border-color:transparent}
+.btn.small{padding:7px 10px;font-size:13px}
+.page{display:none}
+.page.active{display:block}
+h1{font-size:30px;margin:4px 0 5px}
+h2{font-size:20px;margin:0 0 15px}
+h3{margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:15px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;backdrop-filter:blur(20px);box-shadow:0 12px 35px rgba(0,0,0,.12)}
+.col12{grid-column:span 12}.col8{grid-column:span 8}.col6{grid-column:span 6}.col4{grid-column:span 4}.col3{grid-column:span 3}
+.stat{font-size:30px;font-weight:900}.muted{color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:9px}
+.item{padding:13px;border-radius:13px;background:var(--panel2);border:1px solid var(--border)}
+.itemrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.item.done{opacity:.55;text-decoration:line-through}
+.badge{display:inline-block;padding:4px 8px;border-radius:99px;background:rgba(99,102,241,.2);color:#c7cbff;font-size:12px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+input,textarea,select{width:100%;background:rgba(10,15,30,.48);color:var(--text);border:1px solid var(--border);border-radius:11px;padding:11px;outline:none}
+.light input,.light textarea,.light select{background:#fff;color:#182033}
+textarea{min-height:130px;resize:vertical}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:700}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form .full{grid-column:1/-1}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.show{display:flex}
+.modalbox{width:min(700px,100%);max-height:90vh;overflow:auto;background:var(--panel);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:22px;padding:20px}
+.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.toast{position:fixed;right:20px;bottom:20px;background:#111827;color:#fff;padding:13px 17px;border-radius:13px;z-index:300;opacity:0;transform:translateY(20px);transition:.3s}
+.toast.show{opacity:1;transform:translateY(0)}
+.progress{height:8px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;margin:8px 0}
+.progress i{display:block;height:100%;background:var(--accent)}
+.kpi{font-size:12px;color:var(--muted)}
+canvas{width:100%;height:220px;display:block}
+.calendarhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.calday{min-height:110px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:7px;font-size:12px}
+.calday.today{outline:2px solid var(--accent)}
+.calday.other{opacity:.4}
+.eventdot{background:var(--accent);color:white;padding:3px 5px;border-radius:5px;margin-top:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.timer{font-size:70px;font-weight:900;text-align:center;letter-spacing:2px}
+.timerMode{display:flex;gap:7px;justify-content:center;margin-bottom:18px}
+.wallpapers{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.wall{height:90px;border-radius:13px;border:2px solid transparent;cursor:pointer;position:relative;overflow:hidden}
+.wall.active{border-color:white}
+.wall span{position:absolute;bottom:7px;left:8px;font-size:12px;color:white;font-weight:800;text-shadow:0 2px 5px #000}
+.switch{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.searchresults{margin-top:15px}
+.xpbar{height:12px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#22d3ee)}
+.mobileNav{display:none}
+@media(max-width:900px){
+.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}
+.col8,.col6,.col4{grid-column:span 12}.col3{grid-column:span 6}
+.wallpapers{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:650px){
+.sidebar{display:none}.main{margin:0;padding:14px;width:100%;padding-bottom:80px}
+.mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(10,15,30,.92);backdrop-filter:blur(20px);overflow:auto}
+.mobileNav button{flex:1;min-width:65px;background:none;color:#aeb9d5;padding:10px 5px;font-size:11px}
+.mobileNav button.active{color:white;background:var(--accent)}
+.topbar{flex-wrap:wrap}.search{order:2;flex-basis:100%}
+.form{grid-template-columns:1fr}.col3{grid-column:span 12}
+.wallpapers{grid-template-columns:repeat(2,1fr)}
+.calday{min-height:75px}
+.timer{font-size:48px}
 }
 </style>
 </head>
-
 <body>
-<div id="app"></div>
-<div id="modalRoot"></div>
-<div id="toast" class="toast"></div>
+<div id="wallpaper"></div><div id="overlay"></div>
+
+<aside class="sidebar">
+ <div class="logo">NEX<span>U</span>S <small>2.0</small></div>
+ <nav class="nav" id="nav"></nav>
+</aside>
+
+<main class="main">
+ <div class="topbar">
+  <button class="iconbtn" onclick="toggleTheme()">☀️</button>
+  <input id="globalSearch" class="search" placeholder="NEXUSを検索…" oninput="globalSearch(this.value)">
+  <button class="iconbtn" onclick="quickAdd()">＋</button>
+ </div>
+
+ <section id="dashboard" class="page active"></section>
+ <section id="tasks" class="page"></section>
+ <section id="notes" class="page"></section>
+ <section id="calendar" class="page"></section>
+ <section id="timer" class="page"></section>
+ <section id="novels" class="page"></section>
+ <section id="games" class="page"></section>
+ <section id="study" class="page"></section>
+ <section id="habits" class="page"></section>
+ <section id="tags" class="page"></section>
+ <section id="link" class="page"></section>
+ <section id="database" class="page"></section>
+ <section id="stats" class="page"></section>
+ <section id="activity" class="page"></section>
+ <section id="trash" class="page"></section>
+ <section id="settings" class="page"></section>
+ <section id="search" class="page"></section>
+</main>
+
+<nav class="mobileNav" id="mobileNav"></nav>
+
+<div class="modal" id="modal"><div class="modalbox" id="modalBox"></div></div>
+<div class="toast" id="toast"></div>
 
 <script>
-"use strict";
-
-/* =========================================================
-   NEXUS 2.0 FULL
-   local-first / PWA / dashboard / tasks / notes / calendar /
-   timer / novels / games / study / habits / tags / link /
-   stats / activity / custom DB / trash / history / settings
-========================================================= */
-
-const KEY="NEXUS_2_FULL";
-const VERSION=2.0;
-
-const DEFAULT={
-  version:VERSION,
-  tasks:[],
-  notes:[],
-  events:[],
-  novels:[],
-  episodes:[],
-  games:[],
-  studies:[],
-  habits:[],
-  habitLogs:[],
-  links:[],
-  tags:[],
-  activity:[],
-  timerSessions:[],
-  customDB:[],
-  trash:[],
-  xp:0,
-  level:1,
-  achievements:[],
-  dashboard:[
-    "welcome","stats","quick","tasks","calendar","timer","novels","games"
-  ],
-  settings:{
-    dark:true,
-    accent:"#6c7cff",
-    density:"normal",
-    animations:true,
-    sounds:true,
-    notifications:false,
-    autoSave:true,
-    confirmDelete:true,
-    dashboardWelcome:true,
-    sidebarCompact:false
-  },
-  calendar:{
-    year:new Date().getFullYear(),
-    month:new Date().getMonth()
-  }
+const KEY="NEXUS_2_COMPLETE";
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
+const today=()=>new Date().toISOString().slice(0,10);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const blank={
+ tasks:[],notes:[],events:[],novels:[],games:[],studies:[],habits:[],
+ links:[],tags:[],activity:[],trash:[],databases:[],
+ xp:0,level:1,calendar:new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0"),
+ settings:{
+  theme:"dark",accent:"#6366f1",wallpaper:"space",density:"normal",
+  animations:true,sounds:true,autoWall:false,notifications:false,
+  dashboard:["welcome","tasks","calendar","timer","novels","games","study","habits","xp","activity"]
+ },
+ timer:{mode:"countdown",seconds:1500,running:false,last:0,targetType:"",targetId:"",pomodoro:25},
+ history:{}
 };
-
-let db=loadDB();
-let currentPage="dashboard";
-let timer={
-  mode:"countdown",
-  running:false,
-  seconds:25*60,
-  total:25*60,
-  interval:null,
-  linkedType:"",
-  linkedId:""
-};
-let draggedDashboard=null;
-
-function clone(x){return JSON.parse(JSON.stringify(x));}
-
-function loadDB(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(KEY));
-    if(!saved)return clone(DEFAULT);
-    return mergeDefaults(clone(DEFAULT),saved);
-  }catch(e){
-    return clone(DEFAULT);
-  }
-}
-
-function mergeDefaults(base,src){
-  Object.keys(src||{}).forEach(k=>{
-    if(src[k]!==undefined){
-      if(
-        typeof base[k]==="object" &&
-        base[k]!==null &&
-        !Array.isArray(base[k]) &&
-        typeof src[k]==="object" &&
-        !Array.isArray(src[k])
-      ) base[k]=Object.assign(base[k],src[k]);
-      else base[k]=src[k];
-    }
-  });
-  return base;
-}
-
-function save(){
-  localStorage.setItem(KEY,JSON.stringify(db));
-}
-
-function uid(prefix="id"){
-  return prefix+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);
-}
-
-function nowISO(){
-  return new Date().toISOString();
-}
-
-function today(){
-  const d=new Date();
-  return d.toISOString().slice(0,10);
-}
-
-function esc(v){
-  return String(v??"")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function fmtDate(v){
-  if(!v)return "-";
-  const d=new Date(v);
-  if(Number.isNaN(d.getTime()))return v;
-  return d.toLocaleDateString("ja-JP");
-}
-
-function fmtDateTime(v){
-  if(!v)return "-";
-  const d=new Date(v);
-  if(Number.isNaN(d.getTime()))return v;
-  return d.toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
-}
-
-function toast(msg){
-  const el=document.getElementById("toast");
-  el.textContent=msg;
-  el.classList.add("show");
-  clearTimeout(toast.t);
-  toast.t=setTimeout(()=>el.classList.remove("show"),2200);
-}
-
-function logActivity(type,text,meta={}){
-  db.activity.unshift({
-    id:uid("act"),
-    type,
-    text,
-    meta,
-    at:nowISO()
-  });
-  db.activity=db.activity.slice(0,500);
-}
-
-function addXP(amount,reason){
-  db.xp+=amount;
-  while(db.xp>=levelNeed(db.level)){
-    db.xp-=levelNeed(db.level);
-    db.level++;
-    achievement("level_"+db.level,"LEVEL "+db.level);
-  }
-  logActivity("xp",`+${amount} XP ${reason||""}`);
-}
-
-function levelNeed(level){
-  return 100+((level-1)*50);
-}
-
-function achievement(id,title){
-  if(db.achievements.some(x=>x.id===id))return;
-  db.achievements.push({id,title,at:nowISO()});
-  toast("🏆 "+title);
-}
-
-function ensureTag(name){
-  name=String(name||"").trim();
-  if(!name)return null;
-  let t=db.tags.find(x=>x.name.toLowerCase()===name.toLowerCase());
-  if(!t){
-    t={id:uid("tag"),name,color:db.settings.accent};
-    db.tags.push(t);
-  }
-  return t.id;
-}
-
-function tagsFromString(s){
-  return String(s||"")
-    .split(/[,\s#]+/)
-    .map(x=>x.trim())
-    .filter(Boolean)
-    .map(ensureTag);
-}
-
-function tagsText(ids){
-  return (ids||[])
-    .map(id=>db.tags.find(t=>t.id===id)?.name)
-    .filter(Boolean)
-    .map(x=>"#"+x)
-    .join(" ");
-}
-
-function findAny(type,id){
-  const map={
-    task:"tasks",note:"notes",event:"events",
-    novel:"novels",episode:"episodes",game:"games",
-    study:"studies",habit:"habits",custom:"customDB"
-  };
-  return db[map[type]||type]?.find(x=>x.id===id);
-}
-
-function entityLabel(type,obj){
-  if(!obj)return "-";
-  return obj.title||obj.name||obj.subject||obj.text||"無題";
-}
-
-function entityOptions(type){
-  const map={
-    task:["tasks","タスク"],
-    note:["notes","ノート"],
-    event:["events","予定"],
-    novel:["novels","小説"],
-    episode:["episodes","エピソード"],
-    game:["games","ゲーム"],
-    study:["studies","学習"],
-    habit:["habits","習慣"],
-    custom:["customDB","データ"]
-  };
-  const [arr]=map[type]||[];
-  return (db[arr]||[]).map(x=>`<option value="${esc(x.id)}">${esc(entityLabel(type,x))}</option>`).join("");
-}
-
-function openModal(title,html,onSave){
-  const root=document.getElementById("modalRoot");
-  root.innerHTML=`
-    <div class="modal-bg" id="modalBg">
-      <div class="modal">
-        <div class="modal-head">
-          <h2>${title}</h2>
-          <button class="close" onclick="closeModal()">×</button>
-        </div>
-        <div id="modalBody">${html}</div>
-        <div class="row" style="justify-content:flex-end;margin-top:18px">
-          <button class="btn" onclick="closeModal()">キャンセル</button>
-          <button class="btn primary" id="modalSave">保存</button>
-        </div>
-      </div>
-    </div>`;
-  document.getElementById("modalSave").onclick=()=>{
-    if(onSave()!==false)closeModal();
-  };
-}
-
-function closeModal(){
-  document.getElementById("modalRoot").innerHTML="";
-}
-
-function confirmDelete(){
-  return !db.settings.confirmDelete || confirm("削除しますか？ゴミ箱から復元できます。");
-}
-
-function trashItem(type,id){
-  const map={
-    task:"tasks",note:"notes",event:"events",
-    novel:"novels",episode:"episodes",game:"games",
-    study:"studies",habit:"habits",custom:"customDB"
-  };
-  const arr=db[map[type]];
-  const index=arr.findIndex(x=>x.id===id);
-  if(index<0)return;
-  if(!confirmDelete())return;
-  const item=arr.splice(index,1)[0];
-  db.trash.push({
-    id:uid("trash"),
-    type,
-    originalId:id,
-    data:item,
-    deletedAt:nowISO()
-  });
-  logActivity("delete",`${entityLabel(type,item)}をゴミ箱へ`);
-  save();
-  render();
-}
-
-function restoreTrash(id){
-  const i=db.trash.findIndex(x=>x.id===id);
-  if(i<0)return;
-  const x=db.trash.splice(i,1)[0];
-  const map={
-    task:"tasks",note:"notes",event:"events",
-    novel:"novels",episode:"episodes",game:"games",
-    study:"studies",habit:"habits",custom:"customDB"
-  };
-  db[map[x.type]].push(x.data);
-  logActivity("restore",`${entityLabel(x.type,x.data)}を復元`);
-  save();
-  render();
-}
-
-function permanentTrash(id){
-  if(!confirm("完全削除します。この操作は元に戻せません。"))return;
-  db.trash=db.trash.filter(x=>x.id!==id);
-  save();
-  render();
-}
-
-function duplicate(obj){
-  const x=clone(obj);
-  x.id=uid("copy");
-  x.createdAt=nowISO();
-  x.updatedAt=nowISO();
-  return x;
-}
-
-function editHistory(obj,type){
-  obj.history=obj.history||[];
-  obj.history.unshift({
-    id:uid("hist"),
-    at:nowISO(),
-    data:clone(obj)
-  });
-  obj.history=obj.history.slice(0,30);
-}
-
-function audioBeep(){
-  if(!db.settings.sounds)return;
-  try{
-    const C=window.AudioContext||window.webkitAudioContext;
-    if(!C)return;
-    const c=new C();
-    const o=c.createOscillator();
-    const g=c.createGain();
-    o.frequency.value=880;
-    g.gain.value=.05;
-    o.connect(g);g.connect(c.destination);
-    o.start();
-    o.stop(c.currentTime+.15);
-  }catch(e){}
-}
-
-function notify(title,body){
-  if("Notification" in window && Notification.permission==="granted"){
-    new Notification(title,{body});
-  }
-}
-
-/* =========================================================
-   SHELL
-========================================================= */
+let db=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(blank);
+for(const k of Object.keys(blank))if(db[k]===undefined)db[k]=structuredClone(blank[k]);
+let current="dashboard",timerHandle=null;
 
 const NAV=[
-  ["dashboard","⌂","ダッシュボード","MAIN"],
-  ["tasks","✓","タスク"],
-  ["notes","▤","ノート"],
-  ["calendar","▦","カレンダー"],
-  ["timer","◷","タイマー"],
-  ["novels","✎","小説"],
-  ["games","◆","ゲーム"],
-  ["study","▣","学習"],
-  ["habits","◉","習慣"],
-  ["tags","#","タグ"],
-  ["link","∞","NEXUS LINK","SYSTEM"],
-  ["stats","◒","分析"],
-  ["activity","◴","アクティビティ"],
-  ["trash","♻","ゴミ箱"],
-  ["database","▥","データベース"],
-  ["settings","⚙","設定"]
+ ["dashboard","⌂","ホーム"],["tasks","✓","タスク"],["notes","▤","ノート"],["calendar","▦","カレンダー"],
+ ["timer","◷","タイマー"],["novels","✎","小説"],["games","🎮","ゲーム"],["study","📚","勉強"],
+ ["habits","◉","習慣"],["tags","#","タグ"],["link","↗","NEXUS LINK"],["database","▥","データベース"],
+ ["stats","⌁","統計"],["activity","↻","履歴"],["trash","♻","ゴミ箱"],["settings","⚙","設定"]
 ];
 
-function renderShell(){
-  document.getElementById("app").innerHTML=`
-    <div class="app">
-      <aside class="sidebar" id="sidebar">
-        <div class="logo">NEXUS<small>PERSONAL OPERATING SYSTEM</small></div>
-        <div class="nav">
-          ${NAV.map((n,i)=>`
-            ${i===0||n[3]?`<div class="nav-group">${n[3]||""}</div>`:""}
-            <button data-page="${n[0]}" class="${currentPage===n[0]?"active":""}">
-              <span style="display:inline-block;width:25px">${n[1]}</span>${n[2]}
-            </button>
-          `).join("")}
-        </div>
-      </aside>
-
-      <main class="main">
-        <header class="topbar">
-          <button class="icon-btn menu-btn" onclick="toggleSidebar()">☰</button>
-          <input class="search" id="globalSearch" placeholder="NEXUS全体を検索…" onkeydown="if(event.key==='Enter')globalSearch(this.value)">
-          <div class="top-actions">
-            <button class="icon-btn" onclick="quickAdd()">＋</button>
-            <button class="icon-btn" onclick="toggleTheme()">☾</button>
-          </div>
-        </header>
-        <section class="content" id="content"></section>
-      </main>
-    </div>`;
-
-  document.querySelectorAll("[data-page]").forEach(btn=>{
-    btn.onclick=()=>{
-      currentPage=btn.dataset.page;
-      if(innerWidth<850)document.getElementById("sidebar").classList.remove("open");
-      render();
-    };
-  });
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(db));
 }
+function log(action,type,id,title){
+ db.activity.unshift({id:uid(),date:new Date().toISOString(),action,type,ref:id,title});
+ db.activity=db.activity.slice(0,300);save();
+}
+function toast(t){
+ const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");
+ setTimeout(()=>x.classList.remove("show"),2200);
+}
+function xp(n){
+ db.xp+=n;
+ while(db.xp>=db.level*100){db.xp-=db.level*100;db.level++}
+ save();
+}
+function removeToTrash(type,id){
+ const arr=db[type]||[];const i=arr.findIndex(x=>x.id===id);if(i<0)return;
+ db.trash.push({originalType:type,item:arr[i],deletedAt:new Date().toISOString()});
+ arr.splice(i,1);log("削除",type,id,arr[i]?.title||"");save();render();
+}
+function restoreTrash(i){
+ const x=db.trash[i];if(!x)return;
+ db[x.originalType].push(x.item);db.trash.splice(i,1);save();render();toast("復元しました");
+}
+function permanentDelete(i){if(confirm("完全に削除しますか？")){db.trash.splice(i,1);save();render()}}
+function modal(title,html,onSave){
+ const m=document.getElementById("modal"),b=document.getElementById("modalBox");
+ b.innerHTML=`<div class="modalhead"><h2>${title}</h2><button class="iconbtn" onclick="closeModal()">✕</button></div>${html}`;
+ m.classList.add("show");
+ b.querySelector("[data-save]")?.addEventListener("click",()=>{onSave(b);closeModal()});
+}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 
-function toggleSidebar(){
-  document.getElementById("sidebar").classList.toggle("open");
+function renderNav(){
+ const html=NAV.map(([id,ic,n])=>`<button class="${current===id?"active":""}" onclick="go('${id}')">${ic}　${n}</button>`).join("");
+ document.getElementById("nav").innerHTML=html;
+ document.getElementById("mobileNav").innerHTML=NAV.slice(0,8).map(([id,ic,n])=>`<button class="${current===id?"active":""}" onclick="go('${id}')">${ic}<br>${n}</button>`).join("");
+}
+function go(id){
+ current=id;
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id)?.classList.add("active");
+ renderNav();render();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function render(){renderNav();renderCurrent()}
+function renderCurrent(){
+ const fn={
+ dashboard:renderDashboard,tasks:renderTasks,notes:renderNotes,calendar:renderCalendar,
+ timer:renderTimer,novels:renderNovels,games:renderGames,study:renderStudy,
+ habits:renderHabits,tags:renderTags,link:renderLinks,database:renderDatabase,
+ stats:renderStats,activity:renderActivity,trash:renderTrash,settings:renderSettings,search:renderSearch
+ }[current];if(fn)fn();
+ applySettings();
 }
 
 function applySettings(){
-  document.documentElement.style.setProperty("--accent",db.settings.accent);
-  document.documentElement.style.setProperty("--accent2",db.settings.accent);
-  document.body.classList.toggle("animations-off",!db.settings.animations);
+ document.documentElement.style.setProperty("--accent",db.settings.accent);
+ document.body.classList.toggle("light",db.settings.theme==="light");
+ document.body.classList.toggle("noanim",!db.settings.animations);
+ if(db.settings.density==="compact")document.documentElement.style.setProperty("--radius","12px");
+ setWallpaper(db.settings.wallpaper);
 }
 
-function toggleTheme(){
-  db.settings.dark=!db.settings.dark;
-  if(db.settings.dark){
-    document.documentElement.style.setProperty("--bg","#0b1020");
-    document.documentElement.style.setProperty("--panel","#121a2d");
-    document.documentElement.style.setProperty("--panel2","#182238");
-    document.documentElement.style.setProperty("--text","#f3f6ff");
-  }else{
-    document.documentElement.style.setProperty("--bg","#eef2f8");
-    document.documentElement.style.setProperty("--panel","#ffffff");
-    document.documentElement.style.setProperty("--panel2","#e9eef7");
-    document.documentElement.style.setProperty("--text","#111827");
-  }
-  save();
-  render();
+const WALLPAPERS={
+ space:["🌌","radial-gradient(circle at 20% 20%,#6842c7,transparent 30%),radial-gradient(circle at 80% 70%,#075985,transparent 30%),linear-gradient(135deg,#050816,#111827)"],
+ galaxy:["🌠","radial-gradient(circle at 30% 40%,#ff4ecd,transparent 18%),radial-gradient(circle at 70% 20%,#6655ff,transparent 20%),radial-gradient(circle at 60% 80%,#00d4ff,transparent 20%),#090018"],
+ neon:["🌃","linear-gradient(130deg,#ff006e,#3b0764 45%,#00e5ff)"],
+ aurora:["🌌","radial-gradient(ellipse at 30% 80%,#00ffb3,transparent 35%),radial-gradient(ellipse at 70% 20%,#7c3aed,transparent 40%),#061426"],
+ ocean:["🌊","linear-gradient(160deg,#001b3d,#006994 45%,#00c6a7)"],
+ forest:["🌲","linear-gradient(140deg,#061b11,#14532d 45%,#022c22)"],
+ volcano:["🌋","radial-gradient(circle at 55% 80%,#ff6b00,transparent 25%),linear-gradient(150deg,#170500,#57120a 55%,#050505)"],
+ sunset:["🌅","linear-gradient(180deg,#25105c,#c0265d 45%,#ff9a3c 75%,#ffd166)"],
+ sunrise:["🌄","linear-gradient(180deg,#172554,#f97316 55%,#fde68a)"],
+ rain:["🌧️","linear-gradient(145deg,#111827,#334155 55%,#0f172a)"],
+ snow:["❄️","linear-gradient(145deg,#dbeafe,#64748b,#e0f2fe)"],
+ desert:["🏜️","linear-gradient(160deg,#451a03,#c2410c 45%,#fbbf24)"],
+ night:["🌙","radial-gradient(circle at 75% 25%,#fef3c7 0 3%,transparent 4%),linear-gradient(145deg,#020617,#172554)"],
+ sky:["☁️","linear-gradient(180deg,#38bdf8,#bae6fd 60%,#e0f2fe)"],
+ cyber:["⚡","linear-gradient(135deg,#020617 20%,#0f172a 20% 40%,#312e81 40% 60%,#020617 60%)"],
+ bluegrid:["🔷","linear-gradient(rgba(56,189,248,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.15) 1px,transparent 1px),#06111f"],
+ purple:["🟣","radial-gradient(circle at 50% 40%,#a855f7,transparent 30%),linear-gradient(135deg,#16002d,#581c87,#090014)"],
+ crimson:["🟥","linear-gradient(145deg,#090909,#450a0a 45%,#991b1b)"],
+ minimal:["⬛","linear-gradient(135deg,#050505,#171717,#050505)"]
+};
+function setWallpaper(name){
+ const w=document.getElementById("wallpaper"),v=WALLPAPERS[name]||WALLPAPERS.space;
+ w.style.background=v[1];
+}
+function chooseWallpaper(name){
+ db.settings.wallpaper=name;save();render();
+}
+function randomWallpaper(){
+ const a=Object.keys(WALLPAPERS);chooseWallpaper(a[Math.floor(Math.random()*a.length)]);
+}
+setInterval(()=>{if(db.settings.autoWall)randomWallpaper()},86400000);
+
+function renderDashboard(){
+ const tasks=db.tasks.filter(x=>!x.done).slice(0,5);
+ const todayEvents=db.events.filter(x=>x.date===today()).slice(0,5);
+ const activeNovels=db.novels.slice(0,4),games=db.games.slice(0,4);
+ const blocks={
+ welcome:`<div class="card col12"><div class="itemrow"><div><h1>NEXUS 2.0</h1><p class="sub">君のデータをひとつにつなぐPersonal OS。</p></div><button class="btn primary" onclick="quickAdd()">＋ Quick Add</button></div><div class="xpbar"><i style="width:${Math.min(100,db.xp/(db.level*100)*100)}%"></i></div><small>LEVEL ${db.level}　XP ${db.xp}/${db.level*100}</small></div>`,
+ tasks:`<div class="card col6"><div class="itemrow"><h2>✓ 今日のタスク</h2><button class="btn small" onclick="go('tasks')">すべて</button></div><div class="list">${tasks.length?tasks.map(taskHTML).join(""):"<p class='muted'>未完了タスクなし 🎉</p>"}</div></div>`,
+ calendar:`<div class="card col6"><div class="itemrow"><h2>▦ 今日の予定</h2><button class="btn small" onclick="go('calendar')">カレンダー</button></div><div class="list">${todayEvents.length?todayEvents.map(e=>`<div class="item"><b>${esc(e.title)}</b><br><span class="muted">${esc(e.time||"時間未設定")}</span></div>`).join(""):"<p class='muted'>予定なし</p>"}</div></div>`,
+ timer:`<div class="card col4"><h2>◷ タイマー</h2><div class="timer" style="font-size:42px">${formatTime(db.timer.seconds)}</div><button class="btn primary" onclick="go('timer')">タイマーを開く</button></div>`,
+ novels:`<div class="card col4"><h2>✎ 小説</h2><div class="stat">${db.novels.length}</div><span class="muted">作品</span><br><button class="btn small" onclick="go('novels')">管理</button></div>`,
+ games:`<div class="card col4"><h2>🎮 ゲーム</h2><div class="stat">${db.games.length}</div><span class="muted">登録ゲーム</span><br><button class="btn small" onclick="go('games')">管理</button></div>`,
+ study:`<div class="card col6"><h2>📚 今日の勉強</h2><div class="stat">${db.studies.filter(x=>x.date===today()).reduce((a,x)=>a+Number(x.minutes||0),0)}分</div><button class="btn small" onclick="go('study')">記録する</button></div>`,
+ habits:`<div class="card col6"><h2>◉ 今日の習慣</h2><div class="list">${db.habits.slice(0,5).map(h=>habitHTML(h)).join("")||"<p class='muted'>習慣を追加しよう</p>"}</div></div>`,
+ xp:`<div class="card col4"><h2>⚡ NEXUS LEVEL</h2><div class="stat">Lv.${db.level}</div><div class="progress"><i style="width:${db.xp/(db.level*100)*100}%"></i></div><small>${db.xp}/${db.level*100} XP</small></div>`,
+ activity:`<div class="card col8"><h2>↻ 最近のアクティビティ</h2><div class="list">${db.activity.slice(0,6).map(a=>`<div class="item"><b>${esc(a.action)}</b>　${esc(a.title||"")}<small class="muted">　${new Date(a.date).toLocaleString("ja-JP")}</small></div>`).join("")||"<p class='muted'>まだありません</p>"}</div></div>`
+ };
+ document.getElementById("dashboard").innerHTML=`<div class="grid">${db.settings.dashboard.map(k=>blocks[k]||"").join("")}</div>`;
+}
+function taskHTML(t){
+ return `<div class="item ${t.done?"done":""}"><div class="itemrow"><label style="margin:0"><input type="checkbox" ${t.done?"checked":""} onchange="toggleTask('${t.id}')"> ${esc(t.title)}</label><span class="badge">${esc(t.priority||"通常")}</span></div>${t.due?`<small class="muted">期限 ${esc(t.due)}</small>`:""}</div>`;
+}
+function habitHTML(h){
+ const done=(h.history||[]).includes(today());
+ return `<div class="item itemrow"><span>${esc(h.title)}</span><button class="btn small ${done?"primary":""}" onclick="toggleHabit('${h.id}')">${done?"✓ 完了":"完了"}</button></div>`;
 }
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
-function dashboard(){
-  const d=new Date();
-  const completed=db.tasks.filter(x=>x.done).length;
-  const pending=db.tasks.filter(x=>!x.done).length;
-  const studyToday=db.studies.filter(x=>x.date===today()).reduce((a,b)=>a+Number(b.minutes||0),0);
-  const writingWords=db.episodes.reduce((a,b)=>a+Number(b.words||0),0);
-
-  const cards={
-    welcome:`
-      <div class="card dashboard-card" data-id="welcome">
-        <div class="row between">
-          <div>
-            <div class="level">NEXUS LEVEL ${db.level}</div>
-            <h2 style="margin:5px 0">おかえり。</h2>
-            <div class="muted">${d.toLocaleDateString("ja-JP",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="stat-value" style="font-size:25px">${db.xp}</div>
-            <div class="small muted">/ ${levelNeed(db.level)} XP</div>
-          </div>
-        </div>
-        <div class="progress" style="margin-top:15px">
-          <i style="width:${Math.min(100,db.xp/levelNeed(db.level)*100)}%"></i>
-        </div>
-      </div>`,
-
-    stats:`
-      <div class="grid g4 dashboard-card" data-id="stats">
-        <div class="card stat">
-          <div class="stat-label">未完了タスク</div>
-          <div class="stat-value">${pending}</div>
-          <div class="stat-sub">${completed}件完了</div>
-        </div>
-        <div class="card stat">
-          <div class="stat-label">今日の学習</div>
-          <div class="stat-value">${studyToday}<span style="font-size:13px">分</span></div>
-          <div class="stat-sub">Study Log</div>
-        </div>
-        <div class="card stat">
-          <div class="stat-label">総文字数</div>
-          <div class="stat-value">${writingWords.toLocaleString()}</div>
-          <div class="stat-sub">Novel</div>
-        </div>
-        <div class="card stat">
-          <div class="stat-label">習慣達成</div>
-          <div class="stat-value">${habitRate()}%</div>
-          <div class="stat-sub">直近7日</div>
-        </div>
-      </div>`,
-
-    quick:`
-      <div class="card dashboard-card" data-id="quick">
-        <h3>Quick Add</h3>
-        <div class="quick">
-          <button onclick="openTask()">✓<br><span class="small">タスク</span></button>
-          <button onclick="openNote()">▤<br><span class="small">ノート</span></button>
-          <button onclick="openEvent()">▦<br><span class="small">予定</span></button>
-          <button onclick="openStudy()">▣<br><span class="small">学習</span></button>
-        </div>
-      </div>`,
-
-    tasks:`
-      <div class="card dashboard-card" data-id="tasks">
-        <div class="row between">
-          <h3>今日のタスク</h3>
-          <button class="btn" onclick="go('tasks')">すべて見る</button>
-        </div>
-        <div class="list">${taskRows(5,true)||`<div class="empty">今日のタスクはありません</div>`}</div>
-      </div>`,
-
-    calendar:`
-      <div class="card dashboard-card" data-id="calendar">
-        <div class="row between">
-          <h3>近日の予定</h3>
-          <button class="btn" onclick="go('calendar')">カレンダー</button>
-        </div>
-        <div class="list">
-          ${db.events
-            .filter(e=>e.date>=today())
-            .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))
-            .slice(0,5)
-            .map(e=>`<div class="list-item">
-              <div class="row between">
-                <strong>${esc(e.title)}</strong>
-                <span class="badge">${esc(e.date)} ${esc(e.time||"")}</span>
-              </div>
-              <div class="small muted">${esc(e.place||"")}</div>
-            </div>`).join("")||`<div class="empty">予定なし</div>`}
-        </div>
-      </div>`,
-
-    timer:`
-      <div class="card dashboard-card" data-id="timer">
-        <div class="row between">
-          <h3>タイマー</h3>
-          <button class="btn" onclick="go('timer')">開く</button>
-        </div>
-        <div style="font-size:38px;font-weight:900;text-align:center;padding:12px">
-          ${timerText()}
-        </div>
-        <div class="row" style="justify-content:center">
-          <button class="btn primary" onclick="timer.running?pauseTimer():startTimer()">${timer.running?"一時停止":"開始"}</button>
-          <button class="btn" onclick="resetTimer()">リセット</button>
-        </div>
-      </div>`,
-
-    novels:`
-      <div class="card dashboard-card" data-id="novels">
-        <div class="row between">
-          <h3>執筆状況</h3>
-          <button class="btn" onclick="go('novels')">小説</button>
-        </div>
-        ${db.novels.slice(0,4).map(n=>{
-          const eps=db.episodes.filter(e=>e.novelId===n.id);
-          const words=eps.reduce((a,b)=>a+Number(b.words||0),0);
-          const pv=eps.reduce((a,b)=>a+Number(b.pv||0),0);
-          return `<div class="list-item" style="margin-top:8px">
-            <div class="row between"><strong>${esc(n.title)}</strong><span class="badge accent">${esc(n.status||"執筆中")}</span></div>
-            <div class="small muted">${eps.length}話 / ${words.toLocaleString()}字 / PV ${pv.toLocaleString()}</div>
-          </div>`;
-        }).join("")||`<div class="empty">作品を追加しよう</div>`}
-      </div>`,
-
-    games:`
-      <div class="card dashboard-card" data-id="games">
-        <div class="row between">
-          <h3>ゲーム</h3>
-          <button class="btn" onclick="go('games')">ゲームハブ</button>
-        </div>
-        ${db.games.slice(0,4).map(g=>`
-          <div class="list-item" style="margin-top:8px">
-            <div class="row between"><strong>${esc(g.name)}</strong><span class="badge">Lv.${g.level||1}</span></div>
-            <div class="small muted">${Number(g.playMinutes||0)}分 / スコア ${Number(g.score||0).toLocaleString()}</div>
-          </div>`).join("")||`<div class="empty">ゲームを追加しよう</div>`}
-      </div>`
-  };
-
-  return `
-    <div class="page-head">
-      <div><h1>Dashboard</h1><p>NEXUSの現在状況</p></div>
-      <button class="btn primary" onclick="customizeDashboard()">⚙ カスタマイズ</button>
-    </div>
-    <div class="grid" id="dashboardGrid">
-      ${db.dashboard.map(id=>cards[id]||"").join("")}
-    </div>`;
+function renderTasks(){
+ document.getElementById("tasks").innerHTML=`<h1>タスク</h1><p class="sub">やることを全部NEXUSへ。</p>
+ <div class="actions" style="margin-bottom:15px"><button class="btn primary" onclick="taskModal()">＋ タスク追加</button></div>
+ <div class="list">${db.tasks.length?db.tasks.map(taskHTML).join(""):"<div class='card'><p class='muted'>タスクはありません。</p></div>"}</div>`;
 }
-
-function customizeDashboard(){
-  openModal("ダッシュボード設定",`
-    <div class="small muted" style="margin-bottom:12px">表示するカードを選択できます。</div>
-    ${[
-      ["welcome","ウェルカム"],
-      ["stats","統計"],
-      ["quick","Quick Add"],
-      ["tasks","今日のタスク"],
-      ["calendar","予定"],
-      ["timer","タイマー"],
-      ["novels","小説"],
-      ["games","ゲーム"]
-    ].map(([id,label])=>`
-      <label class="toggle">
-        <span>${label}</span>
-        <input type="checkbox" data-dash="${id}" ${db.dashboard.includes(id)?"checked":""}>
-      </label>`).join("")}
-  `,()=>{
-    db.dashboard=[...document.querySelectorAll("[data-dash]:checked")].map(x=>x.dataset.dash);
-    save();render();
-  });
+function taskModal(id=null){
+ const t=db.tasks.find(x=>x.id===id)||{};
+ modal(id?"タスク編集":"タスク追加",`<div class="form">
+ <div class="full"><label>タイトル</label><input id="f_title" value="${esc(t.title)}"></div>
+ <div><label>期限</label><input id="f_due" type="datetime-local" value="${esc(t.due||"")}"></div>
+ <div><label>優先度</label><select id="f_priority"><option ${t.priority==="低"?"selected":""}>低</option><option ${!t.priority||t.priority==="通常"?"selected":""}>通常</option><option ${t.priority==="高"?"selected":""}>高</option><option ${t.priority==="緊急"?"selected":""}>緊急</option></select></div>
+ <div class="full"><label>タグ</label><input id="f_tags" value="${esc((t.tags||[]).join(", "))}" placeholder="勉強,重要"></div>
+ <div class="full"><label>サブタスク（1行1つ）</label><textarea id="f_sub">${esc((t.subtasks||[]).map(x=>x.title||x).join("\n"))}</textarea></div>
+ </div><br><button class="btn primary" data-save>保存</button>`,b=>{
+  const x={id:t.id||uid(),title:b.querySelector("#f_title").value.trim(),due:b.querySelector("#f_due").value,
+  priority:b.querySelector("#f_priority").value,tags:b.querySelector("#f_tags").value.split(",").map(x=>x.trim()).filter(Boolean),
+  subtasks:b.querySelector("#f_sub").value.split("\n").filter(Boolean).map(title=>({id:uid(),title,done:false})),done:t.done||false,createdAt:t.createdAt||new Date().toISOString()};
+  if(!x.title)return;
+  if(id)Object.assign(t,x);else db.tasks.unshift(x);
+  log(id?"編集":"作成","tasks",x.id,x.title);save();render();
+ });
 }
-
-function taskRows(limit=99,todayOnly=false){
-  let arr=db.tasks.filter(t=>!todayOnly || t.due===today());
-  arr.sort((a,b)=>{
-    if(a.done!==b.done)return a.done?1:-1;
-    return String(a.due||"9999").localeCompare(String(b.due||"9999"));
-  });
-  return arr.slice(0,limit).map(t=>`
-    <div class="list-item ${t.done?"":"priority-"+(t.priority||"low")}">
-      <div class="row between">
-        <div class="row" style="min-width:0">
-          <input class="check" type="checkbox" ${t.done?"checked":""} onchange="toggleTask('${t.id}')">
-          <div style="min-width:0">
-            <div class="${t.done?"task-done":""}"><strong>${esc(t.title)}</strong></div>
-            <div class="small muted">${t.due?esc(t.due):"期限なし"} ${tagsText(t.tags)}</div>
-          </div>
-        </div>
-        <div class="row">
-          <button class="btn" onclick="openTask('${t.id}')">編集</button>
-          <button class="btn danger" onclick="trashItem('task','${t.id}')">×</button>
-        </div>
-      </div>
-    </div>`).join("");
-}
-
 function toggleTask(id){
-  const t=db.tasks.find(x=>x.id===id);
-  if(!t)return;
-  t.done=!t.done;
-  t.completedAt=t.done?nowISO():null;
-  t.updatedAt=nowISO();
-  if(t.done){
-    addXP(10,"タスク完了");
-    achievement("first_task","FIRST TASK");
-  }
-  logActivity("task",`${t.done?"完了":"未完了に戻した"}: ${t.title}`);
-  save();render();
+ const t=db.tasks.find(x=>x.id===id);if(!t)return;
+ t.done=!t.done;if(t.done)xp(10);log(t.done?"完了":"未完了","tasks",id,t.title);save();render();
 }
 
-/* =========================================================
-   TASKS
-========================================================= */
-
-function tasksPage(){
-  const done=db.tasks.filter(x=>x.done).length;
-  const total=db.tasks.length;
-  return `
-    <div class="page-head">
-      <div><h1>Tasks</h1><p>${done}/${total} 完了</p></div>
-      <button class="btn primary" onclick="openTask()">＋ タスク</button>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="row wrap">
-        <span class="badge accent">今日 ${db.tasks.filter(x=>x.due===today()&&!x.done).length}</span>
-        <span class="badge success">完了 ${done}</span>
-        <span class="badge">全体 ${total}</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="list">${taskRows()||`<div class="empty">タスクがありません。</div>`}</div>
-    </div>`;
+function renderNotes(){
+ document.getElementById("notes").innerHTML=`<h1>ノート</h1><p class="sub">考え・設定・メモを保存。</p>
+ <div class="actions" style="margin-bottom:15px"><button class="btn primary" onclick="noteModal()">＋ ノート作成</button></div>
+ <div class="grid">${db.notes.map(n=>`<div class="card col4"><div class="itemrow"><h3>${n.pin?"📌 ":""}${esc(n.title)}</h3><button class="btn small" onclick="noteModal('${n.id}')">編集</button></div><p class="muted">${esc(n.body).slice(0,180)}</p><span class="badge">${esc(n.category||"一般")}</span><br><small class="muted">${new Date(n.updatedAt).toLocaleString("ja-JP")}</small><div class="actions" style="margin-top:9px"><button class="btn small" onclick="togglePin('${n.id}')">📌</button><button class="btn small danger" onclick="removeToTrash('notes','${n.id}')">削除</button></div></div>`).join("")||"<div class='card col12'>ノートはありません。</div>"}</div>`;
 }
-
-function openTask(id=null){
-  const t=id?db.tasks.find(x=>x.id===id):null;
-  openModal(t?"タスク編集":"タスク作成",`
-    <div class="form-grid">
-      <div class="field full">
-        <label>タイトル</label>
-        <input id="fTitle" value="${esc(t?.title||"")}">
-      </div>
-      <div class="field">
-        <label>期限</label>
-        <input id="fDue" type="date" value="${esc(t?.due||today())}">
-      </div>
-      <div class="field">
-        <label>優先度</label>
-        <select id="fPriority">
-          ${["low","mid","high"].map(x=>`<option value="${x}" ${(t?.priority||"low")===x?"selected":""}>${x==="high"?"高":x==="mid"?"中":"低"}</option>`).join("")}
-        </select>
-      </div>
-      <div class="field">
-        <label>タグ</label>
-        <input id="fTags" value="${esc(tagsText(t?.tags||[]).replaceAll("#"," "))}" placeholder="学校,重要,制作">
-      </div>
-      <div class="field">
-        <label>見積時間（分）</label>
-        <input id="fMinutes" type="number" value="${Number(t?.minutes||30)}">
-      </div>
-      <div class="field full">
-        <label>説明</label>
-        <textarea id="fDesc">${esc(t?.description||"")}</textarea>
-      </div>
-      <div class="field full">
-        <label>関連データ</label>
-        <select id="fLink">
-          <option value="">なし</option>
-          ${entityOptions("note")}
-          ${entityOptions("novel")}
-          ${entityOptions("game")}
-        </select>
-      </div>
-    </div>
-  `,()=>{
-    const title=document.getElementById("fTitle").value.trim();
-    if(!title){toast("タイトルを入力してください");return false}
-    if(t)editHistory(t,"task");
-    const data={
-      title,
-      due:document.getElementById("fDue").value,
-      priority:document.getElementById("fPriority").value,
-      minutes:Number(document.getElementById("fMinutes").value)||0,
-      description:document.getElementById("fDesc").value,
-      tags:tagsFromString(document.getElementById("fTags").value),
-      link:document.getElementById("fLink").value,
-      done:t?.done||false,
-      createdAt:t?.createdAt||nowISO(),
-      updatedAt:nowISO(),
-      history:t?.history||[]
-    };
-    if(t)Object.assign(t,data);
-    else db.tasks.unshift({id:uid("task"),...data});
-    logActivity("task",`${t?"編集":"作成"}: ${title}`);
-    save();render();
-  });
+function noteModal(id=null){
+ const n=db.notes.find(x=>x.id===id)||{};
+ modal(id?"ノート編集":"ノート作成",`<div class="form">
+ <div class="full"><label>タイトル</label><input id="n_title" value="${esc(n.title)}"></div>
+ <div><label>カテゴリー</label><input id="n_cat" value="${esc(n.category||"一般")}"></div>
+ <div><label>タグ</label><input id="n_tags" value="${esc((n.tags||[]).join(", "))}"></div>
+ <div class="full"><label>本文</label><textarea id="n_body">${esc(n.body)}</textarea></div></div><br>
+ <button class="btn primary" data-save>保存</button>`,b=>{
+  const old=n.body||"";
+  const x={id:n.id||uid(),title:b.querySelector("#n_title").value.trim()||"無題",body:b.querySelector("#n_body").value,
+   category:b.querySelector("#n_cat").value||"一般",tags:b.querySelector("#n_tags").value.split(",").map(x=>x.trim()).filter(Boolean),
+   pin:n.pin||false,createdAt:n.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+  if(id&&old!==x.body){db.history[id]??=[];db.history[id].push({body:old,date:new Date().toISOString()});db.history[id]=db.history[id].slice(-20)}
+  if(id)Object.assign(n,x);else db.notes.unshift(x);
+  log(id?"編集":"作成","notes",x.id,x.title);save();render();
+ });
 }
+function togglePin(id){const n=db.notes.find(x=>x.id===id);n.pin=!n.pin;save();render()}
 
-/* =========================================================
-   NOTES
-========================================================= */
-
-function notesPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Notes</h1><p>考え、資料、アイデアを保存</p></div>
-      <button class="btn primary" onclick="openNote()">＋ ノート</button>
-    </div>
-    <div class="grid g3">
-      ${db.notes.map(n=>`
-        <div class="card">
-          <div class="row between">
-            <span class="badge ${n.pinned?"accent":""}">${n.pinned?"📌 PIN":"NOTE"}</span>
-            <div class="row">
-              <button class="btn" onclick="openNote('${n.id}')">編集</button>
-              <button class="btn danger" onclick="trashItem('note','${n.id}')">×</button>
-            </div>
-          </div>
-          <h3 style="margin-top:12px">${esc(n.title||"無題")}</h3>
-          <div class="small muted">${esc((n.content||"").slice(0,160))}</div>
-          <div style="margin-top:10px">${tagsText(n.tags)}</div>
-          <div class="tiny muted" style="margin-top:10px">更新 ${fmtDateTime(n.updatedAt)}</div>
-        </div>
-      `).join("")||`<div class="card empty">ノートがありません。</div>`}
-    </div>`;
+function renderCalendar(){
+ const [y,m]=db.calendar.split("-").map(Number),first=new Date(y,m-1,1),last=new Date(y,m,0);
+ let html=`<h1>カレンダー</h1><p class="sub">予定と期限をひとつに。</p>
+ <div class="card"><div class="calendarhead"><button class="btn" onclick="changeMonth(-1)">‹</button><h2>${y}年 ${m}月</h2><div class="actions"><button class="btn" onclick="changeMonth(1)">›</button><button class="btn primary" onclick="eventModal()">＋予定</button></div></div>
+ <div class="calgrid">${["日","月","火","水","木","金","土"].map(x=>`<b style="text-align:center">${x}</b>`).join("")}`;
+ const prev=new Date(y,m-1,0).getDate();
+ for(let i=0;i<first.getDay();i++)html+=`<div class="calday other">${prev-first.getDay()+i+1}</div>`;
+ for(let d=1;d<=last.getDate();d++){
+  const ds=`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  const ev=db.events.filter(x=>x.date===ds);
+  const tasks=db.tasks.filter(x=>x.due?.slice(0,10)===ds&&!x.done);
+  html+=`<div class="calday ${ds===today()?"today":""}"><b>${d}</b>${ev.map(e=>`<div class="eventdot">${esc(e.title)}</div>`).join("")}${tasks.map(t=>`<div class="eventdot">✓ ${esc(t.title)}</div>`).join("")}</div>`;
+ }
+ html+=`</div></div>`;
+ document.getElementById("calendar").innerHTML=html;
 }
-
-function openNote(id=null){
-  const n=id?db.notes.find(x=>x.id===id):null;
-  openModal(n?"ノート編集":"ノート作成",`
-    <div class="field">
-      <label>タイトル</label>
-      <input id="nTitle" value="${esc(n?.title||"")}">
-    </div>
-    <div class="field">
-      <label>タグ</label>
-      <input id="nTags" value="${esc(tagsText(n?.tags||[]).replaceAll("#"," "))}">
-    </div>
-    <div class="field">
-      <label>本文</label>
-      <textarea id="nContent" style="min-height:320px">${esc(n?.content||"")}</textarea>
-    </div>
-    <label class="toggle">
-      <span>ピン留め</span>
-      <input id="nPin" type="checkbox" ${n?.pinned?"checked":""}>
-    </label>
-  `,()=>{
-    const title=document.getElementById("nTitle").value.trim()||"無題";
-    if(n)editHistory(n,"note");
-    const data={
-      title,
-      tags:tagsFromString(document.getElementById("nTags").value),
-      content:document.getElementById("nContent").value,
-      pinned:document.getElementById("nPin").checked,
-      updatedAt:nowISO(),
-      createdAt:n?.createdAt||nowISO(),
-      history:n?.history||[]
-    };
-    if(n)Object.assign(n,data);
-    else db.notes.unshift({id:uid("note"),...data});
-    logActivity("note",`${n?"編集":"作成"}: ${title}`);
-    save();render();
-  });
-}
-
-/* =========================================================
-   CALENDAR
-========================================================= */
-
-function calendarPage(){
-  const y=db.calendar.year,m=db.calendar.month;
-  const first=new Date(y,m,1);
-  const start=new Date(y,m,1-first.getDay());
-  const cells=[];
-  for(let i=0;i<42;i++){
-    const d=new Date(start);
-    d.setDate(start.getDate()+i);
-    const iso=d.toISOString().slice(0,10);
-    const events=db.events.filter(e=>e.date===iso);
-    const tasks=db.tasks.filter(t=>t.due===iso&&!t.done);
-    cells.push(`
-      <div class="cal-day ${d.getMonth()!==m?"other":""} ${iso===today()?"today":""}" onclick="openEvent(null,'${iso}')">
-        <div class="cal-num">${d.getDate()}</div>
-        ${events.map(e=>`<div class="cal-event">${esc(e.title)}</div>`).join("")}
-        ${tasks.slice(0,3).map(t=>`<div class="cal-event" style="background:rgba(56,211,159,.13)">✓ ${esc(t.title)}</div>`).join("")}
-      </div>`);
-  }
-  return `
-    <div class="page-head">
-      <div><h1>Calendar</h1><p>予定とタスクをまとめて管理</p></div>
-      <button class="btn primary" onclick="openEvent()">＋ 予定</button>
-    </div>
-    <div class="view-tabs">
-      <button class="active">月</button>
-      <button onclick="calendarSimpleView('week')">週</button>
-      <button onclick="calendarSimpleView('day')">日</button>
-    </div>
-    <div class="card">
-      <div class="calendar-head">
-        <div class="row">
-          <button class="btn" onclick="changeMonth(-1)">‹</button>
-          <strong style="min-width:130px;text-align:center">${y}年 ${m+1}月</strong>
-          <button class="btn" onclick="changeMonth(1)">›</button>
-        </div>
-        <button class="btn" onclick="goTodayCalendar()">今日</button>
-      </div>
-      <div class="calendar-wrap">
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);min-width:700px">
-          ${["日","月","火","水","木","金","土"].map(x=>`<div style="padding:8px;text-align:center;color:var(--muted);font-size:12px">${x}</div>`).join("")}
-        </div>
-        <div class="calendar-grid" style="min-width:700px">${cells.join("")}</div>
-      </div>
-    </div>`;
-}
-
 function changeMonth(n){
-  db.calendar.month+=n;
-  if(db.calendar.month<0){db.calendar.month=11;db.calendar.year--}
-  if(db.calendar.month>11){db.calendar.month=0;db.calendar.year++}
-  save();render();
+ let [y,m]=db.calendar.split("-").map(Number);m+=n;if(m<1){m=12;y--}if(m>12){m=1;y++}
+ db.calendar=`${y}-${String(m).padStart(2,"0")}`;save();render();
+}
+function eventModal(){
+ modal("予定追加",`<div class="form"><div class="full"><label>タイトル</label><input id="e_title"></div><div><label>日付</label><input id="e_date" type="date" value="${today()}"></div><div><label>時間</label><input id="e_time" type="time"></div><div class="full"><label>詳細</label><textarea id="e_detail"></textarea></div></div><br><button class="btn primary" data-save>保存</button>`,b=>{
+  const e={id:uid(),title:b.querySelector("#e_title").value.trim(),date:b.querySelector("#e_date").value,time:b.querySelector("#e_time").value,detail:b.querySelector("#e_detail").value};
+  if(!e.title)return;db.events.push(e);log("作成","events",e.id,e.title);save();render();
+ });
 }
 
-function goTodayCalendar(){
-  const d=new Date();
-  db.calendar.year=d.getFullYear();
-  db.calendar.month=d.getMonth();
-  save();render();
+function formatTime(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function renderTimer(){
+ const t=db.timer;
+ document.getElementById("timer").innerHTML=`<h1>タイマー</h1><p class="sub">集中時間をNEXUSに記録。</p>
+ <div class="card col12"><div class="timerMode">
+ <button class="btn ${t.mode==="countdown"?"primary":""}" onclick="timerMode('countdown')">カウントダウン</button>
+ <button class="btn ${t.mode==="stopwatch"?"primary":""}" onclick="timerMode('stopwatch')">ストップウォッチ</button>
+ <button class="btn ${t.mode==="pomodoro"?"primary":""}" onclick="timerMode('pomodoro')">Pomodoro</button></div>
+ <div class="timer">${formatTime(t.seconds)}</div>
+ <div class="actions" style="justify-content:center"><button class="btn primary" onclick="timerStart()">▶ ${t.running?"実行中":"開始"}</button><button class="btn" onclick="timerPause()">Ⅱ</button><button class="btn" onclick="timerReset()">↺</button></div>
+ <br><div class="form"><div><label>分数</label><input id="timerMin" type="number" min="1" value="${Math.max(1,Math.round(t.seconds/60))}" onchange="timerSet(this.value)"></div>
+ <div><label>関連付け</label><select id="timerTarget" onchange="setTimerTarget(this.value)"><option value="">なし</option>${db.tasks.map(x=>`<option value="tasks:${x.id}">Task: ${esc(x.title)}</option>`).join("")}${db.novels.map(x=>`<option value="novels:${x.id}">Novel: ${esc(x.title)}</option>`).join("")}${db.games.map(x=>`<option value="games:${x.id}">Game: ${esc(x.title)}</option>`).join("")}</select></div></div></div>`;
 }
-
-function calendarSimpleView(mode){
-  openModal(mode==="week"?"週間ビュー":"日別ビュー",`
-    <div class="list">
-      ${db.events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,20).map(e=>`
-        <div class="list-item">
-          <div class="row between"><strong>${esc(e.title)}</strong><span class="badge">${esc(e.date)} ${esc(e.time||"")}</span></div>
-          <div class="small muted">${esc(e.place||"")}</div>
-        </div>`).join("")||`<div class="empty">予定なし</div>`}
-    </div>
-  `,()=>{});
+function timerMode(m){
+ db.timer.mode=m;db.timer.running=false;
+ if(m==="pomodoro")db.timer.seconds=1500;
+ else if(m==="countdown")db.timer.seconds=1500;
+ else db.timer.seconds=0;
+ save();render();
 }
-
-function openEvent(id=null,date=null){
-  const e=id?db.events.find(x=>x.id===id):null;
-  openModal(e?"予定編集":"予定作成",`
-    <div class="form-grid">
-      <div class="field full"><label>タイトル</label><input id="eTitle" value="${esc(e?.title||"")}"></div>
-      <div class="field"><label>日付</label><input id="eDate" type="date" value="${esc(e?.date||date||today())}"></div>
-      <div class="field"><label>時刻</label><input id="eTime" type="time" value="${esc(e?.time||"09:00")}"></div>
-      <div class="field"><label>場所</label><input id="ePlace" value="${esc(e?.place||"")}"></div>
-      <div class="field"><label>カテゴリー</label><input id="eCat" value="${esc(e?.category||"")}"></div>
-      <div class="field full"><label>詳細</label><textarea id="eDesc">${esc(e?.description||"")}</textarea></div>
-      <div class="field full"><label>繰り返し</label>
-        <select id="eRepeat">
-          ${["none","daily","weekly","monthly"].map(x=>`<option value="${x}" ${(e?.repeat||"none")===x?"selected":""}>${x==="none"?"なし":x==="daily"?"毎日":x==="weekly"?"毎週":"毎月"}</option>`).join("")}
-        </select>
-      </div>
-    </div>
-  `,()=>{
-    const title=document.getElementById("eTitle").value.trim();
-    if(!title){toast("タイトルを入力してください");return false}
-    const data={
-      title,
-      date:document.getElementById("eDate").value,
-      time:document.getElementById("eTime").value,
-      place:document.getElementById("ePlace").value,
-      category:document.getElementById("eCat").value,
-      description:document.getElementById("eDesc").value,
-      repeat:document.getElementById("eRepeat").value,
-      updatedAt:nowISO(),
-      createdAt:e?.createdAt||nowISO(),
-      history:e?.history||[]
-    };
-    if(e){editHistory(e,"event");Object.assign(e,data)}
-    else db.events.push({id:uid("event"),...data});
-    logActivity("event",`${e?"編集":"作成"}: ${title}`);
-    save();render();
-  });
+function timerSet(v){if(!db.timer.running)db.timer.seconds=Number(v)*60;save();render()}
+function setTimerTarget(v){const [a,b]=v.split(":");db.timer.targetType=a||"";db.timer.targetId=b||"";save()}
+function timerStart(){
+ if(db.timer.running)return;
+ db.timer.running=true;db.timer.last=Date.now();save();
+ timerHandle=setInterval(()=>{
+  if(!db.timer.running)return;
+  const now=Date.now(),diff=Math.floor((now-db.timer.last)/1000);if(!diff)return;
+  db.timer.last=now;
+  if(db.timer.mode==="stopwatch")db.timer.seconds+=diff;else db.timer.seconds-=diff;
+  if(db.timer.mode!=="stopwatch"&&db.timer.seconds<=0){db.timer.seconds=0;timerPause();finishTimer();return}
+  save();renderTimer();
+ },1000);
+ renderTimer();
 }
-
-/* =========================================================
-   TIMER
-========================================================= */
-
-function timerText(){
-  const s=Math.max(0,timer.seconds);
-  const h=Math.floor(s/3600);
-  const m=Math.floor((s%3600)/60);
-  const sec=s%60;
-  return h>0
-    ?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`
-    :`${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-}
-
-function timerPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Timer</h1><p>集中・作業・学習を記録</p></div>
-    </div>
-    <div class="card timer">
-      <div class="timer-mode">
-        ${["countdown","stopwatch"].map(x=>`
-          <button class="${timer.mode===x?"active":""}" onclick="setTimerMode('${x}')">${x==="countdown"?"カウントダウン":"ストップウォッチ"}</button>
-        `).join("")}
-      </div>
-
-      <div class="timer-display">${timerText()}</div>
-
-      <div class="row" style="justify-content:center;margin-bottom:15px">
-        ${timer.mode==="countdown"?`
-          <button class="btn" onclick="setPreset(5)">5分</button>
-          <button class="btn" onclick="setPreset(15)">15分</button>
-          <button class="btn" onclick="setPreset(25)">25分</button>
-          <button class="btn" onclick="setPreset(50)">50分</button>
-        `:""}
-      </div>
-
-      <div class="row" style="justify-content:center">
-        <button class="btn primary" onclick="${timer.running?"pauseTimer()":"startTimer()"}">
-          ${timer.running?"一時停止":"開始"}
-        </button>
-        <button class="btn" onclick="resetTimer()">リセット</button>
-        <button class="btn success" onclick="finishTimer()">記録</button>
-      </div>
-
-      <div class="form-grid" style="max-width:600px;margin:25px auto 0;text-align:left">
-        <div class="field">
-          <label>関連タイプ</label>
-          <select onchange="timer.linkedType=this.value;timer.linkedId='';render()">
-            <option value="">なし</option>
-            ${["task","note","novel","episode","game","study"].map(x=>`<option value="${x}" ${timer.linkedType===x?"selected":""}>${x}</option>`).join("")}
-          </select>
-        </div>
-        <div class="field">
-          <label>関連データ</label>
-          <select onchange="timer.linkedId=this.value">
-            <option value="">選択</option>
-            ${timer.linkedType?entityOptions(timer.linkedType):""}
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>最近のセッション</h3>
-      <div class="list">
-        ${db.timerSessions.slice(0,10).map(s=>`
-          <div class="list-item">
-            <div class="row between">
-              <strong>${Math.round(s.minutes)}分</strong>
-              <span class="badge">${fmtDateTime(s.at)}</span>
-            </div>
-            <div class="small muted">${esc(s.linkLabel||"単独セッション")}</div>
-          </div>`).join("")||`<div class="empty">まだありません。</div>`}
-      </div>
-    </div>`;
-}
-
-function setTimerMode(mode){
-  pauseTimer();
-  timer.mode=mode;
-  timer.seconds=mode==="countdown"?25*60:0;
-  timer.total=timer.seconds;
-  render();
-}
-
-function setPreset(min){
-  pauseTimer();
-  timer.seconds=min*60;
-  timer.total=timer.seconds;
-  render();
-}
-
-function startTimer(){
-  if(timer.running)return;
-  if(timer.mode==="countdown"&&timer.seconds<=0)return;
-  timer.running=true;
-  timer.interval=setInterval(()=>{
-    if(timer.mode==="countdown"){
-      timer.seconds--;
-      if(timer.seconds<=0){
-        timer.seconds=0;
-        pauseTimer();
-        audioBeep();
-        notify("NEXUS Timer","タイマーが終了しました");
-        toast("⏱ タイマー終了");
-      }
-    }else{
-      timer.seconds++;
-    }
-    if(currentPage==="timer"||currentPage==="dashboard")render();
-  },1000);
-  render();
-}
-
-function pauseTimer(){
-  timer.running=false;
-  if(timer.interval)clearInterval(timer.interval);
-  timer.interval=null;
-  render();
-}
-
-function resetTimer(){
-  pauseTimer();
-  timer.seconds=timer.mode==="countdown"?timer.total:0;
-  render();
-}
-
+function timerPause(){db.timer.running=false;clearInterval(timerHandle);save();renderTimer()}
+function timerReset(){timerPause();db.timer.seconds=db.timer.mode==="stopwatch"?0:1500;save();render()}
 function finishTimer(){
-  const elapsed=timer.mode==="countdown"
-    ?Math.max(0,timer.total-timer.seconds)
-    :timer.seconds;
-  const minutes=elapsed/60;
-  if(minutes<.1){toast("記録できる時間がありません");return}
-  const target=findAny(timer.linkedType,timer.linkedId);
-  db.timerSessions.unshift({
-    id:uid("timer"),
-    seconds:elapsed,
-    minutes,
-    at:nowISO(),
-    linkedType:timer.linkedType,
-    linkedId:timer.linkedId,
-    linkLabel:target?entityLabel(timer.linkedType,target):""
-  });
-  if(timer.linkedType==="game"&&target){
-    target.playMinutes=Number(target.playMinutes||0)+minutes;
-  }
-  addXP(Math.max(1,Math.floor(minutes/5)),"タイマー");
-  logActivity("timer",`${Math.round(minutes)}分のセッションを記録`);
-  save();
-  resetTimer();
-  toast("セッションを記録しました");
+ const mins=Math.max(1,Math.round(db.timer.mode==="stopwatch"?db.timer.seconds/60:25));
+ db.studies.push({id:uid(),date:today(),minutes:mins,subject:"タイマー",note:"NEXUS Timer"});
+ xp(Math.min(30,Math.max(5,Math.floor(mins/5))));log("タイマー完了","timer","",mins+"分");save();toast("タイマー完了！");
+ if(db.settings.notifications&&"Notification"in window&&Notification.permission==="granted")new Notification("NEXUS Timer",{body:`${mins}分の集中時間が完了しました。`});
 }
 
-/* =========================================================
-   NOVELS
-========================================================= */
-
-function novelsPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Novels</h1><p>作品・エピソード・PV・執筆量</p></div>
-      <button class="btn primary" onclick="openNovel()">＋ 作品</button>
-    </div>
-
-    <div class="grid g2">
-      ${db.novels.map(n=>{
-        const eps=db.episodes.filter(e=>e.novelId===n.id);
-        const words=eps.reduce((a,b)=>a+Number(b.words||0),0);
-        const pv=eps.reduce((a,b)=>a+Number(b.pv||0),0);
-        const posted=eps.filter(e=>e.posted).length;
-        return `
-        <div class="card">
-          <div class="row between">
-            <span class="badge accent">${esc(n.genre||"未分類")}</span>
-            <span class="badge">${esc(n.status||"執筆中")}</span>
-          </div>
-          <h2 style="margin-top:12px">${esc(n.title)}</h2>
-          <p class="muted">${esc(n.synopsis||"")}</p>
-
-          <div class="grid g4" style="margin:14px 0">
-            <div><div class="kpi">話数</div><strong>${eps.length}</strong></div>
-            <div><div class="kpi">文字数</div><strong>${words.toLocaleString()}</strong></div>
-            <div><div class="kpi">PV</div><strong>${pv.toLocaleString()}</strong></div>
-            <div><div class="kpi">投稿済</div><strong>${posted}</strong></div>
-          </div>
-
-          <div class="row wrap">
-            <button class="btn primary" onclick="openEpisode(null,'${n.id}')">＋ エピソード</button>
-            <button class="btn" onclick="openNovel('${n.id}')">編集</button>
-            <button class="btn danger" onclick="trashItem('novel','${n.id}')">×</button>
-          </div>
-
-          <details style="margin-top:15px">
-            <summary>エピソード一覧</summary>
-            <div class="list" style="margin-top:10px">
-              ${eps.map(e=>`
-                <div class="list-item">
-                  <div class="row between">
-                    <strong>${esc(e.title)}</strong>
-                    <span class="badge ${e.posted?"success":""}">${e.posted?"投稿済":"未投稿"}</span>
-                  </div>
-                  <div class="small muted">${Number(e.words||0).toLocaleString()}字 / PV ${Number(e.pv||0).toLocaleString()}</div>
-                  <div class="row" style="margin-top:8px">
-                    <button class="btn" onclick="openEpisode('${e.id}')">編集</button>
-                    <button class="btn danger" onclick="trashItem('episode','${e.id}')">×</button>
-                  </div>
-                </div>`).join("")||`<div class="empty">エピソードなし</div>`}
-            </div>
-          </details>
-        </div>`;
-      }).join("")||`<div class="card empty">作品を追加しよう。</div>`}
-    </div>`;
+function renderNovels(){
+ document.getElementById("novels").innerHTML=`<h1>小説</h1><p class="sub">作品・話数・PV・執筆進捗を管理。</p>
+ <button class="btn primary" onclick="novelModal()">＋ 作品追加</button><div class="grid" style="margin-top:15px">${db.novels.map(n=>`<div class="card col6"><div class="itemrow"><h2>✎ ${esc(n.title)}</h2><button class="btn small" onclick="novelModal('${n.id}')">編集</button></div><p>${esc(n.synopsis||"")}</p><div class="grid"><div class="card col4"><div class="stat">${n.wordCount||0}</div><span class="kpi">文字</span></div><div class="card col4"><div class="stat">${n.pv||0}</div><span class="kpi">累計PV</span></div><div class="card col4"><div class="stat">${n.progress||0}%</div><span class="kpi">進捗</span></div></div><div class="progress"><i style="width:${n.progress||0}%"></i></div><p class="muted">${esc(n.platform||"未設定")}　${esc(n.status||"執筆中")}</p><div class="actions"><button class="btn small" onclick="episodeModal('${n.id}')">＋話数</button><button class="btn small" onclick="pvModal('${n.id}')">PV更新</button><button class="btn small danger" onclick="removeToTrash('novels','${n.id}')">削除</button></div><div class="list" style="margin-top:10px">${(n.episodes||[]).map((e,i)=>`<div class="item"><b>${i+1}. ${esc(e.title)}</b><br><small>${e.words||0}文字 / ${e.pv||0}PV / ${esc(e.status||"未投稿")}</small></div>`).join("")}</div></div>`).join("")||"<div class='card col12'>作品を追加しよう。</div>"}</div>`;
+}
+function novelModal(id=null){
+ const n=db.novels.find(x=>x.id===id)||{};
+ modal(id?"作品編集":"作品追加",`<div class="form">
+ <div class="full"><label>作品名</label><input id="v_title" value="${esc(n.title)}"></div>
+ <div><label>ジャンル</label><input id="v_genre" value="${esc(n.genre||"")}></div>
+ <div><label>投稿サイト</label><input id="v_platform" value="${esc(n.platform||"")}></div>
+ <div><label>ステータス</label><select id="v_status"><option>執筆中</option><option>完結</option><option>休止</option></select></div>
+ <div><label>進捗 %</label><input id="v_progress" type="number" min="0" max="100" value="${n.progress||0}"></div>
+ <div><label>累計文字数</label><input id="v_words" type="number" value="${n.wordCount||0}"></div>
+ <div><label>累計PV</label><input id="v_pv" type="number" value="${n.pv||0}"></div>
+ <div class="full"><label>あらすじ</label><textarea id="v_syn">${esc(n.synopsis||"")}</textarea></div>
+ <div class="full"><label>キャラクター・世界観メモ</label><textarea id="v_world">${esc(n.world||"")}</textarea></div>
+ </div><br><button class="btn primary" data-save>保存</button>`,b=>{
+  const x={id:n.id||uid(),title:b.querySelector("#v_title").value.trim(),genre:b.querySelector("#v_genre").value,platform:b.querySelector("#v_platform").value,status:b.querySelector("#v_status").value,progress:Number(b.querySelector("#v_progress").value),wordCount:Number(b.querySelector("#v_words").value),pv:Number(b.querySelector("#v_pv").value),synopsis:b.querySelector("#v_syn").value,world:b.querySelector("#v_world").value,episodes:n.episodes||[],pvHistory:n.pvHistory||[],createdAt:n.createdAt||new Date().toISOString()};
+  if(!x.title)return;if(id)Object.assign(n,x);else db.novels.unshift(x);log(id?"編集":"作成","novels",x.id,x.title);save();render();
+ });
+}
+function episodeModal(nid){
+ const n=db.novels.find(x=>x.id===nid);if(!n)return;
+ modal("話数追加",`<div class="form"><div class="full"><label>タイトル</label><input id="ep_title"></div><div><label>文字数</label><input id="ep_words" type="number"></div><div><label>PV</label><input id="ep_pv" type="number"></div><div><label>投稿ステータス</label><select id="ep_status"><option>未投稿</option><option>予約</option><option>投稿済み</option></select></div></div><br><button class="btn primary" data-save>保存</button>`,b=>{
+  n.episodes.push({id:uid(),title:b.querySelector("#ep_title").value,words:Number(b.querySelector("#ep_words").value),pv:Number(b.querySelector("#ep_pv").value),status:b.querySelector("#ep_status").value,date:today()});
+  n.wordCount=n.episodes.reduce((a,x)=>a+Number(x.words||0),0);save();render();
+ });
+}
+function pvModal(id){
+ const n=db.novels.find(x=>x.id===id);
+ modal("PV更新",`<label>現在の累計PV</label><input id="pv" type="number" value="${n.pv||0}"><br><br><button class="btn primary" data-save>保存</button>`,b=>{
+  n.pv=Number(b.querySelector("#pv").value);n.pvHistory??=[];n.pvHistory.push({date:today(),pv:n.pv});save();render();
+ });
 }
 
-function openNovel(id=null){
-  const n=id?db.novels.find(x=>x.id===id):null;
-  openModal(n?"作品編集":"作品作成",`
-    <div class="form-grid">
-      <div class="field full"><label>タイトル</label><input id="nvTitle" value="${esc(n?.title||"")}"></div>
-      <div class="field"><label>ジャンル</label><input id="nvGenre" value="${esc(n?.genre||"")}"></div>
-      <div class="field"><label>ステータス</label>
-        <select id="nvStatus">${["構想","執筆中","休止","完結","公開中"].map(x=>`<option ${n?.status===x?"selected":""}>${x}</option>`).join("")}</select>
-      </div>
-      <div class="field full"><label>あらすじ</label><textarea id="nvSynopsis">${esc(n?.synopsis||"")}</textarea></div>
-      <div class="field"><label>投稿先</label><input id="nvPlatform" value="${esc(n?.platform||"")}"></div>
-      <div class="field"><label>目標文字数</label><input id="nvGoal" type="number" value="${Number(n?.goalWords||0)}"></div>
-      <div class="field full"><label>キャラクター</label><textarea id="nvChars">${esc(n?.characters||"")}</textarea></div>
-      <div class="field full"><label>世界観・設定</label><textarea id="nvWorld">${esc(n?.world||"")}</textarea></div>
-      <div class="field full"><label>タグ</label><input id="nvTags" value="${esc(tagsText(n?.tags||[]).replaceAll("#"," "))}"></div>
-    </div>
-  `,()=>{
-    const title=document.getElementById("nvTitle").value.trim();
-    if(!title){toast("タイトルを入力してください");return false}
-    const data={
-      title,
-      genre:document.getElementById("nvGenre").value,
-      status:document.getElementById("nvStatus").value,
-      synopsis:document.getElementById("nvSynopsis").value,
-      platform:document.getElementById("nvPlatform").value,
-      goalWords:Number(document.getElementById("nvGoal").value)||0,
-      characters:document.getElementById("nvChars").value,
-      world:document.getElementById("nvWorld").value,
-      tags:tagsFromString(document.getElementById("nvTags").value),
-      createdAt:n?.createdAt||nowISO(),
-      updatedAt:nowISO(),
-      history:n?.history||[]
-    };
-    if(n){editHistory(n,"novel");Object.assign(n,data)}
-    else db.novels.unshift({id:uid("novel"),...data});
-    logActivity("novel",`${n?"編集":"作成"}: ${title}`);
-    save();render();
-  });
+function renderGames(){
+ document.getElementById("games").innerHTML=`<h1>ゲーム</h1><p class="sub">プレイ時間・レベル・スコア・実績を管理。</p><button class="btn primary" onclick="gameModal()">＋ ゲーム追加</button>
+ <div class="grid" style="margin-top:15px">${db.games.map(g=>`<div class="card col4"><div class="itemrow"><h2>🎮 ${esc(g.title)}</h2><button class="btn small" onclick="gameModal('${g.id}')">編集</button></div><div class="stat">Lv.${g.level||1}</div><p>Score ${g.score||0}　💰 ${g.currency||0}</p><p class="muted">プレイ ${g.minutes||0}分　Rank ${esc(g.rank||"-")}</p><p>${(g.achievements||[]).map(a=>`<span class="badge">🏆 ${esc(a)}</span> `).join("")}</p><div class="actions"><button class="btn small" onclick="gameLog('${g.id}')">＋記録</button><button class="btn small danger" onclick="removeToTrash('games','${g.id}')">削除</button></div></div>`).join("")||"<div class='card col12'>ゲームを追加しよう。</div>"}</div>`;
+}
+function gameModal(id=null){
+ const g=db.games.find(x=>x.id===id)||{};
+ modal(id?"ゲーム編集":"ゲーム追加",`<div class="form"><div class="full"><label>ゲーム名</label><input id="g_title" value="${esc(g.title)}"></div><div><label>レベル</label><input id="g_level" type="number" value="${g.level||1}"></div><div><label>ランク</label><input id="g_rank" value="${esc(g.rank||"")}></div><div><label>スコア</label><input id="g_score" type="number" value="${g.score||0}"></div><div><label>ゲーム内通貨</label><input id="g_currency" type="number" value="${g.currency||0}"></div><div><label>プレイ時間（分）</label><input id="g_minutes" type="number" value="${g.minutes||0}"></div><div class="full"><label>実績（カンマ区切り）</label><input id="g_ach" value="${esc((g.achievements||[]).join(", "))}"></div></div><br><button class="btn primary" data-save>保存</button>`,b=>{
+  const x={id:g.id||uid(),title:b.querySelector("#g_title").value.trim(),level:Number(b.querySelector("#g_level").value),rank:b.querySelector("#g_rank").value,score:Number(b.querySelector("#g_score").value),currency:Number(b.querySelector("#g_currency").value),minutes:Number(b.querySelector("#g_minutes").value),achievements:b.querySelector("#g_ach").value.split(",").map(x=>x.trim()).filter(Boolean),history:g.history||[],custom:g.custom||{}};
+  if(!x.title)return;if(id)Object.assign(g,x);else db.games.unshift(x);save();render();
+ });
+}
+function gameLog(id){
+ const g=db.games.find(x=>x.id===id);
+ modal("プレイ記録",`<div class="form"><div><label>追加プレイ時間（分）</label><input id="gm" type="number" value="30"></div><div><label>スコア追加</label><input id="gs" type="number" value="0"></div></div><br><button class="btn primary" data-save>記録</button>`,b=>{
+  const m=Number(b.querySelector("#gm").value),s=Number(b.querySelector("#gs").value);g.minutes+=m;g.score+=s;g.history??=[];g.history.push({date:today(),minutes:m,score:s});xp(Math.min(20,Math.ceil(m/10)));save();render();
+ });
 }
 
-function openEpisode(id=null,novelId=null){
-  const e=id?db.episodes.find(x=>x.id===id):null;
-  openModal(e?"エピソード編集":"エピソード作成",`
-    <div class="form-grid">
-      <div class="field full"><label>作品</label>
-        <select id="epNovel">
-          ${db.novels.map(n=>`<option value="${n.id}" ${(e?.novelId||novelId)===n.id?"selected":""}>${esc(n.title)}</option>`).join("")}
-        </select>
-      </div>
-      <div class="field full"><label>タイトル</label><input id="epTitle" value="${esc(e?.title||"")}"></div>
-      <div class="field"><label>文字数</label><input id="epWords" type="number" value="${Number(e?.words||0)}"></div>
-      <div class="field"><label>累計PV</label><input id="epPV" type="number" value="${Number(e?.pv||0)}"></div>
-      <div class="field"><label>今日PV</label><input id="epPVToday" type="number" value="${Number(e?.pvToday||0)}"></div>
-      <div class="field"><label>投稿日</label><input id="epPostDate" type="date" value="${esc(e?.postDate||"")}"></div>
-      <div class="field full"><label>本文</label><textarea id="epContent" style="min-height:280px">${esc(e?.content||"")}</textarea></div>
-      <label class="toggle full"><span>投稿済み</span><input id="epPosted" type="checkbox" ${e?.posted?"checked":""}></label>
-    </div>
-  `,()=>{
-    const title=document.getElementById("epTitle").value.trim()||"無題";
-    const data={
-      novelId:document.getElementById("epNovel").value,
-      title,
-      words:Number(document.getElementById("epWords").value)||0,
-      pv:Number(document.getElementById("epPV").value)||0,
-      pvToday:Number(document.getElementById("epPVToday").value)||0,
-      postDate:document.getElementById("epPostDate").value,
-      content:document.getElementById("epContent").value,
-      posted:document.getElementById("epPosted").checked,
-      updatedAt:nowISO(),
-      createdAt:e?.createdAt||nowISO(),
-      history:e?.history||[]
-    };
-    if(e){editHistory(e,"episode");Object.assign(e,data)}
-    else db.episodes.push({id:uid("episode"),...data});
-    addXP(5,"エピソード更新");
-    logActivity("episode",`${e?"編集":"作成"}: ${title}`);
-    save();render();
-  });
+function renderStudy(){
+ const total=db.studies.reduce((a,x)=>a+Number(x.minutes||0),0),todayM=db.studies.filter(x=>x.date===today()).reduce((a,x)=>a+Number(x.minutes||0),0);
+ document.getElementById("study").innerHTML=`<h1>勉強</h1><p class="sub">勉強時間と科目を記録。</p><div class="grid"><div class="card col4"><div class="stat">${todayM}</div><span class="muted">今日の分</span></div><div class="card col4"><div class="stat">${total}</div><span class="muted">累計分</span></div><div class="card col4"><button class="btn primary" onclick="studyModal()">＋ 記録</button></div><div class="card col12"><canvas id="studyChart"></canvas></div><div class="card col12"><div class="list">${db.studies.slice().reverse().slice(0,30).map(s=>`<div class="item itemrow"><span><b>${esc(s.subject)}</b><br><small>${s.date} / ${s.minutes}分</small></span><span>${esc(s.note||"")}</span></div>`).join("")}</div></div></div>`;
+ drawStudyChart();
+}
+function studyModal(){
+ modal("勉強記録",`<div class="form"><div><label>日付</label><input id="s_date" type="date" value="${today()}"></div><div><label>科目</label><input id="s_subject" value="勉強"></div><div><label>時間（分）</label><input id="s_min" type="number" value="30"></div><div><label>メモ</label><input id="s_note"></div></div><br><button class="btn primary" data-save>保存</button>`,b=>{
+  const x={id:uid(),date:b.querySelector("#s_date").value,subject:b.querySelector("#s_subject").value,minutes:Number(b.querySelector("#s_min").value),note:b.querySelector("#s_note").value};
+  db.studies.push(x);xp(Math.min(30,Math.ceil(x.minutes/5)));log("勉強記録","study",x.id,x.subject);save();render();
+ });
+}
+function drawStudyChart(){
+ const c=document.getElementById("studyChart");if(!c)return;const ctx=c.getContext("2d"),w=c.width=c.clientWidth*2,h=c.height=440;ctx.clearRect(0,0,w,h);
+ const vals=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let ds=d.toISOString().slice(0,10);vals.push([ds,db.studies.filter(x=>x.date===ds).reduce((a,x)=>a+Number(x.minutes||0),0)])}
+ const max=Math.max(30,...vals.map(x=>x[1]));ctx.font="24px sans-serif";ctx.fillStyle=getComputedStyle(document.body).color;
+ vals.forEach((v,i)=>{const x=50+i*((w-80)/7),bh=(v[1]/max)*(h-70),y=h-50-bh;ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--accent");ctx.fillRect(x,y,45,bh);ctx.fillStyle=getComputedStyle(document.body).color;ctx.fillText(String(v[1]),x,y-8);ctx.font="18px sans-serif";ctx.fillText(v[0].slice(5),x,h-18);ctx.font="24px sans-serif"});
 }
 
-/* =========================================================
-   GAMES
-========================================================= */
-
-function gamesPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Game Hub</h1><p>ゲームの進行状況・実績・プレイ時間</p></div>
-      <button class="btn primary" onclick="openGame()">＋ ゲーム</button>
-    </div>
-    <div class="grid g2">
-      ${db.games.map(g=>`
-        <div class="card">
-          <div class="row between">
-            <span class="badge accent">${esc(g.genre||"GAME")}</span>
-            <span class="badge">Lv.${Number(g.level||1)}</span>
-          </div>
-          <h2>${esc(g.name)}</h2>
-          <div class="grid g4">
-            <div><div class="kpi">スコア</div><strong>${Number(g.score||0).toLocaleString()}</strong></div>
-            <div><div class="kpi">プレイ</div><strong>${Math.round(Number(g.playMinutes||0))}分</strong></div>
-            <div><div class="kpi">実績</div><strong>${(g.achievements||[]).length}</strong></div>
-            <div><div class="kpi">目標</div><strong>${Number(g.goal||0).toLocaleString()}</strong></div>
-          </div>
-          <div style="margin-top:14px">${esc(g.memo||"")}</div>
-          <div class="row" style="margin-top:15px">
-            <button class="btn primary" onclick="openGame('${g.id}')">編集</button>
-            <button class="btn" onclick="gamePlay('${g.id}')">▶ プレイ記録</button>
-            <button class="btn danger" onclick="trashItem('game','${g.id}')">×</button>
-          </div>
-        </div>`).join("")||`<div class="card empty">ゲームを追加しよう。</div>`}
-    </div>`;
+function renderHabits(){
+ document.getElementById("habits").innerHTML=`<h1>習慣</h1><p class="sub">毎日の継続を可視化。</p><button class="btn primary" onclick="habitModal()">＋ 習慣追加</button><div class="grid" style="margin-top:15px">${db.habits.map(h=>{const hist=h.history||[],streak=calcStreak(hist);return `<div class="card col4"><div class="itemrow"><h2>◉ ${esc(h.title)}</h2><button class="btn small" onclick="habitModal('${h.id}')">編集</button></div><div class="stat">${streak}</div><span class="muted">日連続</span><div class="actions" style="margin-top:10px"><button class="btn ${hist.includes(today())?"primary":""}" onclick="toggleHabit('${h.id}')">${hist.includes(today())?"✓ 今日完了":"今日完了"}</button></div></div>`}).join("")||"<div class='card col12'>習慣を追加しよう。</div>"}</div>`;
+}
+function calcStreak(h){
+ let n=0,d=new Date();while(true){const s=d.toISOString().slice(0,10);if(!h.includes(s))break;n++;d.setDate(d.getDate()-1)}return n;
+}
+function toggleHabit(id){
+ const h=db.habits.find(x=>x.id===id);h.history??=[];const i=h.history.indexOf(today());
+ if(i>=0)h.history.splice(i,1);else{h.history.push(today());xp(5)}
+ save();render();
+}
+function habitModal(id=null){
+ const h=db.habits.find(x=>x.id===id)||{};
+ modal(id?"習慣編集":"習慣追加",`<label>習慣名</label><input id="h_title" value="${esc(h.title)}"><br><label>目標</label><input id="h_goal" value="${esc(h.goal||"毎日")}"><br><button class="btn primary" data-save>保存</button>`,b=>{
+  const x={id:h.id||uid(),title:b.querySelector("#h_title").value.trim(),goal:b.querySelector("#h_goal").value,history:h.history||[]};if(!x.title)return;
+  if(id)Object.assign(h,x);else db.habits.push(x);save();render();
+ });
 }
 
-function openGame(id=null){
-  const g=id?db.games.find(x=>x.id===id):null;
-  openModal(g?"ゲーム編集":"ゲーム追加",`
-    <div class="form-grid">
-      <div class="field full"><label>ゲーム名</label><input id="gName" value="${esc(g?.name||"")}"></div>
-      <div class="field"><label>ジャンル</label><input id="gGenre" value="${esc(g?.genre||"")}"></div>
-      <div class="field"><label>レベル</label><input id="gLevel" type="number" value="${Number(g?.level||1)}"></div>
-      <div class="field"><label>スコア</label><input id="gScore" type="number" value="${Number(g?.score||0)}"></div>
-      <div class="field"><label>目標</label><input id="gGoal" type="number" value="${Number(g?.goal||0)}"></div>
-      <div class="field"><label>通貨</label><input id="gCurrency" value="${esc(g?.currency||"")}"></div>
-      <div class="field"><label>プレイ時間（分）</label><input id="gMinutes" type="number" value="${Number(g?.playMinutes||0)}"></div>
-      <div class="field full"><label>実績（1行1件）</label><textarea id="gAchievements">${esc((g?.achievements||[]).join("\n"))}</textarea></div>
-      <div class="field full"><label>メモ</label><textarea id="gMemo">${esc(g?.memo||"")}</textarea></div>
-      <div class="field full"><label>カスタムフィールド JSON</label><textarea id="gCustom">${esc(JSON.stringify(g?.custom||{},null,2))}</textarea></div>
-    </div>
-  `,()=>{
-    const name=document.getElementById("gName").value.trim();
-    if(!name){toast("ゲーム名を入力してください");return false}
-    let custom={};
-    try{custom=JSON.parse(document.getElementById("gCustom").value||"{}")}catch(e){toast("Custom JSONが不正です");return false}
-    const data={
-      name,
-      genre:document.getElementById("gGenre").value,
-      level:Number(document.getElementById("gLevel").value)||1,
-      score:Number(document.getElementById("gScore").value)||0,
-      goal:Number(document.getElementById("gGoal").value)||0,
-      currency:document.getElementById("gCurrency").value,
-      playMinutes:Number(document.getElementById("gMinutes").value)||0,
-      achievements:document.getElementById("gAchievements").value.split("\n").map(x=>x.trim()).filter(Boolean),
-      memo:document.getElementById("gMemo").value,
-      custom,
-      updatedAt:nowISO(),
-      createdAt:g?.createdAt||nowISO(),
-      history:g?.history||[]
-    };
-    if(g){editHistory(g,"game");Object.assign(g,data)}
-    else db.games.unshift({id:uid("game"),...data});
-    logActivity("game",`${g?"編集":"追加"}: ${name}`);
-    save();render();
-  });
+function renderTags(){
+ const counts={};[...db.tasks,...db.notes].forEach(x=>(x.tags||[]).forEach(t=>counts[t]=(counts[t]||0)+1));
+ document.getElementById("tags").innerHTML=`<h1>タグ</h1><p class="sub">データを横断して整理。</p><button class="btn primary" onclick="tagModal()">＋ タグ作成</button><div class="grid" style="margin-top:15px">${Object.entries(counts).map(([t,n])=>`<div class="card col3"><h3>#${esc(t)}</h3><div class="stat">${n}</div><span class="muted">件</span></div>`).join("")||"<div class='card col12'>タグ付きデータはありません。</div>"}</div>`;
+}
+function tagModal(){modal("タグ作成",`<label>タグ名</label><input id="tag"><br><button class="btn primary" data-save>保存</button>`,b=>{const t=b.querySelector("#tag").value.trim();if(t&&!db.tags.includes(t))db.tags.push(t);save();render()})}
+
+function allRecords(type){
+ return db[type]||[];
+}
+function renderLinks(){
+ const options=NAV.filter(x=>["tasks","notes","novels","games","study"].includes(x[0]));
+ const make=(type)=>allRecords(type).map(x=>`<option value="${type}:${x.id}">${x.title||x.subject||x.name||"無題"}</option>`).join("");
+ document.getElementById("link").innerHTML=`<h1>NEXUS LINK</h1><p class="sub">タスク・ノート・小説・ゲーム・勉強をつなぐ。</p>
+ <div class="card"><div class="form"><div><label>元データ</label><select id="linkA"><option value="">選択</option>${options.map(x=>`<optgroup label="${x[2]}">${make(x[0])}</optgroup>`).join("")}</select></div><div><label>関連データ</label><select id="linkB"><option value="">選択</option>${options.map(x=>`<optgroup label="${x[2]}">${make(x[0])}</optgroup>`).join("")}</select></div></div><br><button class="btn primary" onclick="createLink()">🔗 リンクする</button></div>
+ <div class="list" style="margin-top:15px">${db.links.map((l,i)=>`<div class="card itemrow"><span><b>${linkName(l.a)}</b>　↔　<b>${linkName(l.b)}</b></span><button class="btn small danger" onclick="db.links.splice(${i},1);save();render()">削除</button></div>`).join("")||"<div class='card'>リンクはありません。</div>"}</div>`;
+}
+function linkName(v){if(!v)return"-";const [t,id]=v.split(":");const x=db[t]?.find(x=>x.id===id);return esc(x?.title||x?.subject||"不明")}
+function createLink(){const a=document.getElementById("linkA").value,b=document.getElementById("linkB").value;if(!a||!b)return;db.links.push({id:uid(),a,b});save();render();}
+
+function renderDatabase(){
+ document.getElementById("database").innerHTML=`<h1>データベース</h1><p class="sub">NEXUSに好きなデータ管理表を作る。</p><button class="btn primary" onclick="dbModal()">＋ データベース作成</button><div class="grid" style="margin-top:15px">${db.databases.map(d=>`<div class="card col6"><div class="itemrow"><h2>▥ ${esc(d.name)}</h2><button class="btn small" onclick="recordModal('${d.id}')">＋記録</button></div><p class="muted">${(d.fields||[]).length}フィールド / ${(d.records||[]).length}件</p>${(d.records||[]).slice(-5).reverse().map(r=>`<div class="item">${Object.values(r).map(v=>`<span class="badge">${esc(v)}</span> `).join("")}</div>`).join("")}</div>`).join("")||"<div class='card col12'>カスタムデータベースを作成しよう。</div>"}</div>`;
+}
+function dbModal(){
+ modal("データベース作成",`<label>名前</label><input id="dbn" placeholder="読書記録"><br><label>フィールド（カンマ区切り）</label><input id="dbf" placeholder="タイトル,著者,評価,日付"><br><button class="btn primary" data-save>作成</button>`,b=>{
+  const d={id:uid(),name:b.querySelector("#dbn").value,fields:b.querySelector("#dbf").value.split(",").map(x=>x.trim()).filter(Boolean),records:[]};if(!d.name)return;db.databases.push(d);save();render();
+ });
+}
+function recordModal(id){
+ const d=db.databases.find(x=>x.id===id);if(!d)return;
+ modal("データ追加",d.fields.map((f,i)=>`<label>${esc(f)}</label><input id="df${i}">`).join("")+`<br><button class="btn primary" data-save>保存</button>`,b=>{
+  const r={};d.fields.forEach((f,i)=>r[f]=b.querySelector("#df"+i).value);d.records.push(r);save();render();
+ });
 }
 
-function gamePlay(id){
-  const g=db.games.find(x=>x.id===id);
-  if(!g)return;
-  openModal(`${esc(g.name)} プレイ記録`,`
-    <div class="field">
-      <label>プレイ時間（分）</label>
-      <input id="gpMin" type="number" value="30">
-    </div>
-    <div class="field">
-      <label>今回のスコア</label>
-      <input id="gpScore" type="number" value="${Number(g.score||0)}">
-    </div>
-    <div class="field">
-      <label>レベル</label>
-      <input id="gpLevel" type="number" value="${Number(g.level||1)}">
-    </div>
-  `,()=>{
-    const min=Number(document.getElementById("gpMin").value)||0;
-    g.playMinutes=Number(g.playMinutes||0)+min;
-    g.score=Number(document.getElementById("gpScore").value)||g.score;
-    g.level=Number(document.getElementById("gpLevel").value)||g.level;
-    g.updatedAt=nowISO();
-    addXP(Math.floor(min/10)+1,"ゲーム記録");
-    logActivity("game",`${g.name}を${min}分プレイ`);
-    save();render();
-  });
+function renderStats(){
+ const completed=db.tasks.filter(x=>x.done).length,focus=db.studies.reduce((a,x)=>a+Number(x.minutes||0),0),game=db.games.reduce((a,x)=>a+Number(x.minutes||0),0),pv=db.novels.reduce((a,x)=>a+Number(x.pv||0),0);
+ document.getElementById("stats").innerHTML=`<h1>統計</h1><p class="sub">NEXUSに蓄積されたデータ。</p><div class="grid">
+ <div class="card col3"><div class="stat">${completed}</div><span class="muted">完了タスク</span></div><div class="card col3"><div class="stat">${focus}</div><span class="muted">勉強分</span></div><div class="card col3"><div class="stat">${game}</div><span class="muted">ゲーム分</span></div><div class="card col3"><div class="stat">${pv}</div><span class="muted">小説PV</span></div>
+ <div class="card col6"><h2>データ数</h2><p>タスク　${db.tasks.length}</p><p>ノート　${db.notes.length}</p><p>予定　${db.events.length}</p><p>小説　${db.novels.length}</p><p>ゲーム　${db.games.length}</p></div>
+ <div class="card col6"><h2>レベル</h2><div class="stat">Lv.${db.level}</div><div class="xpbar"><i style="width:${db.xp/(db.level*100)*100}%"></i></div><p>${db.xp}/${db.level*100} XP</p></div>
+ </div>`;
 }
 
-/* =========================================================
-   STUDY
-========================================================= */
-
-function studyPage(){
-  const total=db.studies.reduce((a,b)=>a+Number(b.minutes||0),0);
-  const todayMin=db.studies.filter(x=>x.date===today()).reduce((a,b)=>a+Number(b.minutes||0),0);
-  return `
-    <div class="page-head">
-      <div><h1>Study</h1><p>学習時間・科目・内容</p></div>
-      <button class="btn primary" onclick="openStudy()">＋ 学習記録</button>
-    </div>
-    <div class="grid g3">
-      <div class="card stat"><div class="stat-label">今日</div><div class="stat-value">${todayMin}<span style="font-size:13px">分</span></div></div>
-      <div class="card stat"><div class="stat-label">累計</div><div class="stat-value">${total}<span style="font-size:13px">分</span></div></div>
-      <div class="card stat"><div class="stat-label">記録数</div><div class="stat-value">${db.studies.length}</div></div>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <div class="list">
-        ${db.studies.slice(0,50).map(s=>`
-          <div class="list-item">
-            <div class="row between">
-              <strong>${esc(s.subject||"学習")}</strong>
-              <span class="badge accent">${Number(s.minutes)}分</span>
-            </div>
-            <div class="small muted">${esc(s.date)} ${esc(s.note||"")}</div>
-            <div class="row" style="margin-top:8px">
-              <button class="btn" onclick="openStudy('${s.id}')">編集</button>
-              <button class="btn danger" onclick="trashItem('study','${s.id}')">×</button>
-            </div>
-          </div>`).join("")||`<div class="empty">学習記録がありません。</div>`}
-      </div>
-    </div>`;
+function renderActivity(){
+ document.getElementById("activity").innerHTML=`<h1>アクティビティ</h1><p class="sub">NEXUSで何をしたかを記録。</p><div class="list">${db.activity.map(a=>`<div class="card itemrow"><span><b>${esc(a.action)}</b>　${esc(a.title||"")}</span><small class="muted">${new Date(a.date).toLocaleString("ja-JP")}</small></div>`).join("")||"<div class='card'>履歴はありません。</div>"}</div>`;
 }
 
-function openStudy(id=null){
-  const s=id?db.studies.find(x=>x.id===id):null;
-  openModal(s?"学習記録編集":"学習記録",`
-    <div class="form-grid">
-      <div class="field"><label>日付</label><input id="sDate" type="date" value="${esc(s?.date||today())}"></div>
-      <div class="field"><label>時間（分）</label><input id="sMin" type="number" value="${Number(s?.minutes||30)}"></div>
-      <div class="field"><label>科目</label><input id="sSub" value="${esc(s?.subject||"")}"></div>
-      <div class="field"><label>ページ</label><input id="sPage" value="${esc(s?.page||"")}"></div>
-      <div class="field full"><label>メモ</label><textarea id="sNote">${esc(s?.note||"")}</textarea></div>
-    </div>
-  `,()=>{
-    const data={
-      date:document.getElementById("sDate").value,
-      minutes:Number(document.getElementById("sMin").value)||0,
-      subject:document.getElementById("sSub").value,
-      page:document.getElementById("sPage").value,
-      note:document.getElementById("sNote").value,
-      createdAt:s?.createdAt||nowISO(),
-      updatedAt:nowISO(),
-      history:s?.history||[]
-    };
-    if(s){editHistory(s,"study");Object.assign(s,data)}
-    else db.studies.unshift({id:uid("study"),...data});
-    addXP(Math.max(1,Math.floor(data.minutes/10)),"学習");
-    logActivity("study",`${data.subject||"学習"} ${data.minutes}分`);
-    save();render();
-  });
+function renderTrash(){
+ document.getElementById("trash").innerHTML=`<h1>ゴミ箱</h1><p class="sub">削除したデータを復元できます。</p><div class="list">${db.trash.map((x,i)=>`<div class="card itemrow"><span><b>${esc(x.item.title||"無題")}</b><br><small>${esc(x.originalType)} / ${new Date(x.deletedAt).toLocaleString("ja-JP")}</small></span><div class="actions"><button class="btn small" onclick="restoreTrash(${i})">復元</button><button class="btn small danger" onclick="permanentDelete(${i})">完全削除</button></div></div>`).join("")||"<div class='card'>ゴミ箱は空です。</div>"}</div>`;
 }
 
-/* =========================================================
-   HABITS
-========================================================= */
-
-function habitRate(){
-  if(!db.habits.length)return 0;
-  const days=[];
-  for(let i=0;i<7;i++){
-    const d=new Date();
-    d.setDate(d.getDate()-i);
-    days.push(d.toISOString().slice(0,10));
-  }
-  const possible=db.habits.length*7;
-  const done=db.habitLogs.filter(x=>days.includes(x.date)).length;
-  return Math.round(done/possible*100)||0;
+function renderSettings(){
+ document.getElementById("settings").innerHTML=`<h1>設定</h1><p class="sub">NEXUSを自分仕様に。</p>
+ <div class="grid">
+ <div class="card col6"><h2>🎨 外観</h2>
+ <div class="switch"><span>ライトモード</span><button class="btn small" onclick="setSetting('theme',db.settings.theme==='dark'?'light':'dark')">${db.settings.theme==="dark"?"OFF":"ON"}</button></div>
+ <label style="margin-top:15px">アクセントカラー</label><input type="color" value="${db.settings.accent}" onchange="setSetting('accent',this.value)">
+ <label style="margin-top:15px">カード密度</label><select onchange="setSetting('density',this.value)"><option value="normal" ${db.settings.density==="normal"?"selected":""}>通常</option><option value="compact" ${db.settings.density==="compact"?"selected":""}>コンパクト</option></select>
+ <div class="switch"><span>アニメーション</span><button class="btn small" onclick="setSetting('animations',!db.settings.animations)">${db.settings.animations?"ON":"OFF"}</button></div>
+ <div class="switch"><span>毎日壁紙変更</span><button class="btn small" onclick="setSetting('autoWall',!db.settings.autoWall)">${db.settings.autoWall?"ON":"OFF"}</button></div>
+ </div>
+ <div class="card col6"><h2>🖼️ 壁紙</h2><div class="wallpapers">${Object.entries(WALLPAPERS).map(([k,v])=>`<div class="wall ${db.settings.wallpaper===k?"active":""}" style="background:${v[1]}" onclick="chooseWallpaper('${k}')"><span>${v[0]} ${k}</span></div>`).join("")}</div><br><button class="btn" onclick="randomWallpaper()">🎲 ランダム</button></div>
+ <div class="card col6"><h2>🔔 通知</h2><p class="muted">対応ブラウザでNEXUSの通知を許可します。</p><button class="btn primary" onclick="enableNotifications()">通知を許可</button><p>${db.settings.notifications?"現在ON":"現在OFF"}</p></div>
+ <div class="card col6"><h2>🏠 ホーム画面</h2><p class="muted">表示するカードの順番を設定。</p>${["welcome","tasks","calendar","timer","novels","games","study","habits","xp","activity"].map(k=>`<div class="switch"><span>${k}</span><input type="checkbox" ${db.settings.dashboard.includes(k)?"checked":""} onchange="toggleDashboard('${k}',this.checked)" style="width:auto"></div>`).join("")}</div>
+ <div class="card col6"><h2>💾 データ</h2><div class="actions"><button class="btn primary" onclick="exportData()">バックアップ</button><button class="btn" onclick="document.getElementById('importFile').click()">復元</button><input id="importFile" type="file" accept=".json" hidden onchange="importData(this)"></div><br><button class="btn danger" onclick="resetData()">全データ初期化</button></div>
+ </div>`;
 }
-
-function habitsPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Habits</h1><p>毎日の習慣を積み上げる</p></div>
-      <button class="btn primary" onclick="openHabit()">＋ 習慣</button>
-    </div>
-    <div class="grid g2">
-      ${db.habits.map(h=>`
-        <div class="card">
-          <div class="row between">
-            <h3>${esc(h.name)}</h3>
-            <button class="btn danger" onclick="trashItem('habit','${h.id}')">×</button>
-          </div>
-          <div class="small muted">${esc(h.frequency||"毎日")}</div>
-          <div class="row wrap" style="margin-top:14px">
-            ${[6,5,4,3,2,1,0].map(offset=>{
-              const d=new Date();d.setDate(d.getDate()-offset);
-              const iso=d.toISOString().slice(0,10);
-              const done=db.habitLogs.some(x=>x.habitId===h.id&&x.date===iso);
-              return `<button class="btn ${done?"success":""}" style="min-width:42px" onclick="toggleHabit('${h.id}','${iso}')">${d.getDate()}</button>`;
-            }).join("")}
-          </div>
-        </div>`).join("")||`<div class="card empty">習慣を追加しよう。</div>`}
-    </div>`;
+function setSetting(k,v){db.settings[k]=v;save();render()}
+function toggleDashboard(k,on){if(on&&!db.settings.dashboard.includes(k))db.settings.dashboard.push(k);if(!on)db.settings.dashboard=db.settings.dashboard.filter(x=>x!==k);save();render()}
+async function enableNotifications(){
+ if(!("Notification"in window)){toast("このブラウザは通知に対応していません");return}
+ const p=await Notification.requestPermission();db.settings.notifications=p==="granted";save();render();toast(p==="granted"?"通知を許可しました":"通知は許可されませんでした");
 }
-
-function openHabit(id=null){
-  const h=id?db.habits.find(x=>x.id===id):null;
-  openModal(h?"習慣編集":"習慣作成",`
-    <div class="field"><label>名前</label><input id="hName" value="${esc(h?.name||"")}"></div>
-    <div class="field"><label>頻度</label>
-      <select id="hFreq"><option>毎日</option><option>平日</option><option>週3回</option><option>週1回</option></select>
-    </div>
-  `,()=>{
-    const name=document.getElementById("hName").value.trim();
-    if(!name){toast("名前を入力してください");return false}
-    const data={
-      name,
-      frequency:document.getElementById("hFreq").value,
-      createdAt:h?.createdAt||nowISO(),
-      updatedAt:nowISO()
-    };
-    if(h)Object.assign(h,data);
-    else db.habits.push({id:uid("habit"),...data});
-    save();render();
-  });
+function exportData(){
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="NEXUS-backup-"+today()+".json";a.click();URL.revokeObjectURL(a.href);
 }
-
-function toggleHabit(habitId,date){
-  const i=db.habitLogs.findIndex(x=>x.habitId===habitId&&x.date===date);
-  if(i>=0)db.habitLogs.splice(i,1);
-  else{
-    db.habitLogs.push({id:uid("habitlog"),habitId,date});
-    addXP(5,"習慣達成");
-    achievement("first_habit","FIRST HABIT");
-  }
-  save();render();
+function importData(input){
+ const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();toast("復元しました")}catch{toast("ファイルが正しくありません")}};r.readAsText(f);
 }
-
-/* =========================================================
-   TAGS
-========================================================= */
-
-function tagsPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Tags</h1><p>データを横断して整理</p></div>
-      <button class="btn primary" onclick="openTag()">＋ タグ</button>
-    </div>
-    <div class="grid g3">
-      ${db.tags.map(t=>{
-        const count=countTag(t.id);
-        return `<div class="card">
-          <div class="row between">
-            <span class="badge accent">#${esc(t.name)}</span>
-            <strong>${count}</strong>
-          </div>
-          <div class="small muted" style="margin-top:8px">関連データ</div>
-          <div class="row" style="margin-top:12px">
-            <button class="btn" onclick="showTag('${t.id}')">開く</button>
-            <button class="btn danger" onclick="deleteTag('${t.id}')">×</button>
-          </div>
-        </div>`;
-      }).join("")||`<div class="card empty">タグがありません。</div>`}
-    </div>`;
-}
-
-function countTag(id){
-  let n=0;
-  ["tasks","notes","novels"].forEach(k=>db[k].forEach(x=>{if((x.tags||[]).includes(id))n++}));
-  return n;
-}
-
-function openTag(){
-  openModal("タグ作成",`
-    <div class="field"><label>タグ名</label><input id="tagName"></div>
-    <div class="field"><label>色</label><input id="tagColor" type="color" value="${db.settings.accent}"></div>
-  `,()=>{
-    const name=document.getElementById("tagName").value.trim();
-    if(!name)return false;
-    if(db.tags.some(x=>x.name.toLowerCase()===name.toLowerCase())){
-      toast("同じタグがあります");return false;
-    }
-    db.tags.push({id:uid("tag"),name,color:document.getElementById("tagColor").value});
-    save();render();
-  });
-}
-
-function deleteTag(id){
-  if(!confirm("タグを削除しますか？"))return;
-  db.tags=db.tags.filter(x=>x.id!==id);
-  ["tasks","notes","novels"].forEach(k=>{
-    db[k].forEach(x=>x.tags=(x.tags||[]).filter(t=>t!==id));
-  });
-  save();render();
-}
-
-function showTag(id){
-  const t=db.tags.find(x=>x.id===id);
-  if(!t)return;
-  const found=[];
-  ["tasks","notes","novels"].forEach(k=>{
-    db[k].forEach(x=>{
-      if((x.tags||[]).includes(id))found.push({...x,_type:k});
-    });
-  });
-  openModal("#"+t.name,`
-    <div class="list">
-      ${found.map(x=>`
-        <div class="list-item">
-          <span class="badge">${x._type}</span>
-          <strong>${esc(entityLabel("",x))}</strong>
-        </div>`).join("")||`<div class="empty">関連データなし</div>`}
-    </div>
-  `,()=>{});
-}
-
-/* =========================================================
-   NEXUS LINK
-========================================================= */
-
-function linkPage(){
-  const links=db.links;
-  return `
-    <div class="page-head">
-      <div><h1>NEXUS LINK</h1><p>タスク・ノート・小説・ゲーム・予定を接続</p></div>
-      <button class="btn primary" onclick="openLink()">＋ LINK</button>
-    </div>
-    <div class="grid g2">
-      ${links.map(l=>{
-        const a=findAny(l.aType,l.aId);
-        const b=findAny(l.bType,l.bId);
-        return `<div class="card">
-          <div class="row between">
-            <span class="badge accent">${l.aType}</span>
-            <span>↔</span>
-            <span class="badge accent">${l.bType}</span>
-          </div>
-          <h3 style="margin-top:12px">${esc(entityLabel(l.aType,a))}</h3>
-          <div style="text-align:center;color:var(--muted)">↕</div>
-          <h3>${esc(entityLabel(l.bType,b))}</h3>
-          <div class="row" style="margin-top:12px">
-            <button class="btn danger" onclick="deleteLink('${l.id}')">解除</button>
-          </div>
-        </div>`;
-      }).join("")||`<div class="card empty">まだリンクがありません。</div>`}
-    </div>`;
-}
-
-function openLink(){
-  openModal("NEXUS LINK",`
-    <div class="field"><label>データA</label>
-      <div class="form-grid">
-        <select id="laType">${["task","note","event","novel","episode","game","study","habit"].map(x=>`<option>${x}</option>`).join("")}</select>
-        <select id="laId"></select>
-      </div>
-    </div>
-    <div class="field"><label>データB</label>
-      <div class="form-grid">
-        <select id="lbType">${["task","note","event","novel","episode","game","study","habit"].map(x=>`<option>${x}</option>`).join("")}</select>
-        <select id="lbId"></select>
-      </div>
-    </div>
-  `,()=>{
-    const aType=document.getElementById("laType").value;
-    const bType=document.getElementById("lbType").value;
-    const aId=document.getElementById("laId").value;
-    const bId=document.getElementById("lbId").value;
-    if(!aId||!bId)return false;
-    db.links.push({id:uid("link"),aType,aId,bType,bId,createdAt:nowISO()});
-    logActivity("link","データをリンク");
-    save();render();
-  });
-  const update=(type,id)=>{
-    const sel=document.getElementById(id);
-    if(sel)sel.innerHTML=entityOptions(type);
-  };
-  document.getElementById("laType").onchange=()=>update(document.getElementById("laType").value,"laId");
-  document.getElementById("lbType").onchange=()=>update(document.getElementById("lbType").value,"lbId");
-  update("task","laId");
-  update("task","lbId");
-}
-
-function deleteLink(id){
-  db.links=db.links.filter(x=>x.id!==id);
-  save();render();
-}
-
-/* =========================================================
-   STATS
-========================================================= */
-
-function statsPage(){
-  const studyDays=[];
-  for(let i=6;i>=0;i--){
-    const d=new Date();
-    d.setDate(d.getDate()-i);
-    const iso=d.toISOString().slice(0,10);
-    studyDays.push({
-      date:iso,
-      value:db.studies.filter(x=>x.date===iso).reduce((a,b)=>a+Number(b.minutes||0),0)
-    });
-  }
-
-  const max=Math.max(1,...studyDays.map(x=>x.value));
-  const taskTotal=db.tasks.length;
-  const taskDone=db.tasks.filter(x=>x.done).length;
-  const timerMinutes=db.timerSessions.reduce((a,b)=>a+Number(b.minutes||0),0);
-  const gameMinutes=db.games.reduce((a,b)=>a+Number(b.playMinutes||0),0);
-  const novelPV=db.episodes.reduce((a,b)=>a+Number(b.pv||0),0);
-
-  return `
-    <div class="page-head">
-      <div><h1>Analytics</h1><p>NEXUS全体の活動データ</p></div>
-    </div>
-
-    <div class="grid g4">
-      <div class="card stat"><div class="stat-label">総XP</div><div class="stat-value">${db.xp}</div></div>
-      <div class="card stat"><div class="stat-label">タイマー</div><div class="stat-value">${Math.round(timerMinutes)}<span style="font-size:13px">分</span></div></div>
-      <div class="card stat"><div class="stat-label">ゲーム</div><div class="stat-value">${Math.round(gameMinutes)}<span style="font-size:13px">分</span></div></div>
-      <div class="card stat"><div class="stat-label">小説PV</div><div class="stat-value">${novelPV.toLocaleString()}</div></div>
-    </div>
-
-    <div class="grid g2" style="margin-top:16px">
-      <div class="card">
-        <h3>直近7日の学習時間</h3>
-        <div class="chart">
-          ${studyDays.map(x=>`
-            <div class="bar" style="height:${Math.max(3,x.value/max*180)}px">
-              <em>${x.value}</em>
-              <span>${x.date.slice(5)}</span>
-            </div>`).join("")}
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>タスク達成率</h3>
-        <div style="font-size:55px;font-weight:900;margin:25px 0">
-          ${taskTotal?Math.round(taskDone/taskTotal*100):0}%
-        </div>
-        <div class="progress"><i style="width:${taskTotal?taskDone/taskTotal*100:0}%"></i></div>
-        <div class="small muted" style="margin-top:10px">${taskDone}/${taskTotal} 完了</div>
-      </div>
-
-      <div class="card">
-        <h3>小説PVランキング</h3>
-        <div class="list">
-          ${db.novels.map(n=>{
-            const pv=db.episodes.filter(e=>e.novelId===n.id).reduce((a,b)=>a+Number(b.pv||0),0);
-            return `<div class="list-item"><div class="row between"><strong>${esc(n.title)}</strong><span>${pv.toLocaleString()} PV</span></div></div>`;
-          }).sort((a,b)=>b.localeCompare(a)).join("")||`<div class="empty">データなし</div>`}
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>習慣達成率</h3>
-        <div style="font-size:55px;font-weight:900;margin:25px 0">${habitRate()}%</div>
-        <div class="progress"><i style="width:${habitRate()}%"></i></div>
-      </div>
-    </div>`;
-}
-
-/* =========================================================
-   ACTIVITY
-========================================================= */
-
-function activityPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Activity</h1><p>NEXUSで起きたこと</p></div>
-      <button class="btn danger" onclick="clearActivity()">履歴を削除</button>
-    </div>
-    <div class="card">
-      <div class="list">
-        ${db.activity.map(a=>`
-          <div class="list-item">
-            <div class="row between">
-              <strong>${esc(a.text)}</strong>
-              <span class="badge">${fmtDateTime(a.at)}</span>
-            </div>
-            <div class="tiny muted">${esc(a.type)}</div>
-          </div>`).join("")||`<div class="empty">履歴なし</div>`}
-      </div>
-    </div>`;
-}
-
-function clearActivity(){
-  if(!confirm("アクティビティを削除しますか？"))return;
-  db.activity=[];
-  save();render();
-}
-
-/* =========================================================
-   TRASH
-========================================================= */
-
-function trashPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Trash</h1><p>削除したデータを復元</p></div>
-      <button class="btn danger" onclick="emptyTrash()">ゴミ箱を空にする</button>
-    </div>
-    <div class="card">
-      <div class="list">
-        ${db.trash.map(x=>`
-          <div class="list-item">
-            <div class="row between">
-              <div>
-                <span class="badge">${esc(x.type)}</span>
-                <strong>${esc(entityLabel(x.type,x.data))}</strong>
-              </div>
-              <span class="small muted">${fmtDateTime(x.deletedAt)}</span>
-            </div>
-            <div class="row" style="margin-top:8px">
-              <button class="btn success" onclick="restoreTrash('${x.id}')">復元</button>
-              <button class="btn danger" onclick="permanentTrash('${x.id}')">完全削除</button>
-            </div>
-          </div>`).join("")||`<div class="empty">ゴミ箱は空です。</div>`}
-      </div>
-    </div>`;
-}
-
-function emptyTrash(){
-  if(!db.trash.length)return;
-  if(!confirm("ゴミ箱を完全に空にしますか？"))return;
-  db.trash=[];
-  save();render();
-}
-
-/* =========================================================
-   CUSTOM DATABASE
-========================================================= */
-
-function databasePage(){
-  return `
-    <div class="page-head">
-      <div><h1>Database</h1><p>自分専用の自由データベース</p></div>
-      <button class="btn primary" onclick="openCustomDB()">＋ データ</button>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="row wrap">
-        <span class="badge accent">${db.customDB.length} records</span>
-        <span class="badge">${db.customFields?.length||0} fields</span>
-      </div>
-      <button class="btn" style="margin-top:12px" onclick="customFields()">フィールド設定</button>
-    </div>
-    <div class="grid g3">
-      ${db.customDB.map(x=>`
-        <div class="card">
-          <div class="row between">
-            <h3>${esc(x.name||"無題")}</h3>
-            <button class="btn danger" onclick="trashItem('custom','${x.id}')">×</button>
-          </div>
-          ${Object.entries(x.values||{}).map(([k,v])=>`
-            <div class="list-item" style="margin-top:7px">
-              <div class="tiny muted">${esc(k)}</div>
-              <div>${esc(v)}</div>
-            </div>`).join("")}
-          <button class="btn" style="margin-top:10px" onclick="openCustomDB('${x.id}')">編集</button>
-        </div>`).join("")||`<div class="card empty">自由データを作成できます。</div>`}
-    </div>`;
-}
-
-function customFields(){
-  db.customFields=db.customFields||[];
-  openModal("カスタムフィールド",`
-    <div id="fieldEditor">
-      ${db.customFields.map((f,i)=>`
-        <div class="custom-field" style="margin-bottom:8px">
-          <input data-fname="${i}" value="${esc(f.name)}">
-          <select data-ftype="${i}">
-            ${["text","number","date","select"].map(t=>`<option ${f.type===t?"selected":""}>${t}</option>`).join("")}
-          </select>
-          <input data-fopts="${i}" value="${esc((f.options||[]).join(","))}" placeholder="selectの場合: A,B,C">
-          <button class="btn danger" onclick="this.parentElement.remove()">×</button>
-        </div>`).join("")}
-    </div>
-    <button class="btn" onclick="addCustomFieldEditor()">＋ フィールド</button>
-  `,()=>{
-    db.customFields=[...document.querySelectorAll("[data-fname]")].map(el=>{
-      const i=el.dataset.fname;
-      return {
-        name:el.value.trim(),
-        type:document.querySelector(`[data-ftype="${i}"]`)?.value||"text",
-        options:(document.querySelector(`[data-fopts="${i}"]`)?.value||"").split(",").map(x=>x.trim()).filter(Boolean)
-      };
-    }).filter(x=>x.name);
-    save();render();
-  });
-}
-
-function addCustomFieldEditor(){
-  const root=document.getElementById("fieldEditor");
-  const i=Date.now();
-  root.insertAdjacentHTML("beforeend",`
-    <div class="custom-field" style="margin-bottom:8px">
-      <input data-fname="${i}">
-      <select data-ftype="${i}"><option>text</option><option>number</option><option>date</option><option>select</option></select>
-      <input data-fopts="${i}" placeholder="selectの場合: A,B,C">
-      <button class="btn danger" onclick="this.parentElement.remove()">×</button>
-    </div>`);
-}
-
-function openCustomDB(id=null){
-  db.customFields=db.customFields||[];
-  const x=id?db.customDB.find(v=>v.id===id):null;
-  openModal(x?"データ編集":"データ追加",`
-    <div class="field">
-      <label>名前</label>
-      <input id="cName" value="${esc(x?.name||"")}">
-    </div>
-    ${db.customFields.map(f=>{
-      const v=x?.values?.[f.name]||"";
-      if(f.type==="select"){
-        return `<div class="field"><label>${esc(f.name)}</label>
-          <select data-cvalue="${esc(f.name)}">
-            <option value="">選択</option>
-            ${f.options.map(o=>`<option ${String(v)===o?"selected":""}>${esc(o)}</option>`).join("")}
-          </select>
-        </div>`;
-      }
-      return `<div class="field"><label>${esc(f.name)}</label>
-        <input data-cvalue="${esc(f.name)}" type="${f.type==="number"?"number":f.type==="date"?"date":"text"}" value="${esc(v)}">
-      </div>`;
-    }).join("")}
-  `,()=>{
-    const values={};
-    document.querySelectorAll("[data-cvalue]").forEach(el=>values[el.dataset.cvalue]=el.value);
-    const data={
-      name:document.getElementById("cName").value.trim()||"無題",
-      values,
-      createdAt:x?.createdAt||nowISO(),
-      updatedAt:nowISO()
-    };
-    if(x)Object.assign(x,data);
-    else db.customDB.push({id:uid("custom"),...data});
-    save();render();
-  });
-}
-
-/* =========================================================
-   SEARCH
-========================================================= */
+function resetData(){if(confirm("本当に全データを削除しますか？")){localStorage.removeItem(KEY);location.reload()}}
 
 function globalSearch(q){
-  q=q.trim();
-  if(!q)return;
-  currentPage="search";
-  render();
-  window.lastSearch=q;
+ if(!q.trim()){if(current==="search")go("dashboard");return}
+ current="search";document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById("search").classList.add("active");renderNav();
+ const result=[];
+ [["tasks","タスク"],["notes","ノート"],["events","予定"],["novels","小説"],["games","ゲーム"],["habits","習慣"]].forEach(([type,label])=>{
+  (db[type]||[]).forEach(x=>{const s=JSON.stringify(x).toLowerCase();if(s.includes(q.toLowerCase()))result.push({type,label,x})})
+ });
+ document.getElementById("search").innerHTML=`<h1>検索結果</h1><p class="sub">「${esc(q)}」</p><div class="list">${result.map(r=>`<div class="card itemrow"><span><span class="badge">${r.label}</span> <b>${esc(r.x.title||r.x.name||"")}</b></span><button class="btn small" onclick="go('${r.type}')">開く</button></div>`).join("")||"<div class='card'>見つかりませんでした。</div>"}</div>`;
 }
-
-function searchPage(){
-  const q=(window.lastSearch||"").toLowerCase();
-  const found=[];
-  const maps=[
-    ["task","tasks"],["note","notes"],["event","events"],
-    ["novel","novels"],["episode","episodes"],["game","games"],
-    ["study","studies"],["habit","habits"],["custom","customDB"]
-  ];
-  maps.forEach(([type,key])=>{
-    (db[key]||[]).forEach(x=>{
-      if(JSON.stringify(x).toLowerCase().includes(q))found.push({type,x});
-    });
-  });
-  return `
-    <div class="page-head">
-      <div><h1>Search</h1><p>「${esc(q)}」の検索結果</p></div>
-    </div>
-    <div class="card">
-      <div class="list">
-        ${found.map(x=>`
-          <div class="list-item">
-            <div class="row between">
-              <div><span class="badge">${x.type}</span> <strong>${esc(entityLabel(x.type,x.x))}</strong></div>
-              <button class="btn" onclick="openEntity('${x.type}','${x.x.id}')">開く</button>
-            </div>
-          </div>`).join("")||`<div class="empty">見つかりませんでした。</div>`}
-      </div>
-    </div>`;
-}
-
-function openEntity(type,id){
-  const map={
-    task:openTask,note:openNote,event:openEvent,
-    novel:openNovel,episode:openEpisode,game:openGame,
-    study:openStudy,habit:openHabit,custom:openCustomDB
-  };
-  map[type]?.(id);
-}
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-function settingsPage(){
-  return `
-    <div class="page-head">
-      <div><h1>Settings</h1><p>NEXUSを自分仕様にする</p></div>
-    </div>
-
-    <div class="grid g2">
-      <div class="card">
-        <h3>Appearance</h3>
-        <div class="field">
-          <label>アクセントカラー</label>
-          <input type="color" value="${esc(db.settings.accent)}" onchange="setAccent(this.value)">
-        </div>
-        <div class="field">
-          <label>カード密度</label>
-          <select onchange="db.settings.density=this.value;save();render()">
-            <option value="compact" ${db.settings.density==="compact"?"selected":""}>Compact</option>
-            <option value="normal" ${db.settings.density==="normal"?"selected":""}>Normal</option>
-            <option value="comfortable" ${db.settings.density==="comfortable"?"selected":""}>Comfortable</option>
-          </select>
-        </div>
-        <label class="toggle"><span>アニメーション</span><input type="checkbox" ${db.settings.animations?"checked":""} onchange="db.settings.animations=this.checked;save();render()"></label>
-        <label class="toggle"><span>サウンド</span><input type="checkbox" ${db.settings.sounds?"checked":""} onchange="db.settings.sounds=this.checked;save()"></label>
-      </div>
-
-      <div class="card">
-        <h3>Notifications</h3>
-        <label class="toggle">
-          <span>ブラウザ通知</span>
-          <button class="btn" onclick="requestNotifications()">許可する</button>
-        </label>
-        <div class="small muted" style="margin-top:10px">
-          タスク期限・タイマー・習慣などの通知に利用します。
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Data</h3>
-        <div class="row wrap">
-          <button class="btn success" onclick="exportData()">バックアップ出力</button>
-          <button class="btn" onclick="importData()">バックアップ読込</button>
-          <button class="btn danger" onclick="resetData()">全データ初期化</button>
-        </div>
-        <div class="small muted" style="margin-top:12px">データは現在この端末のlocalStorageに保存されています。</div>
-      </div>
-
-      <div class="card">
-        <h3>Security</h3>
-        <label class="toggle"><span>削除確認</span><input type="checkbox" ${db.settings.confirmDelete?"checked":""} onchange="db.settings.confirmDelete=this.checked;save()"></label>
-        <label class="toggle"><span>自動保存</span><input type="checkbox" ${db.settings.autoSave?"checked":""} onchange="db.settings.autoSave=this.checked;save()"></label>
-      </div>
-
-      <div class="card">
-        <h3>NEXUS SYSTEM</h3>
-        <div class="small muted">
-          Version ${VERSION}<br>
-          Local-first architecture<br>
-          PWA Ready<br>
-          Supabase Sync: OFF
-        </div>
-      </div>
-    </div>`;
-}
-
-function setAccent(v){
-  db.settings.accent=v;
-  applySettings();
-  save();
-  render();
-}
-
-async function requestNotifications(){
-  if(!("Notification" in window)){
-    toast("このブラウザは通知に対応していません");
-    return;
-  }
-  const p=await Notification.requestPermission();
-  db.settings.notifications=p==="granted";
-  save();
-  toast(p==="granted"?"通知を許可しました":"通知は許可されませんでした");
-}
-
-/* =========================================================
-   QUICK ADD
-========================================================= */
+function renderSearch(){}
 
 function quickAdd(){
-  openModal("Quick Add",`
-    <div class="quick">
-      <button onclick="closeModal();openTask()">✓<br>タスク</button>
-      <button onclick="closeModal();openNote()">▤<br>ノート</button>
-      <button onclick="closeModal();openEvent()">▦<br>予定</button>
-      <button onclick="closeModal();openStudy()">▣<br>学習</button>
-      <button onclick="closeModal();openNovel()">✎<br>小説</button>
-      <button onclick="closeModal();openGame()">◆<br>ゲーム</button>
-      <button onclick="closeModal();openHabit()">◉<br>習慣</button>
-      <button onclick="closeModal();openCustomDB()">▥<br>データ</button>
-    </div>
-  `,()=>{});
+ modal("Quick Add",`<div class="actions"><button class="btn primary" onclick="closeModal();taskModal()">✓ タスク</button><button class="btn" onclick="closeModal();noteModal()">▤ ノート</button><button class="btn" onclick="closeModal();eventModal()">▦ 予定</button><button class="btn" onclick="closeModal();novelModal()">✎ 小説</button><button class="btn" onclick="closeModal();gameModal()">🎮 ゲーム</button><button class="btn" onclick="closeModal();studyModal()">📚 勉強</button><button class="btn" onclick="closeModal();habitModal()">◉ 習慣</button></div>`);
 }
 
-/* =========================================================
-   EXPORT / IMPORT
-========================================================= */
-
-function exportData(){
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download=`NEXUS-backup-${today()}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  toast("バックアップを出力しました");
+function init(){
+ render();
+ if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 }
-
-function importData(){
-  const input=document.createElement("input");
-  input.type="file";
-  input.accept=".json,application/json";
-  input.onchange=()=>{
-    const file=input.files[0];
-    if(!file)return;
-    const reader=new FileReader();
-    reader.onload=()=>{
-      try{
-        const incoming=JSON.parse(reader.result);
-        db=mergeDefaults(clone(DEFAULT),incoming);
-        save();
-        render();
-        toast("バックアップを読み込みました");
-      }catch(e){
-        toast("読み込みに失敗しました");
-      }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
-}
-
-function resetData(){
-  if(!confirm("NEXUSの全データを初期化します。バックアップはありますか？"))return;
-  db=clone(DEFAULT);
-  save();
-  currentPage="dashboard";
-  render();
-}
-
-/* =========================================================
-   DEADLINE / DAILY NOTIFICATION
-========================================================= */
-
-function checkNotifications(){
-  if(!db.settings.notifications)return;
-  if(!("Notification" in window)||Notification.permission!=="granted")return;
-
-  const todayTasks=db.tasks.filter(t=>!t.done&&t.due===today());
-  if(todayTasks.length){
-    const key="NEXUS_NOTIFIED_"+today();
-    if(!localStorage.getItem(key)){
-      notify("NEXUS","今日の未完了タスクが"+todayTasks.length+"件あります");
-      localStorage.setItem(key,"1");
-    }
-  }
-}
-
-/* =========================================================
-   PWA
-========================================================= */
-
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("sw.js").catch(()=>{});
-  });
-}
-
-/* =========================================================
-   RENDER
-========================================================= */
-
-function go(page){
-  currentPage=page;
-  render();
-}
-
-function render(){
-  applySettings();
-  renderShell();
-
-  const pages={
-    dashboard:dashboard,
-    tasks:tasksPage,
-    notes:notesPage,
-    calendar:calendarPage,
-    timer:timerPage,
-    novels:novelsPage,
-    games:gamesPage,
-    study:studyPage,
-    habits:habitsPage,
-    tags:tagsPage,
-    link:linkPage,
-    stats:statsPage,
-    activity:activityPage,
-    trash:trashPage,
-    database:databasePage,
-    settings:settingsPage,
-    search:searchPage
-  };
-
-  document.getElementById("content").innerHTML=(pages[currentPage]||dashboard)();
-
-  if(currentPage==="dashboard")setupDashboardDrag();
-}
-
-function setupDashboardDrag(){
-  const grid=document.getElementById("dashboardGrid");
-  if(!grid)return;
-  [...grid.querySelectorAll(".dashboard-card")].forEach(el=>{
-    el.draggable=true;
-    el.classList.add("drag");
-    el.addEventListener("dragstart",()=>{
-      draggedDashboard=el.dataset.id;
-      el.classList.add("dragging");
-    });
-    el.addEventListener("dragend",()=>{
-      el.classList.remove("dragging");
-    });
-    el.addEventListener("dragover",e=>e.preventDefault());
-    el.addEventListener("drop",e=>{
-      e.preventDefault();
-      const target=el.dataset.id;
-      if(!draggedDashboard||draggedDashboard===target)return;
-      const a=db.dashboard.indexOf(draggedDashboard);
-      const b=db.dashboard.indexOf(target);
-      db.dashboard.splice(a,1);
-      db.dashboard.splice(b,0,draggedDashboard);
-      save();render();
-    });
-  });
-}
-
-/* =========================================================
-   AUTO SAVE / HOTKEYS
-========================================================= */
-
-document.addEventListener("keydown",e=>{
-  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){
-    e.preventDefault();
-    document.getElementById("globalSearch")?.focus();
-  }
-  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="n"){
-    e.preventDefault();
-    quickAdd();
-  }
-});
-
-setInterval(()=>{
-  if(db.settings.autoSave)save();
-  checkNotifications();
-},30000);
-
-setInterval(checkNotifications,60000);
-
-window.addEventListener("beforeunload",()=>save());
-
-/* =========================================================
-   INITIALIZE
-========================================================= */
-
-render();
-checkNotifications();
-
+init();
 </script>
 </body>
 </html>
