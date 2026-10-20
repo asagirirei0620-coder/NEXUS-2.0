@@ -1,1977 +1,589 @@
-<!-- index.html -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#0b1020">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="NEXUS">
-<meta name="description" content="NEXUS 2.0 Personal OS">
-<link rel="manifest" href="manifest.json">
 <title>NEXUS 2.0</title>
-
+<link rel="manifest" href="manifest.json">
 <style>
 :root{
-  --bg:#080b14;
-  --panel:rgba(15,20,34,.78);
-  --panel2:rgba(20,27,45,.84);
-  --line:rgba(255,255,255,.09);
-  --text:#f4f7ff;
-  --muted:#8e99b3;
-  --accent:#6c7cff;
-  --accent2:#9d6cff;
-  --good:#45d483;
-  --warn:#ffc857;
-  --danger:#ff5d73;
-  --shadow:0 20px 60px rgba(0,0,0,.28);
-  --radius:18px;
-  --sidebar:270px;
-  --density:1;
+  --accent:#7c3aed;--accent2:#06b6d4;--bg:#080b12;--panel:rgba(17,24,39,.82);
+  --panel2:rgba(255,255,255,.055);--text:#f8fafc;--muted:#94a3b8;--border:rgba(255,255,255,.09);
+  --danger:#ef4444;--success:#22c55e;--warning:#f59e0b;--radius:18px;
+  --sidebar:245px;--blur:18px;--overlay:.28;--density:1;
 }
-
 *{box-sizing:border-box}
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Sans","Yu Gothic",sans-serif;
-  color:var(--text);
-  background:var(--bg);
-}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:var(--text);background:#080b12}
 button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-button:active{transform:scale(.98)}
-.hidden{display:none!important}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-3;
-  background:var(--wallpaper,linear-gradient(135deg,#080b14,#101a38));
-  background-size:cover;
-  background-position:center;
+button{cursor:pointer;color:inherit}
+body:before{
+  content:"";position:fixed;inset:0;z-index:-4;background:var(--wallpaper,#101827) center/cover fixed no-repeat;
 }
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-2;
-  background:rgba(0,0,0,var(--overlay,.18));
+body:after{
+  content:"";position:fixed;inset:0;z-index:-3;background:rgba(0,0,0,var(--overlay));
   pointer-events:none;
 }
-
-.app{
-  display:grid;
-  grid-template-columns:var(--sidebar) 1fr;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-}
-
+#app{height:100%;display:flex;position:relative}
 .sidebar{
-  position:relative;
-  z-index:20;
-  height:100%;
-  min-width:0;
-  overflow-y:auto;
-  overflow-x:hidden;
-  overscroll-behavior:contain;
-  -webkit-overflow-scrolling:touch;
-  background:rgba(7,10,19,.78);
-  backdrop-filter:blur(28px);
-  -webkit-backdrop-filter:blur(28px);
-  border-right:1px solid var(--line);
-  padding:18px 12px calc(18px + env(safe-area-inset-bottom));
+  width:var(--sidebar);height:100%;flex:none;background:rgba(7,11,19,.82);
+  backdrop-filter:blur(var(--blur));border-right:1px solid var(--border);
+  display:flex;flex-direction:column;z-index:20;overflow:hidden;
 }
-
-.sidebar::-webkit-scrollbar,
-.main::-webkit-scrollbar,
-.modal-body::-webkit-scrollbar{width:5px}
-.sidebar::-webkit-scrollbar-thumb,
-.main::-webkit-scrollbar-thumb,
-.modal-body::-webkit-scrollbar-thumb{
-  background:rgba(255,255,255,.13);
-  border-radius:99px;
+.brand{height:76px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--border);flex:none}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:900;font-size:19px;box-shadow:0 8px 30px rgba(124,58,237,.35)}
+.brand-text{margin-left:11px}.brand-text b{font-size:17px;display:block}.brand-text span{font-size:10px;color:var(--muted);letter-spacing:2px}
+.nav{flex:1;overflow:auto;padding:10px 9px}
+.nav-section{font-size:10px;color:#64748b;letter-spacing:1.5px;padding:13px 10px 6px;font-weight:800}
+.nav button{
+  width:100%;border:0;background:transparent;border-radius:11px;padding:10px 12px;margin:2px 0;
+  display:flex;align-items:center;gap:11px;text-align:left;color:#aeb9c9;transition:.16s;
 }
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:5px 8px 18px;
+.nav button:hover{background:var(--panel2);color:white}
+.nav button.active{background:linear-gradient(90deg,rgba(124,58,237,.24),rgba(6,182,212,.08));color:white;box-shadow:inset 3px 0 var(--accent)}
+.nav .ico{width:20px;text-align:center;font-size:16px}.nav-label{flex:1}.nav-badge{font-size:10px;background:var(--accent);padding:2px 7px;border-radius:10px}
+.side-bottom{padding:10px;border-top:1px solid var(--border);flex:none}
+.user-mini{display:flex;align-items:center;gap:10px;padding:8px}.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800}
+.main{min-width:0;flex:1;height:100%;overflow:auto;scroll-behavior:smooth}
+.topbar{height:70px;display:flex;align-items:center;gap:12px;padding:0 24px;border-bottom:1px solid var(--border);background:rgba(8,11,18,.52);backdrop-filter:blur(var(--blur));position:sticky;top:0;z-index:15}
+.mobile-menu{display:none}
+.search{max-width:430px;flex:1;position:relative}.search input{width:100%;height:42px;padding:0 14px 0 40px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:white;outline:none}.search span{position:absolute;left:14px;top:10px}
+.top-actions{margin-left:auto;display:flex;gap:8px}.icon-btn,.btn{
+  border:1px solid var(--border);background:rgba(255,255,255,.055);border-radius:11px;min-height:40px;padding:0 13px;color:#dbe4ef;
 }
-.logo-mark{
-  width:40px;height:40px;border-radius:13px;
-  display:grid;place-items:center;
-  font-weight:900;font-size:19px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  box-shadow:0 8px 30px rgba(108,124,255,.35);
-}
-.logo-title{font-weight:900;font-size:18px;letter-spacing:.4px}
-.logo-version{font-size:10px;color:var(--muted);margin-top:2px}
-
-.profile{
-  padding:12px;
-  margin-bottom:12px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.045);
-  border-radius:15px;
-}
-.profile-top{display:flex;align-items:center;gap:10px}
-.avatar{
-  width:38px;height:38px;border-radius:50%;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  font-weight:800;
-}
-.profile-name{font-weight:700;font-size:14px}
-.profile-level{font-size:11px;color:var(--muted)}
-.xpbar{height:5px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:10px;overflow:hidden}
-.xpbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
-
-.nav-group{margin:14px 0}
-.nav-label{
-  color:#68728b;font-size:10px;font-weight:800;
-  padding:0 11px 7px;text-transform:uppercase;letter-spacing:1.2px
-}
-.nav-item{
-  width:100%;
-  min-height:44px;
-  border:0;
-  border-radius:12px;
-  background:transparent;
-  color:#aeb7cc;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:10px 12px;
-  margin:3px 0;
-  text-align:left;
-  transition:.16s;
-}
-.nav-item:hover{background:rgba(255,255,255,.055);color:#fff}
-.nav-item.active{
-  background:linear-gradient(90deg,rgba(108,124,255,.2),rgba(157,108,255,.08));
-  color:#fff;
-  box-shadow:inset 3px 0 var(--accent);
-}
-.nav-icon{width:21px;text-align:center;font-size:17px}
-.nav-text{font-size:13px;font-weight:650;flex:1}
-.nav-badge{
-  min-width:20px;padding:2px 6px;border-radius:99px;
-  font-size:10px;background:rgba(255,255,255,.08);text-align:center
-}
-
-.sidebar-bottom{
-  margin-top:18px;
-  border-top:1px solid var(--line);
-  padding-top:12px;
-}
-
-.main{
-  min-width:0;
-  height:100%;
-  overflow-y:auto;
-  overflow-x:hidden;
-  overscroll-behavior:contain;
-  -webkit-overflow-scrolling:touch;
-  padding:18px clamp(14px,3vw,34px) 60px;
-}
-
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:10;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:0 0 16px;
-  background:linear-gradient(var(--bg),rgba(8,11,20,.88),transparent);
-  backdrop-filter:blur(8px);
-}
-.menu-btn{display:none}
-.page-title{font-size:25px;font-weight:900;letter-spacing:-.6px}
-.top-actions{margin-left:auto;display:flex;gap:8px}
-.icon-btn,.btn{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.055);
-  color:var(--text);
-  min-height:40px;
-  border-radius:12px;
-  padding:8px 13px;
-}
-.icon-btn{width:42px;padding:0;display:grid;place-items:center}
-.btn:hover,.icon-btn:hover{background:rgba(255,255,255,.1)}
-.btn.primary{border:0;background:linear-gradient(135deg,var(--accent),var(--accent2))}
-.btn.good{border:0;background:var(--good);color:#07140d}
-.btn.danger{border-color:rgba(255,93,115,.35);color:#ff9aaa}
-.btn.small{min-height:34px;padding:6px 10px;font-size:12px}
-.btn.ghost{background:transparent}
-
-.view{animation:fade .18s ease}
-@keyframes fade{from{opacity:.4;transform:translateY(3px)}to{opacity:1;transform:none}}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(12,1fr);
-  gap:14px;
-}
-.col-12{grid-column:span 12}.col-8{grid-column:span 8}.col-6{grid-column:span 6}
-.col-4{grid-column:span 4}.col-3{grid-column:span 3}
-
+.icon-btn{width:40px;padding:0;display:grid;place-items:center}.btn:hover,.icon-btn:hover{background:rgba(255,255,255,.1)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#5b21b6);border:0}.btn.success{background:#15803d;border:0}.btn.danger{background:#991b1b;border:0}
+.page{padding:24px;max-width:1500px;margin:auto}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px}
+.page-title{font-size:28px;font-weight:850;letter-spacing:-.5px}.page-sub{color:var(--muted);font-size:13px;margin-top:4px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .card{
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  background:var(--panel);
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-  box-shadow:var(--shadow);
-  padding:18px;
-  min-width:0;
+  background:var(--panel);backdrop-filter:blur(var(--blur));border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;box-shadow:0 10px 35px rgba(0,0,0,.12);
 }
-.card-title{
-  display:flex;align-items:center;gap:8px;
-  font-size:14px;font-weight:800;margin-bottom:13px
+.card-title{font-weight:750;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.muted{color:var(--muted)}.small{font-size:12px}.tiny{font-size:10px}
+.stat{font-size:29px;font-weight:850;margin:4px 0}.accent{color:#c4b5fd}.green{color:#86efac}.cyan{color:#67e8f9}.yellow{color:#fde68a}
+.progress{height:8px;background:rgba(255,255,255,.08);border-radius:20px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px}
+.list{display:flex;flex-direction:column;gap:8px}.item{border:1px solid var(--border);background:rgba(255,255,255,.035);padding:12px;border-radius:13px}
+.item-row{display:flex;align-items:center;gap:10px}.grow{flex:1;min-width:0}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.check{width:21px;height:21px;accent-color:var(--accent)}
+.tag{display:inline-flex;align-items:center;background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.3);color:#d8caff;padding:3px 7px;border-radius:7px;font-size:10px;margin:2px}
+.badge{display:inline-block;padding:4px 8px;border-radius:7px;font-size:10px;background:rgba(255,255,255,.08);color:#cbd5e1}
+.priority-high{color:#fca5a5}.priority-mid{color:#fde68a}.priority-low{color:#86efac}
+.empty{padding:35px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:14px}
+table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:12px}th{color:var(--muted)}
+canvas{width:100%;height:230px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:var(--muted)}
+input,textarea,select{
+  width:100%;background:rgba(0,0,0,.22);color:white;border:1px solid var(--border);border-radius:10px;
+  padding:10px 11px;outline:none;min-height:40px;
 }
-.card-title small{margin-left:auto;color:var(--muted);font-weight:500}
-
-.stat-card{min-height:120px}
-.stat-value{font-size:28px;font-weight:900;margin-top:8px}
-.stat-label{color:var(--muted);font-size:11px}
-.stat-sub{font-size:11px;color:var(--muted);margin-top:7px}
-
-.progress{
-  width:100%;height:7px;background:rgba(255,255,255,.07);
-  border-radius:99px;overflow:hidden
+textarea{min-height:100px;resize:vertical}select option{background:#111827}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.modal-bg.show{display:flex}.modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#111827;border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 100px #000;padding:20px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.modal-title{font-size:20px;font-weight:800}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
+.toast{position:fixed;right:20px;bottom:20px;z-index:200;transform:translateY(100px);opacity:0;transition:.25s;background:#111827;border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:0 20px 60px #000;max-width:360px}.toast.show{transform:none;opacity:1}
+.timer-big{text-align:center;font-size:72px;font-weight:900;letter-spacing:2px;margin:25px 0}.timer-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.timer-presets{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);border-radius:14px;overflow:hidden}.dow,.day{min-height:105px;padding:8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}.dow{min-height:auto;text-align:center;background:rgba(255,255,255,.04);color:var(--muted);font-size:11px}.day:nth-child(7n){border-right:0}.day-num{font-size:12px;color:var(--muted)}.today .day-num{background:var(--accent);color:white;padding:3px 6px;border-radius:7px}.cal-event{font-size:10px;padding:4px 5px;border-radius:5px;background:rgba(124,58,237,.25);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wall-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.wall{height:90px;border:2px solid transparent;border-radius:12px;overflow:hidden;cursor:pointer;position:relative;background-size:cover;background-position:center}.wall.selected{border-color:white;box-shadow:0 0 0 2px var(--accent)}.wall span{position:absolute;left:7px;bottom:6px;font-size:10px;text-shadow:0 2px 4px #000}
+.color-row{display:flex;gap:10px;flex-wrap:wrap}.color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent}.color-dot.active{border-color:white}
+.link-line{height:1px;background:var(--border);margin:12px 0}
+.kpi{display:flex;align-items:center;justify-content:space-between}.kpi-icon{width:40px;height:40px;border-radius:11px;background:rgba(124,58,237,.16);display:grid;place-items:center;font-size:18px}
+.mission{display:flex;align-items:center;gap:10px}.mission.done{opacity:.55;text-decoration:line-through}
+.quick-add{position:fixed;right:24px;bottom:24px;z-index:30;width:54px;height:54px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));font-size:26px;box-shadow:0 15px 40px rgba(0,0,0,.4)}
+.toast-action{margin-left:10px;color:#c4b5fd}
+@media(max-width:900px){
+  :root{--sidebar:215px}
+  .g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}
 }
-.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
-
-.list{display:flex;flex-direction:column;gap:8px}
-.list-item{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 12px;border:1px solid rgba(255,255,255,.065);
-  border-radius:13px;background:rgba(255,255,255,.035)
-}
-.list-item-main{flex:1;min-width:0}
-.list-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.list-meta{font-size:10px;color:var(--muted);margin-top:3px}
-.checkbox{
-  width:22px;height:22px;border-radius:7px;
-  border:1px solid rgba(255,255,255,.18);
-  display:grid;place-items:center;flex:none;
-}
-.checkbox.done{background:var(--good);border-color:var(--good);color:#06140c}
-.tag{
-  display:inline-flex;align-items:center;
-  padding:4px 7px;border-radius:99px;
-  font-size:10px;background:rgba(108,124,255,.13);
-  color:#bfc7ff;margin:2px
-}
-.empty{
-  color:var(--muted);text-align:center;padding:30px 10px;font-size:12px
-}
-
-.kpis{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:10px
-}
-.kpi{
-  padding:13px;border:1px solid var(--line);
-  background:rgba(255,255,255,.035);border-radius:14px
-}
-
-.toolbar{
-  display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px
-}
-.search{
-  flex:1;min-width:180px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.05);
-  color:var(--text);border-radius:12px;padding:11px 13px;outline:none
-}
-.input,.select,.textarea{
-  width:100%;border:1px solid var(--line);
-  background:rgba(5,8,15,.55);color:var(--text);
-  border-radius:11px;padding:10px 11px;outline:none
-}
-.textarea{min-height:110px;resize:vertical}
-.input:focus,.select:focus,.textarea:focus,.search:focus{
-  border-color:rgba(108,124,255,.7);
-  box-shadow:0 0 0 3px rgba(108,124,255,.1)
-}
-label.field{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.form-grid .full{grid-column:1/-1}
-
-.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
-table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
-th{color:var(--muted);font-size:10px;text-transform:uppercase}
-tr:last-child td{border-bottom:0}
-
-.calendar-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.calendar-title{font-size:17px;font-weight:850}
-.calendar-head .spacer{flex:1}
-.calendar-grid{
-  display:grid;grid-template-columns:repeat(7,1fr);
-  border:1px solid var(--line);border-radius:14px;overflow:hidden
-}
-.calendar-weekday{
-  padding:9px 4px;text-align:center;font-size:10px;
-  color:var(--muted);background:rgba(255,255,255,.035)
-}
-.day{
-  min-height:115px;padding:7px;border-top:1px solid var(--line);
-  border-right:1px solid var(--line);background:rgba(255,255,255,.015)
-}
-.day:nth-child(7n){border-right:0}
-.day.other{opacity:.35}
-.day.today{background:rgba(108,124,255,.09)}
-.day-number{font-size:11px;font-weight:800}
-.event-dot{
-  margin-top:5px;padding:4px 5px;border-radius:6px;
-  background:rgba(108,124,255,.16);font-size:9px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
-}
-.event-dot.task{background:rgba(69,212,131,.13)}
-.event-dot.habit{background:rgba(255,200,87,.13)}
-
-.week-grid{
-  display:grid;grid-template-columns:60px repeat(7,1fr);
-  border:1px solid var(--line);border-radius:14px;overflow:auto
-}
-.week-cell{
-  min-width:120px;height:70px;border-right:1px solid var(--line);
-  border-top:1px solid var(--line);padding:6px
-}
-.time-cell{color:var(--muted);font-size:9px}
-.week-event{font-size:10px;padding:4px;border-radius:6px;background:rgba(108,124,255,.2)}
-
-.chart{
-  width:100%;height:230px;display:block;
-  border-radius:12px;background:rgba(0,0,0,.12)
-}
-
-.bar-chart{
-  display:flex;align-items:end;gap:8px;height:170px;
-  padding:15px 5px 24px;border-bottom:1px solid var(--line)
-}
-.bar-wrap{flex:1;height:100%;display:flex;align-items:end;gap:3px}
-.bar{flex:1;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--accent),var(--accent2));min-height:2px}
-.bar-label{font-size:9px;color:var(--muted);text-align:center;margin-top:6px}
-
-.timer-display{
-  font-size:76px;line-height:1;font-weight:900;
-  text-align:center;letter-spacing:-3px;padding:28px 0
-}
-.timer-status{text-align:center;color:var(--muted);font-size:12px}
-.timer-controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
-.timer-presets{display:flex;justify-content:center;gap:6px;margin:15px 0;flex-wrap:wrap}
-
-.kanban{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:12px
-}
-.kanban-col{
-  border:1px solid var(--line);border-radius:15px;padding:10px;
-  background:rgba(255,255,255,.025);min-height:250px
-}
-.kanban-title{font-size:11px;font-weight:800;color:var(--muted);margin-bottom:8px}
-
-.wallpaper-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:10px
-}
-.wallpaper{
-  position:relative;height:100px;border-radius:14px;overflow:hidden;
-  border:2px solid transparent;cursor:pointer
-}
-.wallpaper.selected{border-color:#fff;box-shadow:0 0 0 3px rgba(108,124,255,.45)}
-.wallpaper span{
-  position:absolute;left:8px;bottom:7px;
-  font-size:10px;font-weight:700;
-  text-shadow:0 2px 5px #000
-}
-
-.modal{
-  position:fixed;inset:0;z-index:100;
-  display:grid;place-items:center;padding:18px;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(8px)
-}
-.modal-box{
-  width:min(720px,100%);max-height:min(90vh,850px);
-  display:flex;flex-direction:column;
-  border:1px solid var(--line);border-radius:20px;
-  background:rgba(13,18,31,.96);box-shadow:0 30px 100px rgba(0,0,0,.55)
-}
-.modal-head{
-  display:flex;align-items:center;padding:15px 17px;
-  border-bottom:1px solid var(--line)
-}
-.modal-title{font-weight:850}
-.modal-close{margin-left:auto}
-.modal-body{padding:17px;overflow:auto}
-.modal-foot{
-  display:flex;justify-content:flex-end;gap:8px;
-  padding:13px 17px;border-top:1px solid var(--line)
-}
-
-.toast{
-  position:fixed;right:20px;bottom:20px;z-index:200;
-  max-width:350px;padding:12px 15px;border-radius:12px;
-  background:rgba(20,25,40,.95);border:1px solid var(--line);
-  box-shadow:var(--shadow);font-size:12px;
-  animation:toast .2s ease
-}
-@keyframes toast{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
-
-.lock{
-  position:fixed;inset:0;z-index:999;
-  display:grid;place-items:center;
-  background:#050711;
-}
-.lock-box{width:min(380px,90vw);text-align:center}
-.lock-logo{margin:0 auto 15px;width:70px;height:70px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));font-size:28px;font-weight:900}
-.lock-title{font-size:25px;font-weight:900}
-.lock-sub{color:var(--muted);font-size:12px;margin:8px 0 20px}
-.pin-dots{display:flex;justify-content:center;gap:9px;margin:18px}
-.pin-dot{width:12px;height:12px;border-radius:50%;border:1px solid #65708b}
-.pin-dot.on{background:var(--accent);border-color:var(--accent)}
-
-.mobile-overlay{display:none}
-
-@media(max-width:1050px){
-  .col-4{grid-column:span 6}
-  .col-3{grid-column:span 6}
-  .wallpaper-grid{grid-template-columns:repeat(3,1fr)}
-}
-@media(max-width:760px){
-  :root{--sidebar:270px}
-  .app{display:block}
-  .sidebar{
-    position:fixed;left:-280px;top:0;bottom:0;width:270px;
-    transition:.22s;box-shadow:20px 0 50px rgba(0,0,0,.35)
-  }
-  .sidebar.open{left:0}
-  .mobile-overlay{
-    position:fixed;inset:0;z-index:19;background:rgba(0,0,0,.45)
-  }
-  .mobile-overlay.show{display:block}
-  .menu-btn{display:grid}
-  .main{padding:13px 12px 50px}
-  .page-title{font-size:21px}
-  .col-8,.col-6,.col-4,.col-3{grid-column:span 12}
-  .kpis{grid-template-columns:repeat(2,1fr)}
-  .form-grid{grid-template-columns:1fr}
-  .wallpaper-grid{grid-template-columns:repeat(2,1fr)}
-  .timer-display{font-size:55px}
-  .kanban{grid-template-columns:1fr}
+@media(max-width:700px){
+  .sidebar{position:fixed;left:-260px;top:0;transition:.2s;box-shadow:20px 0 60px #000}.sidebar.open{left:0}.mobile-menu{display:grid}.topbar{padding:0 12px}.page{padding:15px}.search{display:none}.g2,.g3,.g4{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.wall-grid{grid-template-columns:repeat(2,1fr)}.calendar-grid{font-size:9px}.dow,.day{min-height:70px;padding:5px}.timer-big{font-size:53px}
 }
 </style>
 </head>
-
 <body>
-
-<div id="lockScreen" class="lock hidden">
-  <div class="lock-box">
-    <div class="lock-logo">N</div>
-    <div class="lock-title">NEXUS</div>
-    <div class="lock-sub">アプリロック</div>
-    <div id="pinDots" class="pin-dots"></div>
-    <input id="lockPin" class="input" type="password" inputmode="numeric" maxlength="6" placeholder="PINを入力">
-    <button class="btn primary" style="width:100%;margin-top:10px" onclick="unlockApp()">ロック解除</button>
-  </div>
-</div>
-
-<div id="mobileOverlay" class="mobile-overlay" onclick="closeSidebar()"></div>
-
-<div class="app">
-  <aside id="sidebar" class="sidebar"></aside>
-
-  <main id="main" class="main">
-    <div class="topbar">
-      <button class="icon-btn menu-btn" onclick="toggleSidebar()">☰</button>
-      <div id="pageTitle" class="page-title">Dashboard</div>
-      <div class="top-actions">
-        <button class="icon-btn" onclick="quickAdd()" title="Quick Add">＋</button>
-        <button class="icon-btn" onclick="globalSearch()" title="検索">⌕</button>
-        <button class="icon-btn" onclick="toggleTheme()" title="テーマ">◐</button>
-      </div>
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div class="brand-text"><b>NEXUS</b><span>PERSONAL OS 2.0</span></div>
     </div>
-    <section id="view" class="view"></section>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-bottom">
+      <div class="user-mini"><div class="avatar">N</div><div><b id="sideLevel">Lv.1</b><div class="tiny muted">NEXUS USER</div></div></div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="topbar">
+      <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
+      <div class="search"><span>⌕</span><input id="globalSearch" placeholder="NEXUSを検索…"></div>
+      <div class="top-actions">
+        <button class="icon-btn" id="notifyBtn" title="通知">🔔</button>
+        <button class="icon-btn" id="themeBtn" title="テーマ">◐</button>
+      </div>
+    </header>
+    <section id="content"></section>
   </main>
 </div>
 
-<div id="modal" class="modal hidden"></div>
-<div id="toast" class="toast hidden"></div>
+<button class="quick-add" id="quickAdd">＋</button>
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
 
 <script>
-"use strict";
+const KEY="NEXUS_2_0_COMPLETE";
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const fmtDate=d=>d?new Date(d).toLocaleDateString("ja-JP",{year:"numeric",month:"short",day:"numeric"}):"";
+const fmtMin=m=>{m=Math.max(0,Math.round(m||0));const h=Math.floor(m/60),x=m%60;return h?`${h}時間${x}分`:`${x}分`};
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 
-/* =========================================================
-   NEXUS 2.0
-   Local-first Personal OS
-========================================================= */
+const walls={
+"space":"radial-gradient(circle at 20% 20%,#243b80 0 2%,transparent 3%),radial-gradient(circle at 80% 70%,#6d28d9 0 3%,transparent 4%),radial-gradient(circle at 50% 30%,#fff 0 1px,transparent 2px),linear-gradient(135deg,#030712,#111827 55%,#312e81)",
+"galaxy":"radial-gradient(ellipse at 65% 45%,#a855f7 0,transparent 22%),radial-gradient(ellipse at 25% 65%,#2563eb,transparent 25%),linear-gradient(140deg,#09001f,#020617)",
+"neon":"linear-gradient(120deg,transparent 35%,rgba(0,255,255,.2),transparent 36%),linear-gradient(0deg,#09001a,#16002e 50%,#001b2e)",
+"aurora":"radial-gradient(ellipse at 50% 0,#22d3ee,transparent 40%),radial-gradient(ellipse at 20% 30%,#22c55e,transparent 35%),linear-gradient(#06111c,#07111a 60%,#020617)",
+"ocean":"linear-gradient(160deg,#082f49,#0369a1 45%,#0e7490 70%,#082f49)",
+"forest":"radial-gradient(circle at 50% 80%,#166534,transparent 35%),linear-gradient(120deg,#052e16,#14532d 50%,#020617)",
+"volcano":"radial-gradient(ellipse at 50% 100%,#ef4444,transparent 28%),linear-gradient(#180000,#451a03 45%,#090909)",
+"sunset":"linear-gradient(150deg,#1e1b4b 0%,#7c2d12 48%,#f97316 75%,#facc15)",
+"sunrise":"linear-gradient(#172554,#3b82f6 35%,#fb923c 72%,#fef3c7)",
+"rain":"repeating-linear-gradient(105deg,rgba(147,197,253,.12) 0 1px,transparent 1px 18px),linear-gradient(#0f172a,#1e293b)",
+"snow":"radial-gradient(circle,rgba(255,255,255,.9) 0 2px,transparent 3px) 0 0/55px 55px,linear-gradient(#64748b,#0f172a)",
+"desert":"linear-gradient(#451a03,#d97706 50%,#fbbf24)",
+"night":"radial-gradient(circle at 70% 20%,#fef3c7 0 2%,transparent 3%),linear-gradient(#020617,#0f172a)",
+"sky":"linear-gradient(#38bdf8,#60a5fa 45%,#bfdbfe 75%,#e0f2fe)",
+"cyber":"linear-gradient(90deg,rgba(0,255,255,.12) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(rgba(255,0,255,.1) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(135deg,#020617,#1e0035)",
+"grid":"linear-gradient(rgba(59,130,246,.16) 1px,transparent 1px) 0 0/30px 30px,linear-gradient(90deg,rgba(59,130,246,.16) 1px,transparent 1px) 0 0/30px 30px,#020617",
+"nebula":"radial-gradient(ellipse at 25% 25%,#ec4899,transparent 25%),radial-gradient(ellipse at 70% 70%,#7c3aed,transparent 28%),#05000d",
+"crimson":"radial-gradient(circle at 80% 20%,#ef4444,transparent 20%),linear-gradient(135deg,#090909,#3f0a0a,#170000)",
+"minimal":"linear-gradient(135deg,#111827,#030712)",
+"matrix":"repeating-linear-gradient(90deg,rgba(34,197,94,.13) 0 1px,transparent 1px 12px),repeating-linear-gradient(0deg,rgba(34,197,94,.08) 0 1px,transparent 1px 18px),#020b05"
+};
+const wallNames={space:"Deep Space",galaxy:"Galaxy",neon:"Neon City",aurora:"Aurora",ocean:"Ocean",forest:"Forest",volcano:"Volcano",sunset:"Sunset",sunrise:"Sunrise",rain:"Rain",snow:"Snow",desert:"Desert",night:"Night",sky:"Sky",cyber:"Cyber",grid:"Blue Grid",nebula:"Purple Nebula",crimson:"Crimson",minimal:"Dark Minimal",matrix:"Matrix"};
 
-const KEY="NEXUS_2_LOCAL_V2";
-const VERSION=2;
+const defaults={
+ tasks:[],notes:[],events:[],novels:[],games:[],studies:[],habits:[],links:[],tags:[],
+ activity:[],trash:[],databases:[],xp:0,level:1,streak:0,
+ settings:{theme:"dark",wall:"space",customWall:"",dailyWall:false,overlay:.28,blur:18,accent:"#7c3aed",density:1,font:1,sidebar:245,sounds:true,notifications:true,wallRandom:false},
+ timer:{mode:"countdown",total:1500,remaining:1500,running:false,started:0,pausedAt:0,linkType:"",linkId:"",sessions:[]},
+ dashboard:["today","tasks","timer","study","xp","habits","activity"],
+ history:[],missions:[]
+};
+let S=load();
+function load(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return structuredClone(defaults)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(S));applySettings()}
+function log(type,text,xp=0){
+ S.activity.unshift({id:uid(),type,text,time:Date.now()});S.activity=S.activity.slice(0,300);
+ if(xp){S.xp+=xp;while(S.xp>=S.level*500){S.xp-=S.level*500;S.level++;toast("🎉 LEVEL UP! Lv."+S.level)}}
+ save();
+}
+function toast(t){const e=document.getElementById("toast");e.innerHTML=esc(t);e.classList.add("show");clearTimeout(window._toast);window._toast=setTimeout(()=>e.classList.remove("show"),2600)}
+function applySettings(){
+ const s=S.settings||defaults.settings;
+ document.documentElement.style.setProperty("--accent",s.accent);
+ document.documentElement.style.setProperty("--overlay",s.overlay);
+ document.documentElement.style.setProperty("--blur",s.blur+"px");
+ document.documentElement.style.setProperty("--sidebar",s.sidebar+"px");
+ document.documentElement.style.setProperty("--density",s.density);
+ document.documentElement.style.fontSize=(s.font||1)+"em";
+ let bg=s.customWall?`url("${s.customWall}")`:walls[s.wall]||walls.space;
+ document.body.style.setProperty("--wallpaper",bg);
+ document.body.dataset.theme=s.theme;
+}
+applySettings();
 
 const NAV=[
-  ["dashboard","⌂","Dashboard","ホーム"],
-  ["tasks","✓","Tasks","タスク"],
-  ["notes","▤","Notes","ノート"],
-  ["calendar","□","Calendar","カレンダー"],
-  ["timer","◷","Timer","タイマー"],
-  ["novels","✎","Novels","小説"],
-  ["games","◇","Games","ゲーム"],
-  ["study","▣","Study","勉強"],
-  ["habits","↻","Habits","習慣"],
-  ["tags","#","Tags","タグ"],
-  ["link","∞","NEXUS LINK","リンク"],
-  ["database","▦","Database","データベース"],
-  ["money","¥","Money","お金"],
-  ["files","▧","Files","ファイル"],
-  ["stats","◒","Stats","統計"],
-  ["activity","◌","Activity","履歴"],
-  ["trash","⌫","Trash","ゴミ箱"]
+ ["HOME","ホーム","dashboard","⌂"],
+ ["PLAN","タスク","tasks","✓"],["PLAN","カレンダー","calendar","▦"],["PLAN","習慣","habits","🔥"],
+ ["CREATE","ノート","notes","✎"],["CREATE","小説","novels","📖"],
+ ["TRACK","タイマー","timer","⏱"],["TRACK","勉強","study","📚"],["TRACK","ゲーム","games","🎮"],
+ ["DATA","NEXUS LINK","link","🔗"],["DATA","データベース","database","▤"],["DATA","統計","stats","◒"],
+ ["SYSTEM","通知","notifications","🔔"],["SYSTEM","ゴミ箱","trash","♻"],["SYSTEM","設定","settings","⚙"]
 ];
-
-const WALLPAPERS={
-  space:["Deep Space","radial-gradient(circle at 20% 20%,#273a73 0 1%,transparent 2%),radial-gradient(circle at 75% 30%,#6f55bd 0 1%,transparent 2%),radial-gradient(circle at 50% 80%,#182d67 0 2%,transparent 3%),linear-gradient(135deg,#02040b,#0a1028 50%,#120b24)"],
-  galaxy:["Galaxy","radial-gradient(ellipse at 20% 40%,#5d37b8 0,transparent 35%),radial-gradient(ellipse at 80% 65%,#1e7fd0 0,transparent 32%),linear-gradient(135deg,#03030a,#130d31 48%,#020711)"],
-  neon:["Neon City","linear-gradient(115deg,#070019,#2b004c 35%,#001c3d 70%,#020812),repeating-linear-gradient(90deg,transparent 0 35px,rgba(0,255,255,.08) 36px 37px)"],
-  aurora:["Aurora","radial-gradient(ellipse at 30% 10%,rgba(47,255,193,.55),transparent 30%),radial-gradient(ellipse at 70% 30%,rgba(106,82,255,.55),transparent 35%),linear-gradient(#04131b,#030611)"],
-  ocean:["Ocean","radial-gradient(circle at 50% 0,#087c9b,transparent 45%),linear-gradient(150deg,#001c2d,#003a54 50%,#001018)"],
-  forest:["Mystic Forest","radial-gradient(circle at 50% 20%,#235d43,transparent 25%),linear-gradient(135deg,#03140d,#08291c 50%,#020b08)"],
-  volcano:["Volcano","radial-gradient(ellipse at 60% 90%,#ff542e,transparent 30%),linear-gradient(150deg,#160609,#4c1712 55%,#090204)"],
-  sunset:["Sunset","radial-gradient(circle at 75% 35%,#ffd36b,transparent 12%),linear-gradient(160deg,#ff6a61,#d83c75 48%,#30255e)"],
-  sunrise:["Sunrise","radial-gradient(circle at 50% 55%,#fff1ad,transparent 15%),linear-gradient(180deg,#6f91e8,#ffad78 55%,#ffe0a0)"],
-  rain:["Rain","linear-gradient(115deg,#111b2c,#263954 45%,#09111e),repeating-linear-gradient(110deg,transparent 0 18px,rgba(150,190,255,.08) 19px 20px)"],
-  snow:["Snow","radial-gradient(circle at 20% 30%,white 0 2px,transparent 3px),radial-gradient(circle at 70% 60%,white 0 2px,transparent 3px),linear-gradient(135deg,#536d9e,#b9d5ee)"],
-  desert:["Desert","radial-gradient(circle at 70% 28%,#ffe8a1,transparent 11%),linear-gradient(160deg,#8e4e2f,#d28c52 55%,#e9b36f)"],
-  night:["Night Sky","radial-gradient(circle at 30% 25%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 50%,#fff 0 1px,transparent 2px),linear-gradient(150deg,#02030b,#07112c)"],
-  sky:["Blue Sky","radial-gradient(circle at 70% 25%,rgba(255,255,255,.9),transparent 8%),linear-gradient(160deg,#43a7ff,#91d4ff 55%,#dff5ff)"],
-  cyber:["Cyber","repeating-linear-gradient(90deg,transparent 0 24px,rgba(0,255,255,.08) 25px),repeating-linear-gradient(0deg,transparent 0 24px,rgba(255,0,255,.06) 25px),linear-gradient(135deg,#03020b,#11062d,#001d2b)"],
-  bluegrid:["Blue Grid","linear-gradient(rgba(71,135,255,.11) 1px,transparent 1px),linear-gradient(90deg,rgba(71,135,255,.11) 1px,transparent 1px),linear-gradient(135deg,#030714,#071b3e)"],
-  purple:["Purple Nebula","radial-gradient(ellipse at 20% 60%,#b33fff 0,transparent 32%),radial-gradient(ellipse at 75% 25%,#5734ff 0,transparent 35%),linear-gradient(135deg,#080313,#17052b)"],
-  crimson:["Crimson","radial-gradient(circle at 75% 30%,#ff4b4b,transparent 22%),linear-gradient(135deg,#090206,#330812 55%,#140207)"],
-  minimal:["Dark Minimal","linear-gradient(135deg,#080a10,#12151c 50%,#080a0f)"],
-  matrix:["Matrix","repeating-linear-gradient(90deg,rgba(0,255,100,.06) 0 1px,transparent 1px 13px),repeating-linear-gradient(0deg,rgba(0,255,100,.04) 0 1px,transparent 1px 13px),linear-gradient(135deg,#010804,#031b0b,#000503)"]
+let route="dashboard";
+function renderNav(){
+ const n=document.getElementById("nav");let sec="";
+ NAV.forEach(([g,label,id,ico],i)=>{
+   if(i===0||NAV[i-1][0]!==g)sec+=`<div class="nav-section">${g}</div>`;
+   const badge=id==="tasks"?S.tasks.filter(x=>!x.done).length:"";
+   sec+=`<button data-route="${id}" class="${route===id?"active":""}"><span class="ico">${ico}</span><span class="nav-label">${label}</span>${badge?`<span class="nav-badge">${badge}</span>`:""}</button>`;
+ });n.innerHTML=sec;
+}
+document.getElementById("nav").addEventListener("click",e=>{
+ const b=e.target.closest("[data-route]");if(!b)return;
+ route=b.dataset.route;renderNav();render();document.getElementById("sidebar").classList.remove("open");
+});
+document.getElementById("mobileMenu").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+document.getElementById("themeBtn").onclick=()=>{S.settings.theme=S.settings.theme==="dark"?"light":"dark";save();document.body.style.filter=S.settings.theme==="light"?"invert(.02)":"none";toast("テーマを変更しました")};
+document.getElementById("notifyBtn").onclick=async()=>{
+ if(!("Notification"in window)){toast("このブラウザは通知に対応していません");return}
+ const p=await Notification.requestPermission();S.settings.notifications=p==="granted";save();toast(p==="granted"?"通知を許可しました":"通知は許可されませんでした");
 };
+document.getElementById("globalSearch").addEventListener("input",e=>{if(e.target.value.trim())openSearch(e.target.value.trim())});
+document.getElementById("quickAdd").onclick=()=>quickAdd();
 
-const DEFAULT={
-  version:VERSION,
-  user:{name:"NEXUS User"},
-  xp:0,
-  level:1,
-  tasks:[],
-  notes:[],
-  events:[],
-  novels:[],
-  games:[],
-  studies:[],
-  habits:[],
-  tags:[],
-  links:[],
-  databases:[],
-  money:[],
-  files:[],
-  activity:[],
-  trash:[],
-  timerSessions:[],
-  achievements:[],
-  dashboardOrder:["stats","tasks","calendar","timer","novels","games","study","habits","activity"],
-  dashboardHidden:[],
-  settings:{
-    theme:"dark",
-    accent:"#6c7cff",
-    wallpaper:"space",
-    overlay:.18,
-    autoWallpaper:false,
-    sound:true,
-    animations:true,
-    density:"normal",
-    lock:false,
-    pin:"",
-    fontScale:1,
-    sidebarCollapsed:false
-  }
-};
+function render(){const c=document.getElementById("content");c.innerHTML=views[route]?views[route]():notFound();bindView();updateTimerUI();renderNav()}
+function notFound(){return `<div class="page"><div class="empty">ページが見つかりません</div></div>`}
 
-let db=loadDB();
-let currentView="dashboard";
-let calendarDate=new Date();
-let calendarMode="month";
-let timer={
-  mode:"pomodoro",
-  running:false,
-  duration:1500,
-  remaining:1500,
-  startedAt:null,
-  interval:null,
-  linkedType:"",
-  linkedId:""
-};
-let searchTerm="";
-let selectedNoteId=null;
-let noteAutosaveTimer=null;
-let currentModal=null;
-let dragDashboard=null;
+function head(title,sub,buttons=""){return `<div class="page-head"><div><div class="page-title">${title}</div><div class="page-sub">${sub}</div></div><div class="actions">${buttons}</div></div>`}
+function viewsDashboard(){
+ const due=S.tasks.filter(x=>!x.done).sort((a,b)=>(a.due||"").localeCompare(b.due||"")).slice(0,5);
+ const ev=S.events.filter(x=>x.date>=today()).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,4);
+ return `<div class="page">${head("NEXUS","あなたの情報を一つにつなぐPersonal OS",`<button class="btn primary" data-action="quick">＋ 追加</button>`)}
+ <div class="grid g4">${[
+ ["📋","未完了タスク",S.tasks.filter(x=>!x.done).length,"accent"],
+ ["📚","今日の勉強",fmtMin(S.studies.filter(x=>x.date===today()).reduce((a,x)=>a+(+x.minutes||0),0)),"cyan"],
+ ["✍️","小説PV",S.novels.reduce((a,x)=>a+(+x.pv||0),0).toLocaleString(),"green"],
+ ["⚡","NEXUS XP",S.xp.toLocaleString(),"yellow"]
+ ].map(x=>`<div class="card"><div class="kpi"><div><div class="small muted">${x[1]}</div><div class="stat ${x[3]}">${x[2]}</div></div><div class="kpi-icon">${x[0]}</div></div></div>`).join("")}</div>
+ <div class="grid g2" style="margin-top:16px">
+ <div class="card"><div class="card-title">📋 今日のタスク <button class="btn" data-action="addTask">＋</button></div>
+ ${due.length?`<div class="list">${due.map(taskRow).join("")}</div>`:`<div class="empty">未完了タスクはありません 🎉</div>`}</div>
+ <div class="card"><div class="card-title">📅 予定 <button class="btn" data-route2="calendar">すべて</button></div>
+ ${ev.length?`<div class="list">${ev.map(e=>`<div class="item"><b>${esc(e.title)}</b><div class="small muted">${fmtDate(e.date)} ${esc(e.time||"")} ${e.place?"・"+esc(e.place):""}</div></div>`).join("")}`:`<div class="empty">予定なし</div>`}</div></div>
+ <div class="grid g3" style="margin-top:16px">
+ <div class="card"><div class="card-title">⏱ タイマー</div><div class="timer-big" id="dashTimer" style="font-size:42px;margin:10px 0">${timerText()}</div><div class="timer-controls"><button class="btn primary" data-action="timerToggle">${S.timer.running?"一時停止":"開始"}</button><button class="btn" data-action="timerOpen">詳細</button></div></div>
+ <div class="card"><div class="card-title">🔥 習慣</div>${habitMini()}</div>
+ <div class="card"><div class="card-title">⭐ NEXUS LEVEL</div><div class="stat">Lv.${S.level}</div><div class="progress"><i style="width:${Math.min(100,S.xp/(S.level*500)*100)}%"></i></div><div class="small muted" style="margin-top:7px">${S.xp} / ${S.level*500} XP</div></div>
+ </div>
+ <div class="card" style="margin-top:16px"><div class="card-title">🕘 最近の活動</div>${activityList(6)}</div></div>`;
+}
+function taskRow(t){return `<div class="item"><div class="item-row"><input class="check" type="checkbox" data-task="${t.id}" ${t.done?"checked":""}><div class="grow"><b class="${t.done?"muted":""}">${esc(t.title)}</b><div class="small muted">${t.due?fmtDate(t.due):"期限なし"} ${t.priority?`・<span class="priority-${t.priority}">${t.priority}</span>`:""}</div></div><button class="icon-btn" data-edit-task="${t.id}">⋯</button></div></div>`}
+function habitMini(){return S.habits.slice(0,4).map(h=>`<div class="mission ${h.logs?.includes(today())?"done":""}"><input class="check" type="checkbox" data-habit="${h.id}" ${h.logs?.includes(today())?"checked":""}><span>${esc(h.name)}</span></div>`).join("")||`<div class="empty">習慣を追加しよう</div>`}
+function activityList(n=10){return S.activity.slice(0,n).map(a=>`<div class="item"><div class="small muted">${new Date(a.time).toLocaleString("ja-JP")}</div><div>${esc(a.text)}</div></div>`).join("")||`<div class="empty">まだ活動履歴がありません</div>`}
 
-function clone(o){return JSON.parse(JSON.stringify(o));}
-function uid(prefix="id"){return prefix+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);}
-function now(){return new Date().toISOString();}
-function today(){return new Date().toISOString().slice(0,10);}
-function fmtDate(v){
-  if(!v)return "";
-  const d=new Date(v+"T00:00:00");
-  return d.toLocaleDateString("ja-JP",{year:"numeric",month:"short",day:"numeric"});
+function viewsTasks(){
+ return `<div class="page">${head("タスク","期限・優先度・タグ・サブタスクを管理",`<button class="btn primary" data-action="addTask">＋ タスク</button>`)}
+ <div class="card"><div class="item-row"><input id="taskFilter" placeholder="タスクを検索…" value="${esc(window.taskFilter||"")}"><select id="taskSort" style="max-width:180px"><option value="due">期限順</option><option value="priority">優先度順</option><option value="new">新しい順</option></select></div></div>
+ <div class="list" style="margin-top:14px">${taskListHTML()}</div></div>`;
 }
-function fmtDateTime(v){
-  if(!v)return "";
-  const d=new Date(v);
-  if(isNaN(d))return v;
-  return d.toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
-}
-function esc(v){
-  return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-}
-function arr(v){return Array.isArray(v)?v:[];}
-function getById(type,id){return arr(db[type]).find(x=>x.id===id);}
-function saveDB(){
-  localStorage.setItem(KEY,JSON.stringify(db));
-}
-function loadDB(){
-  try{
-    const x=JSON.parse(localStorage.getItem(KEY)||"null");
-    if(x){
-      const merged=deepMerge(clone(DEFAULT),x);
-      return merged;
-    }
-  }catch(e){}
-  return clone(DEFAULT);
-}
-function deepMerge(base,src){
-  if(!src||typeof src!=="object")return base;
-  for(const k of Object.keys(src)){
-    if(src[k]&&typeof src[k]==="object"&&!Array.isArray(src[k])&&base[k]&&typeof base[k]==="object"&&!Array.isArray(base[k])){
-      base[k]=deepMerge(base[k],src[k]);
-    }else base[k]=src[k];
-  }
-  return base;
-}
-function logActivity(type,title,detail=""){
-  db.activity.unshift({id:uid("act"),type,title,detail,date:now()});
-  db.activity=db.activity.slice(0,500);
-  saveDB();
-}
-function toast(msg){
-  const el=document.getElementById("toast");
-  el.textContent=msg;
-  el.classList.remove("hidden");
-  clearTimeout(toast.t);
-  toast.t=setTimeout(()=>el.classList.add("hidden"),2400);
-}
-function addXP(amount,reason){
-  amount=Math.max(0,Number(amount)||0);
-  if(!amount)return;
-  const old=db.level;
-  db.xp+=amount;
-  db.level=1+Math.floor(db.xp/500);
-  logActivity("xp",`+${amount} XP`,reason);
-  saveDB();
-  if(db.level>old){
-    unlockAchievement("level_"+db.level,`レベル ${db.level}`,`NEXUSレベル${db.level}到達`);
-    toast(`LEVEL UP! Lv.${db.level}`);
-  }
-}
-function unlockAchievement(id,title,description){
-  if(db.achievements.some(x=>x.id===id))return;
-  db.achievements.push({id,title,description,date:now()});
-  saveDB();
-  toast(`🏆 実績解除: ${title}`);
-}
-function levelProgress(){
-  const current=(db.level-1)*500;
-  return Math.round(((db.xp-current)/500)*100);
+function taskListHTML(){
+ let a=[...S.tasks],q=(window.taskFilter||"").toLowerCase();if(q)a=a.filter(t=>(t.title+" "+(t.description||"")+" "+(t.tags||[]).join(" ")).toLowerCase().includes(q));
+ a.sort((x,y)=>(x.done-y.done)||((x.due||"9999").localeCompare(y.due||"9999")));
+ return a.map(t=>`<div class="card">${taskRow(t)}
+ ${t.description?`<div class="small muted" style="margin:8px 0 0 31px">${esc(t.description)}</div>`:""}
+ ${t.subtasks?.length?`<div style="margin:10px 0 0 31px"><div class="progress"><i style="width:${t.subtasks.filter(x=>x.done).length/t.subtasks.length*100}%"></i></div><div class="small muted">${t.subtasks.filter(x=>x.done).length}/${t.subtasks.length} サブタスク</div></div>`:""}
+ <div style="margin-left:31px">${(t.tags||[]).map(x=>`<span class="tag">#${esc(x)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">タスクはありません</div>`;
 }
 
-function applySettings(){
-  document.documentElement.style.setProperty("--accent",db.settings.accent);
-  document.documentElement.style.setProperty("--accent2",mixColor(db.settings.accent));
-  document.documentElement.style.setProperty("--overlay",db.settings.overlay);
-  document.documentElement.style.setProperty("--density",db.settings.density==="compact"?.82:db.settings.density==="large"?1.15:1);
-  document.documentElement.style.setProperty("--text-size",db.settings.fontScale+"");
-  document.documentElement.style.fontSize=(16*db.settings.fontScale)+"px";
-  const wp=WALLPAPERS[db.settings.wallpaper]||WALLPAPERS.space;
-  document.body.style.setProperty("--wallpaper",wp[1]);
-  document.body.dataset.theme=db.settings.theme;
-  if(db.settings.theme==="light"){
-    document.documentElement.style.setProperty("--bg","#e9edf5");
-    document.documentElement.style.setProperty("--panel","rgba(255,255,255,.76)");
-    document.documentElement.style.setProperty("--panel2","rgba(255,255,255,.9)");
-    document.documentElement.style.setProperty("--text","#151a26");
-    document.documentElement.style.setProperty("--muted","#667085");
-  }else{
-    document.documentElement.style.setProperty("--bg","#080b14");
-    document.documentElement.style.setProperty("--panel","rgba(15,20,34,.78)");
-    document.documentElement.style.setProperty("--panel2","rgba(20,27,45,.84)");
-    document.documentElement.style.setProperty("--text","#f4f7ff");
-    document.documentElement.style.setProperty("--muted","#8e99b3");
-  }
-}
-function mixColor(hex){
-  const h=hex.replace("#","");
-  if(h.length!==6)return "#9d6cff";
-  const n=parseInt(h,16);
-  const r=255-((n>>16)&255);
-  const g=255-((n>>8)&255);
-  const b=255-(n&255);
-  return `rgb(${Math.max(80,r)},${Math.max(70,g)},${Math.max(100,b)})`;
-}
-function toggleTheme(){
-  db.settings.theme=db.settings.theme==="dark"?"light":"dark";
-  saveDB();applySettings();render();
-}
-function randomWallpaper(){
-  const keys=Object.keys(WALLPAPERS);
-  const current=db.settings.wallpaper;
-  let next=current;
-  while(next===current)next=keys[Math.floor(Math.random()*keys.length)];
-  db.settings.wallpaper=next;
-  saveDB();applySettings();render();
-}
-function dailyWallpaper(){
-  const keys=Object.keys(WALLPAPERS);
-  const day=Math.floor(Date.now()/86400000);
-  db.settings.wallpaper=keys[day%keys.length];
-  saveDB();applySettings();
+function viewsNotes(){
+ return `<div class="page">${head("ノート","アイデア・メモ・情報を保存",`<button class="btn primary" data-action="addNote">＋ ノート</button>`)}
+ <div class="grid g3">${S.notes.map(n=>`<div class="card"><div class="card-title"><span>${n.pin?"📌 ":""}${esc(n.title)}</span><button class="icon-btn" data-edit-note="${n.id}">⋯</button></div><div class="small muted">${esc(n.category||"未分類")} ・ ${fmtDate(n.updated||n.created)}</div><p>${esc((n.body||"").slice(0,180))}</p><div>${(n.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">ノートを作成しよう</div>`}</div></div>`;
 }
 
-function navHTML(){
-  const taskCount=db.tasks.filter(x=>!x.done).length;
-  return `
-    <div class="logo">
-      <div class="logo-mark">N</div>
-      <div><div class="logo-title">NEXUS</div><div class="logo-version">PERSONAL OS 2.0</div></div>
-    </div>
-    <div class="profile">
-      <div class="profile-top">
-        <div class="avatar">${esc((db.user.name||"N")[0])}</div>
-        <div><div class="profile-name">${esc(db.user.name)}</div><div class="profile-level">LEVEL ${db.level}</div></div>
-      </div>
-      <div class="xpbar"><i style="width:${levelProgress()}%"></i></div>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Core</div>
-      ${NAV.slice(0,5).map(n=>navButton(n,taskCount)).join("")}
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Manage</div>
-      ${NAV.slice(5,13).map(n=>navButton(n,taskCount)).join("")}
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">System</div>
-      ${NAV.slice(13).map(n=>navButton(n,taskCount)).join("")}
-    </div>
-    <div class="sidebar-bottom">
-      <button class="nav-item ${currentView==="settings"?"active":""}" onclick="go('settings')">
-        <span class="nav-icon">⚙</span><span class="nav-text">Settings</span>
-      </button>
-      <button class="nav-item" onclick="quickAdd()">
-        <span class="nav-icon">＋</span><span class="nav-text">Quick Add</span>
-      </button>
-    </div>`;
-}
-function navButton(n,count){
-  return `<button class="nav-item ${currentView===n[0]?"active":""}" onclick="go('${n[0]}')">
-    <span class="nav-icon">${n[1]}</span><span class="nav-text">${n[3]}</span>
-    ${n[0]==="tasks"&&count?`<span class="nav-badge">${count}</span>`:""}
-  </button>`;
-}
-function renderSidebar(){
-  const s=document.getElementById("sidebar");
-  const pos=s.scrollTop;
-  s.innerHTML=navHTML();
-  requestAnimationFrame(()=>s.scrollTop=pos);
+function viewsCalendar(){
+ const d=new Date(S.calendar.year,S.calendar.month,1),year=d.getFullYear(),month=d.getMonth(),first=d.getDay(),last=new Date(year,month+1,0).getDate();
+ let cells="";for(let i=0;i<first;i++)cells+=`<div class="day"></div>`;
+ for(let day=1;day<=last;day++){let date=`${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`,es=S.events.filter(e=>e.date===date),ts=S.tasks.filter(t=>t.due===date);cells+=`<div class="day ${date===today()?"today":""}"><div class="day-num">${day}</div>${es.map(e=>`<div class="cal-event">${esc(e.title)}</div>`).join("")}${ts.map(t=>`<div class="cal-event" style="background:rgba(34,197,94,.18)">✓ ${esc(t.title)}</div>`).join("")}</div>`}
+ return `<div class="page">${head("カレンダー","予定・タスク・締切をまとめて表示",`<button class="btn primary" data-action="addEvent">＋ 予定</button>`)}
+ <div class="card"><div class="calendar-head"><button class="btn" data-cal="-1">‹</button><b>${year}年 ${month+1}月</b><button class="btn" data-cal="1">›</button></div><div class="calendar-grid"><div class="dow">日</div><div class="dow">月</div><div class="dow">火</div><div class="dow">水</div><div class="dow">木</div><div class="dow">金</div><div class="dow">土</div>${cells}</div></div>
+ <div class="card" style="margin-top:16px"><div class="card-title">予定一覧</div><div class="list">${S.events.filter(e=>e.date.slice(0,7)===`${year}-${String(month+1).padStart(2,"0")}`).sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="item"><b>${esc(e.title)}</b><div class="small muted">${fmtDate(e.date)} ${esc(e.time||"")} ${e.place?"・"+esc(e.place):""}</div><button class="btn" style="margin-top:7px" data-delete-event="${e.id}">削除</button></div>`).join("")||`<div class="empty">予定なし</div>`}</div></div></div>`;
 }
 
-function go(view){
-  currentView=view;
-  closeSidebar();
-  renderSidebar();
-  render();
-  const main=document.getElementById("main");
-  main.scrollTop=0;
+function timerText(){
+ let sec=Math.max(0,Math.floor(S.timer.remaining||0));return `${String(Math.floor(sec/3600)).padStart(2,"0")}:${String(Math.floor(sec%3600/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`;
 }
-function render(){
-  applySettings();
-  const titles={
-    dashboard:"Dashboard",tasks:"Tasks",notes:"Notes",calendar:"Calendar",timer:"Timer",
-    novels:"Novels",games:"Games",study:"Study",habits:"Habits",tags:"Tags",link:"NEXUS LINK",
-    database:"Database",money:"Money",files:"Files",stats:"Stats",activity:"Activity",
-    trash:"Trash",settings:"Settings"
-  };
-  document.getElementById("pageTitle").textContent=titles[currentView]||"NEXUS";
-  const v=document.getElementById("view");
-  const fn={
-    dashboard:renderDashboard,tasks:renderTasks,notes:renderNotes,calendar:renderCalendar,
-    timer:renderTimer,novels:renderNovels,games:renderGames,study:renderStudy,
-    habits:renderHabits,tags:renderTags,link:renderLinks,database:renderDatabase,
-    money:renderMoney,files:renderFiles,stats:renderStats,activity:renderActivity,
-    trash:renderTrash,settings:renderSettings
-  }[currentView];
-  v.innerHTML=fn?fn():"";
-  if(currentView==="stats")drawStatsCharts();
-  if(currentView==="timer")updateTimerDOM();
+function viewsTimer(){
+ return `<div class="page">${head("タイマー","時間を自由に設定。タスクや勉強にも連携できます")}
+ <div class="grid g2"><div class="card">
+ <div class="timer-big" id="timerDisplay">${timerText()}</div>
+ <div class="timer-controls"><button class="btn primary" data-action="timerToggle">${S.timer.running?"⏸ 一時停止":"▶ 開始"}</button><button class="btn" data-action="timerReset">↺ リセット</button></div>
+ <div class="link-line"></div><div class="timer-presets">${[5,10,15,25,30,45,60,90].map(m=>`<button class="btn" data-preset="${m}">${m}分</button>`).join("")}</div>
+ </div><div class="card"><div class="card-title">⚙️ 自由設定</div><div class="form-grid">
+ <div class="field"><label>時間</label><input id="timerH" type="number" min="0" value="${Math.floor(S.timer.remaining/3600)}"></div>
+ <div class="field"><label>分</label><input id="timerM" type="number" min="0" max="59" value="${Math.floor(S.timer.remaining%3600/60)}"></div>
+ <div class="field"><label>秒</label><input id="timerS" type="number" min="0" max="59" value="${S.timer.remaining%60}"></div>
+ <div class="field"><label>モード</label><select id="timerMode"><option value="countdown" ${S.timer.mode==="countdown"?"selected":""}>カウントダウン</option><option value="stopwatch" ${S.timer.mode==="stopwatch"?"selected":""}>ストップウォッチ</option><option value="pomodoro" ${S.timer.mode==="pomodoro"?"selected":""}>ポモドーロ</option></select></div>
+ <div class="field"><label>連携</label><select id="timerLink"><option value="">なし</option>${S.tasks.map(x=>`<option value="task:${x.id}">タスク：${esc(x.title)}</option>`).join("")}${S.novels.map(x=>`<option value="novel:${x.id}">小説：${esc(x.title)}</option>`).join("")}${S.games.map(x=>`<option value="game:${x.id}">ゲーム：${esc(x.title)}</option>`).join("")}</select></div>
+ <div class="field"><label>音</label><select id="timerSound"><option value="on">ON</option><option value="off">OFF</option></select></div>
+ </div></div></div>
+ <div class="card" style="margin-top:16px"><div class="card-title">セッション履歴</div><div class="list">${S.timer.sessions.slice(0,15).map(x=>`<div class="item"><b>${fmtMin(x.minutes)}</b> <span class="muted">${esc(x.label||"フリータイマー")}</span><div class="small muted">${new Date(x.time).toLocaleString("ja-JP")}</div></div>`).join("")||`<div class="empty">まだ記録がありません</div>`}</div></div></div>`;
 }
 
-function toggleSidebar(){
-  const s=document.getElementById("sidebar");
-  s.classList.toggle("open");
-  document.getElementById("mobileOverlay").classList.toggle("show");
+function viewsNovels(){
+ return `<div class="page">${head("小説","作品・エピソード・PV・執筆進捗",`<button class="btn primary" data-action="addNovel">＋ 作品</button>`)}
+ <div class="grid g2">${S.novels.map(n=>`<div class="card"><div class="card-title"><span>📖 ${esc(n.title)}</span><button class="icon-btn" data-edit-novel="${n.id}">⋯</button></div><div class="small muted">${esc(n.genre||"未設定")} ・ ${esc(n.status||"執筆中")}</div><p>${esc(n.synopsis||"")}</p><div class="grid g3"><div><div class="small muted">PV</div><b>${(+n.pv||0).toLocaleString()}</b></div><div><div class="small muted">文字数</div><b>${(+n.words||0).toLocaleString()}</b></div><div><div class="small muted">話数</div><b>${(n.episodes||[]).length}</b></div></div><div style="margin-top:12px"><div class="progress"><i style="width:${clamp(+n.progress||0,0,100)}%"></i></div><div class="small muted" style="margin-top:5px">執筆進捗 ${+n.progress||0}%</div></div><div style="margin-top:10px">${(n.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">作品を登録しよう</div>`}</div></div>`;
 }
-function closeSidebar(){
-  document.getElementById("sidebar").classList.remove("open");
-  document.getElementById("mobileOverlay").classList.remove("show");
+function viewsGames(){
+ return `<div class="page">${head("ゲーム","プレイ時間・レベル・実績・目標",`<button class="btn primary" data-action="addGame">＋ ゲーム</button>`)}
+ <div class="grid g3">${S.games.map(g=>`<div class="card"><div class="card-title">🎮 ${esc(g.title)} <button class="icon-btn" data-edit-game="${g.id}">⋯</button></div><div class="small muted">${esc(g.platform||"")}</div><div class="stat">Lv.${g.level||1}</div><div class="grid g2"><div><span class="small muted">スコア</span><br><b>${(+g.score||0).toLocaleString()}</b></div><div><span class="small muted">プレイ時間</span><br><b>${fmtMin(g.minutes)}</b></div></div><div style="margin-top:10px">${(g.achievements||[]).map(a=>`<span class="badge">🏆 ${esc(a)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">ゲームを登録しよう</div>`}</div></div>`;
+}
+function viewsStudy(){
+ const total=S.studies.reduce((a,x)=>a+(+x.minutes||0),0),todayMin=S.studies.filter(x=>x.date===today()).reduce((a,x)=>a+(+x.minutes||0),0);
+ return `<div class="page">${head("勉強","勉強時間・科目・目標を記録",`<button class="btn primary" data-action="addStudy">＋ 記録</button>`)}
+ <div class="grid g3"><div class="card"><div class="small muted">今日</div><div class="stat cyan">${fmtMin(todayMin)}</div></div><div class="card"><div class="small muted">累計</div><div class="stat">${fmtMin(total)}</div></div><div class="card"><div class="small muted">記録数</div><div class="stat">${S.studies.length}</div></div></div>
+ <div class="card" style="margin-top:16px"><div class="card-title">最近の勉強</div><div class="list">${S.studies.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30).map(x=>`<div class="item item-row"><span>📚</span><div class="grow"><b>${esc(x.subject)}</b><div class="small muted">${fmtDate(x.date)} ・ ${fmtMin(x.minutes)} ${x.memo?"・"+esc(x.memo):""}</div></div></div>`).join("")||`<div class="empty">勉強記録なし</div>`}</div></div></div>`;
+}
+function viewsHabits(){
+ return `<div class="page">${head("習慣","毎日の行動を記録してストリークを伸ばす",`<button class="btn primary" data-action="addHabit">＋ 習慣</button>`)}
+ <div class="grid g3">${S.habits.map(h=>{let logs=h.logs||[],streak=0,d=new Date();while(logs.includes(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1)}return `<div class="card"><div class="card-title">${esc(h.name)} <button class="icon-btn" data-edit-habit="${h.id}">⋯</button></div><div class="stat">🔥 ${streak}</div><div class="small muted">連続日数</div><button class="btn ${logs.includes(today())?"success":""}" style="margin-top:12px;width:100%" data-habit="${h.id}" ${logs.includes(today())?"disabled":""}>${logs.includes(today())?"✓ 今日達成":"今日達成する"}</button></div>`}).join("")||`<div class="empty">習慣を追加しよう</div>`}</div></div>`;
+}
+function viewsLink(){
+ return `<div class="page">${head("NEXUS LINK","モジュール同士をつないで関連情報を表示",`<button class="btn primary" data-action="addLink">＋ リンク</button>`)}
+ <div class="list">${S.links.map(l=>`<div class="card"><div class="item-row"><b>${esc(resolveName(l.a))}</b><span class="muted">↔</span><b>${esc(resolveName(l.b))}</b><div class="grow"></div><button class="btn danger" data-delete-link="${l.id}">削除</button></div>${l.memo?`<div class="small muted" style="margin-top:8px">${esc(l.memo)}</div>`:""}</div>`).join("")||`<div class="empty">まだリンクがありません</div>`}</div></div>`;
+}
+function resolveName(v){if(!v)return"未選択";let [type,id]=v.split(":");let arr={task:S.tasks,note:S.notes,novel:S.novels,game:S.games,event:S.events,study:S.studies,habit:S.habits}[type]||[];let x=arr.find(x=>x.id===id);return `${type.toUpperCase()} · ${x?.title||x?.name||x?.subject||"不明"}`}
+function viewsDatabase(){
+ return `<div class="page">${head("データベース","自分専用のカスタムデータを作成",`<button class="btn primary" data-action="addDatabase">＋ コレクション</button>`)}
+ <div class="grid g3">${S.databases.map(d=>`<div class="card"><div class="card-title">▤ ${esc(d.name)} <button class="icon-btn" data-edit-db="${d.id}">⋯</button></div><div class="small muted">${d.fields?.length||0} フィールド ・ ${d.records?.length||0} レコード</div><button class="btn" style="margin-top:12px" data-open-db="${d.id}">開く</button></div>`).join("")||`<div class="empty">カスタムデータベースを作成しよう</div>`}</div></div>`;
+}
+function viewsStats(){
+ const study=S.studies.reduce((a,x)=>a+(+x.minutes||0),0),focus=S.timer.sessions.reduce((a,x)=>a+(+x.minutes||0),0),done=S.tasks.filter(x=>x.done).length,pv=S.novels.reduce((a,x)=>a+(+x.pv||0),0),game=S.games.reduce((a,x)=>a+(+x.minutes||0),0);
+ return `<div class="page">${head("統計","NEXUSに蓄積されたデータを可視化")}
+ <div class="grid g4">${[["📚","勉強時間",fmtMin(study)],["⏱","集中時間",fmtMin(focus)],["✓","完了タスク",done],["📖","小説PV",pv.toLocaleString()],["🎮","ゲーム時間",fmtMin(game)],["⚡","XP",S.xp],["🔥","習慣",S.habits.reduce((a,h)=>a+(h.logs?.length||0),0)],["📈","活動数",S.activity.length]].map(x=>`<div class="card"><div class="small muted">${x[0]} ${x[1]}</div><div class="stat">${x[2]}</div></div>`).join("")}</div>
+ <div class="card" style="margin-top:16px"><div class="card-title">📊 直近14日の勉強時間</div><canvas id="studyChart" height="230"></canvas></div>
+ <div class="card" style="margin-top:16px"><div class="card-title">🏆 NEXUS SCORE</div><div class="stat accent">${nexusScore()}</div><div class="small muted">活動・XP・習慣・完了タスク・執筆を総合したスコア</div></div></div>`;
+}
+function nexusScore(){return Math.round(S.xp+S.tasks.filter(x=>x.done).length*25+S.studies.reduce((a,x)=>a+(+x.minutes||0),0)*.5+S.activity.length+S.habits.reduce((a,h)=>a+(h.logs?.length||0),0)*10)}
+function viewsActivity(){return `<div class="page">${head("活動履歴","NEXUSで行った操作を記録")}${`<div class="card">${activityList(100)}</div>`}</div>`}
+function viewsTrash(){return `<div class="page">${head("ゴミ箱","削除したデータを復元・完全削除",`<button class="btn danger" data-action="emptyTrash">完全削除</button>`)}<div class="list">${S.trash.map(x=>`<div class="card item-row"><div class="grow"><b>${esc(x.title||x.name||"データ")}</b><div class="small muted">${esc(x.type)} ・ ${new Date(x.deletedAt).toLocaleString("ja-JP")}</div></div><button class="btn" data-restore="${x.id}">復元</button><button class="btn danger" data-purge="${x.id}">削除</button></div>`).join("")||`<div class="empty">ゴミ箱は空です</div>`}</div></div>`}
+function viewsNotifications(){
+ return `<div class="page">${head("通知","NEXUSのリマインダーとブラウザ通知を管理")}
+ <div class="grid g2"><div class="card"><div class="card-title">🔔 通知状態</div><div class="stat">${S.settings.notifications?"ON":"OFF"}</div><button class="btn primary" data-action="requestNotify">通知を許可 / 更新</button></div>
+ <div class="card"><div class="card-title">📌 通知できるもの</div><div class="list">${["タイマー終了","タスク期限","カレンダー予定","習慣リマインダー","小説投稿予定","カスタムリマインダー"].map(x=>`<div class="item">${x}</div>`).join("")}</div></div></div>
+ <div class="card" style="margin-top:16px"><div class="card-title">自分で通知を追加</div><button class="btn primary" data-action="addReminder">＋ リマインダー</button></div>
+ <div class="card" style="margin-top:16px"><div class="card-title">登録済み</div>${(S.settings.reminders||[]).map(r=>`<div class="item item-row"><div class="grow"><b>${esc(r.title)}</b><div class="small muted">${new Date(r.at).toLocaleString("ja-JP")}</div></div><button class="btn danger" data-delete-reminder="${r.id}">削除</button></div>`).join("")||`<div class="empty">なし</div>`}</div></div>`;
+}
+function viewsSettings(){
+ const s=S.settings;
+ return `<div class="page">${head("設定","NEXUSの外観・壁紙・動作をカスタマイズ")}
+ <div class="grid g2"><div class="card"><div class="card-title">🖼️ 壁紙</div><div class="wall-grid">${Object.entries(walls).map(([k,v])=>`<div class="wall ${s.wall===k&&!s.customWall?"selected":""}" style="background:${v}" data-wall="${k}"><span>${wallNames[k]}</span></div>`).join("")}</div>
+ <div class="form-grid" style="margin-top:14px"><div class="field"><label>自分の画像</label><input id="wallFile" type="file" accept="image/*"></div><div class="field"><label>ランダム / 毎日</label><select id="wallAuto"><option value="none">固定</option><option value="random" ${s.wallRandom?"selected":""}>起動時ランダム</option><option value="daily" ${s.dailyWall?"selected":""}>毎日変更</option></select></div></div>
+ <div class="form-grid" style="margin-top:12px"><div class="field"><label>暗幕 ${Math.round(s.overlay*100)}%</label><input id="overlay" type="range" min="0" max=".75" step=".01" value="${s.overlay}"></div><div class="field"><label>ぼかし ${s.blur}px</label><input id="blur" type="range" min="0" max="30" value="${s.blur}"></div></div></div>
+ <div class="card"><div class="card-title">🎨 UI</div><div class="field"><label>アクセントカラー</label><div class="color-row" id="colors">${["#7c3aed","#2563eb","#06b6d4","#16a34a","#eab308","#f97316","#ef4444","#ec4899"].map(c=>`<div class="color-dot ${s.accent===c?"active":""}" style="background:${c}" data-color="${c}"></div>`).join("")}</div></div>
+ <div class="form-grid" style="margin-top:15px"><div class="field"><label>サイドバー幅</label><input id="sidebarWidth" type="range" min="190" max="330" value="${s.sidebar}"></div><div class="field"><label>文字サイズ</label><input id="fontSize" type="range" min=".85" max="1.15" step=".05" value="${s.font}"></div><div class="field"><label>カード密度</label><select id="density"><option value="1">標準</option><option value=".85" ${s.density<1?"selected":""}>コンパクト</option><option value="1.15" ${s.density>1?"selected":""}>ゆったり</option></select></div><div class="field"><label>サウンド</label><select id="sounds"><option value="on" ${s.sounds?"selected":""}>ON</option><option value="off" ${!s.sounds?"selected":""}>OFF</option></select></div></div></div></div>
+ <div class="grid g3" style="margin-top:16px"><div class="card"><div class="card-title">💾 バックアップ</div><button class="btn primary" data-action="export">JSONを書き出す</button> <button class="btn" data-action="import">復元</button></div><div class="card"><div class="card-title">🔐 アプリロック</div><button class="btn" data-action="pin">PIN設定</button><div class="small muted" style="margin-top:7px">端末内の簡易ロック</div></div><div class="card"><div class="card-title">⚠️ データ</div><button class="btn danger" data-action="reset">全データ初期化</button></div></div></div>`;
+}
+const views={dashboard:viewsDashboard,tasks:viewsTasks,notes:viewsNotes,calendar:viewsCalendar,timer:viewsTimer,novels:viewsNovels,games:viewsGames,study:viewsStudy,habits:viewsHabits,link:viewsLink,database:viewsDatabase,stats:viewsStats,activity:viewsActivity,trash:viewsTrash,notifications:viewsNotifications,settings:viewsSettings};
+
+function quickAdd(){openModal("クイック追加",`<div class="grid g2">${[
+["📋","タスク","addTask"],["📝","ノート","addNote"],["📅","予定","addEvent"],["⏱","タイマー","timerOpen"],["📖","小説","addNovel"],["🎮","ゲーム","addGame"],["📚","勉強","addStudy"],["🔥","習慣","addHabit"],["🔗","リンク","addLink"]
+].map(x=>`<button class="card" data-modal-action="${x[2]}" style="text-align:left;border:1px solid var(--border)"><div style="font-size:25px">${x[0]}</div><b>${x[1]}</b></button>`).join("")}</div>`)}
+function openModal(title,body,foot=""){document.getElementById("modal").innerHTML=`<div class="modal-head"><div class="modal-title">${title}</div><button class="icon-btn" data-close>×</button></div>${body}${foot}`;document.getElementById("modalBg").classList.add("show")}
+function closeModal(){document.getElementById("modalBg").classList.remove("show")}
+document.getElementById("modalBg").addEventListener("click",e=>{if(e.target.id==="modalBg"||e.target.closest("[data-close]"))closeModal()});
+
+function taskForm(t={}){
+ return `<div class="form-grid"><div class="field full"><label>タイトル</label><input id="fTitle" value="${esc(t.title)}" autofocus></div><div class="field"><label>期限</label><input id="fDue" type="date" value="${t.due||""}"></div><div class="field"><label>時刻</label><input id="fTime" type="time" value="${t.time||""}"></div><div class="field"><label>優先度</label><select id="fPriority"><option value="">なし</option><option value="high" ${t.priority==="high"?"selected":""}>高</option><option value="mid" ${t.priority==="mid"?"selected":""}>中</option><option value="low" ${t.priority==="low"?"selected":""}>低</option></select></div><div class="field"><label>タグ（カンマ区切り）</label><input id="fTags" value="${esc((t.tags||[]).join(","))}"></div><div class="field full"><label>説明</label><textarea id="fDesc">${esc(t.description)}</textarea></div><div class="field full"><label>サブタスク（1行1つ）</label><textarea id="fSubs">${esc((t.subtasks||[]).map(x=>x.title).join("\\n"))}</textarea></div></div>
+ <div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-task="${t.id||""}">保存</button></div>`;
+}
+function noteForm(n={}){
+ return `<div class="form-grid"><div class="field"><label>タイトル</label><input id="fTitle" value="${esc(n.title)}" autofocus></div><div class="field"><label>カテゴリ</label><input id="fCat" value="${esc(n.category)}"></div><div class="field full"><label>タグ</label><input id="fTags" value="${esc((n.tags||[]).join(","))}"></div><div class="field full"><label>本文</label><textarea id="fBody" style="min-height:260px">${esc(n.body)}</textarea></div><div class="field"><label>固定</label><select id="fPin"><option value="0">しない</option><option value="1" ${n.pin?"selected":""}>固定</option></select></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-note="${n.id||""}">保存</button></div>`;
+}
+function eventForm(e={}){
+ return `<div class="form-grid"><div class="field full"><label>タイトル</label><input id="fTitle" value="${esc(e.title)}"></div><div class="field"><label>日付</label><input id="fDate" type="date" value="${e.date||today()}"></div><div class="field"><label>時刻</label><input id="fTime" type="time" value="${e.time||""}"></div><div class="field"><label>場所</label><input id="fPlace" value="${esc(e.place)}"></div><div class="field"><label>カテゴリ</label><input id="fCat" value="${esc(e.category)}"></div><div class="field full"><label>詳細</label><textarea id="fDesc">${esc(e.description)}</textarea></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-event="${e.id||""}">保存</button></div>`;
+}
+function novelForm(n={}){
+ return `<div class="form-grid"><div class="field"><label>作品名</label><input id="fTitle" value="${esc(n.title)}"></div><div class="field"><label>ジャンル</label><input id="fGenre" value="${esc(n.genre)}"></div><div class="field full"><label>あらすじ</label><textarea id="fDesc">${esc(n.synopsis)}</textarea></div><div class="field"><label>ステータス</label><select id="fStatus"><option>執筆中</option><option ${n.status==="完結"?"selected":""}>完結</option><option ${n.status==="休止"?"selected":""}>休止</option></select></div><div class="field"><label>文字数</label><input id="fWords" type="number" value="${n.words||0}"></div><div class="field"><label>PV</label><input id="fPV" type="number" value="${n.pv||0}"></div><div class="field"><label>進捗%</label><input id="fProgress" type="number" min="0" max="100" value="${n.progress||0}"></div><div class="field full"><label>タグ</label><input id="fTags" value="${esc((n.tags||[]).join(","))}"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-novel="${n.id||""}">保存</button></div>`;
+}
+function gameForm(g={}){
+ return `<div class="form-grid"><div class="field"><label>ゲーム名</label><input id="fTitle" value="${esc(g.title)}"></div><div class="field"><label>機種</label><input id="fPlatform" value="${esc(g.platform)}"></div><div class="field"><label>レベル</label><input id="fLevel" type="number" value="${g.level||1}"></div><div class="field"><label>スコア</label><input id="fScore" type="number" value="${g.score||0}"></div><div class="field"><label>プレイ時間（分）</label><input id="fMinutes" type="number" value="${g.minutes||0}"></div><div class="field full"><label>実績（カンマ区切り）</label><input id="fAch" value="${esc((g.achievements||[]).join(","))}"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-game="${g.id||""}">保存</button></div>`;
+}
+function studyForm(){
+ return `<div class="form-grid"><div class="field"><label>科目</label><input id="fSubject" placeholder="数学"></div><div class="field"><label>日付</label><input id="fDate" type="date" value="${today()}"></div><div class="field"><label>時間（分）</label><input id="fMinutes" type="number" min="1" value="30"></div><div class="field"><label>メモ</label><input id="fMemo"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-study>保存</button></div>`;
+}
+function habitForm(h={}){
+ return `<div class="field"><label>習慣名</label><input id="fName" value="${esc(h.name)}" autofocus></div><div class="field" style="margin-top:12px"><label>目標</label><input id="fGoal" value="${esc(h.goal||"毎日")}" placeholder="毎日"></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-habit="${h.id||""}">保存</button></div>`;
+}
+function linkForm(){
+ const opts=()=>Object.entries({task:S.tasks,note:S.notes,novel:S.novels,game:S.games,event:S.events,habit:S.habits}).flatMap(([type,a])=>a.map(x=>`<option value="${type}:${x.id}">${type.toUpperCase()} · ${esc(x.title||x.name)}</option>`)).join("");
+ return `<div class="field"><label>左側</label><select id="fA">${opts()}</select></div><div class="field" style="margin-top:12px"><label>右側</label><select id="fB">${opts()}</select></div><div class="field" style="margin-top:12px"><label>メモ</label><input id="fMemo"></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-link>保存</button></div>`;
+}
+function dbForm(d={}){
+ return `<div class="form-grid"><div class="field full"><label>コレクション名</label><input id="fName" value="${esc(d.name)}"></div><div class="field full"><label>フィールド名（カンマ区切り）</label><input id="fFields" value="${esc((d.fields||[]).map(x=>x.name).join(","))}"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-db="${d.id||""}">保存</button></div>`;
 }
 
-/* DASHBOARD */
-function renderDashboard(){
-  const activeTasks=db.tasks.filter(x=>!x.done);
-  const todayTasks=activeTasks.filter(x=>x.due===today());
-  const todayStudy=db.studies.filter(x=>x.date===today()).reduce((a,b)=>a+(Number(b.minutes)||0),0);
-  const todayPV=db.novels.reduce((a,n)=>a+(n.dailyPV?.[today()]||0),0);
-  const done= db.tasks.filter(x=>x.done).length;
-  const cards={
-    stats:`<div class="card col-12"><div class="kpis">
-      <div class="kpi"><div class="stat-label">XP</div><div class="stat-value">${db.xp}</div><div class="stat-sub">LEVEL ${db.level}</div></div>
-      <div class="kpi"><div class="stat-label">未完了タスク</div><div class="stat-value">${activeTasks.length}</div><div class="stat-sub">今日 ${todayTasks.length}</div></div>
-      <div class="kpi"><div class="stat-label">今日の勉強</div><div class="stat-value">${todayStudy}<small>分</small></div><div class="stat-sub">学習ログ</div></div>
-      <div class="kpi"><div class="stat-label">今日のPV</div><div class="stat-value">${todayPV.toLocaleString()}</div><div class="stat-sub">小説合計</div></div>
-    </div></div>`,
-    tasks:`<div class="card col-4"><div class="card-title">✓ 今日のタスク <small>${todayTasks.length}</small></div>
-      <div class="list">${todayTasks.slice(0,6).map(taskRow).join("")||`<div class="empty">今日のタスクはありません</div>`}</div>
-      <button class="btn small" style="margin-top:10px" onclick="go('tasks')">すべて見る</button>
-    </div>`,
-    calendar:`<div class="card col-4"><div class="card-title">□ 次の予定</div>
-      <div class="list">${db.events.filter(x=>x.date>=today()).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,5).map(e=>`
-        <div class="list-item"><div class="list-item-main"><div class="list-title">${esc(e.title)}</div><div class="list-meta">${fmtDate(e.date)} ${esc(e.time||"")}</div></div></div>`).join("")||`<div class="empty">予定なし</div>`}</div>
-    </div>`,
-    timer:`<div class="card col-4"><div class="card-title">◷ Timer</div>
-      <div style="text-align:center;font-size:36px;font-weight:900;margin:18px 0">${formatTime(timer.remaining)}</div>
-      <div style="text-align:center"><button class="btn primary" onclick="go('timer')">${timer.running?"タイマーを開く":"開始する"}</button></div>
-    </div>`,
-    novels:`<div class="card col-6"><div class="card-title">✎ Writing</div>
-      ${db.novels.slice(0,5).map(n=>`
-      <div class="list-item"><div class="list-item-main"><div class="list-title">${esc(n.title)}</div>
-      <div class="list-meta">${(n.wordCount||0).toLocaleString()}文字 / ${esc(n.status||"")}</div></div>
-      <span class="tag">${(n.totalPV||0).toLocaleString()} PV</span></div>`).join("")||`<div class="empty">作品を追加しよう</div>`}
-    </div>`,
-    games:`<div class="card col-6"><div class="card-title">◇ Games</div>
-      ${db.games.slice(0,5).map(g=>`
-      <div class="list-item"><div class="list-item-main"><div class="list-title">${esc(g.title)}</div><div class="list-meta">Lv.${g.level||1} / ${esc(g.rank||"")}</div></div>
-      <span class="tag">${esc(g.playtime||0)}h</span></div>`).join("")||`<div class="empty">ゲームを追加しよう</div>`}
-    </div>`,
-    study:`<div class="card col-4"><div class="card-title">▣ Study</div>
-      <div class="stat-value">${todayStudy}<small>分</small></div>
-      <div class="progress" style="margin-top:12px"><i style="width:${Math.min(100,todayStudy/120*100)}%"></i></div>
-      <div class="stat-sub">今日の目標 120分</div>
-    </div>`,
-    habits:`<div class="card col-4"><div class="card-title">↻ Habits</div>
-      <div class="list">${db.habits.slice(0,5).map(h=>{
-        const ok=h.history?.[today()];
-        return `<div class="list-item"><div class="checkbox ${ok?"done":""}" onclick="toggleHabit('${h.id}')">${ok?"✓":""}</div><div class="list-item-main"><div class="list-title">${esc(h.title)}</div><div class="list-meta">🔥 ${habitStreak(h)}日</div></div></div>`
-      }).join("")||`<div class="empty">習慣を追加しよう</div>`}</div>
-    </div>`,
-    activity:`<div class="card col-4"><div class="card-title">◌ Recent Activity</div>
-      <div class="list">${db.activity.slice(0,6).map(a=>`<div class="list-item"><div class="list-item-main"><div class="list-title">${esc(a.title)}</div><div class="list-meta">${fmtDateTime(a.date)}</div></div></div>`).join("")||`<div class="empty">履歴なし</div>`}</div>
-    </div>`
-  };
-  const order=db.dashboardOrder||Object.keys(cards);
-  return `<div class="grid">${order.filter(k=>cards[k]&&!db.dashboardHidden.includes(k)).map(k=>cards[k]).join("")}</div>
-  <div style="height:15px"></div>
-  <div class="card"><div class="card-title">NEXUS 2.0 <small>Quick Add</small></div>
-    <div class="toolbar">
-      <button class="btn" onclick="openTaskModal()">＋ タスク</button>
-      <button class="btn" onclick="openNoteModal()">＋ ノート</button>
-      <button class="btn" onclick="openEventModal()">＋ 予定</button>
-      <button class="btn" onclick="openStudyModal()">＋ 学習</button>
-      <button class="btn" onclick="openHabitModal()">＋ 習慣</button>
-      <button class="btn" onclick="openNovelModal()">＋ 小説</button>
-      <button class="btn" onclick="openGameModal()">＋ ゲーム</button>
-    </div>
-  </div>`;
-}
-function taskRow(t){
-  return `<div class="list-item">
-    <div class="checkbox ${t.done?"done":""}" onclick="toggleTask('${t.id}')">${t.done?"✓":""}</div>
-    <div class="list-item-main" onclick="openTaskModal('${t.id}')">
-      <div class="list-title">${esc(t.title)}</div>
-      <div class="list-meta">${t.priority||"normal"} ${t.due?"・"+fmtDate(t.due):""}</div>
-    </div>
-  </div>`;
+function openSearch(q){
+ const all=[
+ ...S.tasks.map(x=>({type:"タスク",name:x.title,id:x.id})),...S.notes.map(x=>({type:"ノート",name:x.title,id:x.id})),
+ ...S.novels.map(x=>({type:"小説",name:x.title,id:x.id})),...S.games.map(x=>({type:"ゲーム",name:x.title,id:x.id}))
+ ].filter(x=>x.name.toLowerCase().includes(q.toLowerCase())).slice(0,30);
+ openModal("検索結果",all.length?`<div class="list">${all.map(x=>`<div class="item"><span class="badge">${x.type}</span> <b>${esc(x.name)}</b></div>`).join("")}</div>`:`<div class="empty">「${esc(q)}」に一致するものはありません</div>`);
 }
 
-/* TASKS */
-function renderTasks(){
-  const q=searchTerm.toLowerCase();
-  const tasks=db.tasks.filter(t=>!q||(t.title+" "+t.description+" "+(t.tags||[]).join(" ")).toLowerCase().includes(q));
-  const groups={todo:[],doing:[],done:[]};
-  tasks.forEach(t=>groups[t.done?"done":t.progress>0?"doing":"todo"].push(t));
-  return `<div class="toolbar">
-    <input class="search" placeholder="タスクを検索..." value="${esc(searchTerm)}" oninput="searchTerm=this.value;render()">
-    <select class="select" style="width:150px" onchange="taskFilter=this.value;render()">
-      <option value="">すべて</option><option value="high">高優先</option><option value="today">今日</option>
-    </select>
-    <button class="btn primary" onclick="openTaskModal()">＋ タスク追加</button>
-  </div>
-  <div class="kanban">
-    ${taskColumn("未着手",groups.todo)}
-    ${taskColumn("進行中",groups.doing)}
-    ${taskColumn("完了",groups.done)}
-  </div>`;
-}
-let taskFilter="";
-function taskColumn(title,items){
-  if(taskFilter==="high")items=items.filter(x=>x.priority==="high");
-  if(taskFilter==="today")items=items.filter(x=>x.due===today());
-  return `<div class="kanban-col"><div class="kanban-title">${title} (${items.length})</div>
-  ${items.map(t=>`
-    <div class="list-item" style="margin-bottom:7px">
-      <div class="checkbox ${t.done?"done":""}" onclick="toggleTask('${t.id}')">${t.done?"✓":""}</div>
-      <div class="list-item-main" onclick="openTaskModal('${t.id}')">
-        <div class="list-title">${esc(t.title)}</div>
-        <div class="list-meta">${t.due?fmtDate(t.due):"期限なし"} ・ ${t.priority||"normal"}</div>
-        ${t.subtasks?.length?`<div class="progress" style="margin-top:6px"><i style="width:${subtaskProgress(t)}%"></i></div>`:""}
-      </div>
-    </div>`).join("")||`<div class="empty">なし</div>`}</div>`;
-}
-function subtaskProgress(t){
-  if(!t.subtasks?.length)return 0;
-  return Math.round(t.subtasks.filter(x=>x.done).length/t.subtasks.length*100);
-}
-function toggleTask(id){
-  const t=getById("tasks",id);if(!t)return;
-  t.done=!t.done;
-  t.completedAt=t.done?now():null;
-  if(t.done)addXP(20,`タスク完了: ${t.title}`);
-  logActivity("task",t.done?"タスク完了":"タスク再開",t.title);
-  saveDB();render();
-}
-
-/* NOTES */
-function renderNotes(){
-  const q=searchTerm.toLowerCase();
-  const notes=db.notes.filter(n=>!q||(n.title+" "+n.content+" "+(n.tags||[]).join(" ")).toLowerCase().includes(q));
-  return `<div class="toolbar">
-    <input class="search" placeholder="ノートを検索..." value="${esc(searchTerm)}" oninput="searchTerm=this.value;render()">
-    <button class="btn primary" onclick="openNoteModal()">＋ ノート</button>
-  </div>
-  <div class="grid">
-    <div class="card col-4"><div class="card-title">ノート一覧</div>
-      <div class="list">${notes.map(n=>`
-        <div class="list-item" onclick="selectNote('${n.id}')">
-          <div class="list-item-main"><div class="list-title">${n.pinned?"📌 ":""}${esc(n.title||"無題")}</div>
-          <div class="list-meta">${fmtDateTime(n.updatedAt||n.createdAt)}</div></div>
-        </div>`).join("")||`<div class="empty">ノートなし</div>`}</div>
-    </div>
-    <div class="card col-8">
-      ${selectedNoteId&&getById("notes",selectedNoteId)?noteEditor(getById("notes",selectedNoteId)):`<div class="empty">左からノートを選択するか、新規作成してください</div>`}
-    </div>
-  </div>`;
-}
-function selectNote(id){selectedNoteId=id;render();}
-function noteEditor(n){
-  return `<div class="toolbar">
-    <button class="btn small" onclick="togglePinNote('${n.id}')">${n.pinned?"📌 固定解除":"📌 固定"}</button>
-    <button class="btn small" onclick="openNoteHistory('${n.id}')">履歴</button>
-    <button class="btn small danger" onclick="trashItem('notes','${n.id}')">削除</button>
-  </div>
-  <input class="input" value="${esc(n.title)}" placeholder="タイトル" oninput="autosaveNote('${n.id}','title',this.value)">
-  <textarea class="textarea" style="margin-top:10px;min-height:380px" placeholder="ここに書く..." oninput="autosaveNote('${n.id}','content',this.value)">${esc(n.content)}</textarea>
-  <div style="margin-top:10px">
-    <input class="input" value="${esc((n.tags||[]).join(", "))}" placeholder="タグ（カンマ区切り）" onchange="updateNoteTags('${n.id}',this.value)">
-  </div>`;
-}
-function autosaveNote(id,key,value){
-  const n=getById("notes",id);if(!n)return;
-  clearTimeout(noteAutosaveTimer);
-  noteAutosaveTimer=setTimeout(()=>{
-    if(key==="content"&&value!==n.content){
-      n.history=n.history||[];
-      n.history.unshift({title:n.title,content:n.content,date:now()});
-      n.history=n.history.slice(0,30);
-    }
-    n[key]=value;n.updatedAt=now();saveDB();
-  },350);
-}
-function updateNoteTags(id,v){
-  const n=getById("notes",id);
-  if(n){n.tags=v.split(",").map(x=>x.trim()).filter(Boolean);saveDB();render()}
-}
-function togglePinNote(id){
-  const n=getById("notes",id);if(n){n.pinned=!n.pinned;saveDB();render()}
-}
-function openNoteHistory(id){
-  const n=getById("notes",id);
-  if(!n)return;
-  showModal("ノート履歴",`<div class="list">${(n.history||[]).map((h,i)=>`
-    <div class="list-item"><div class="list-item-main"><div class="list-title">${fmtDateTime(h.date)}</div><div class="list-meta">${esc((h.content||"").slice(0,100))}</div></div>
-    <button class="btn small" onclick="restoreNote('${id}',${i})">復元</button></div>`).join("")||`<div class="empty">履歴はありません</div>`}</div>`);
-}
-function restoreNote(id,i){
-  const n=getById("notes",id);const h=n?.history?.[i];if(!h)return;
-  n.history.unshift({title:n.title,content:n.content,date:now()});
-  n.title=h.title;n.content=h.content;n.updatedAt=now();
-  saveDB();closeModal();render();toast("履歴を復元しました");
-}
-
-/* CALENDAR */
-function renderCalendar(){
-  if(calendarMode==="month")return renderMonthCalendar();
-  if(calendarMode==="week")return renderWeekCalendar();
-  return renderDayCalendar();
-}
-function calendarToolbar(){
-  const y=calendarDate.getFullYear(),m=calendarDate.getMonth()+1;
-  return `<div class="calendar-head">
-    <button class="btn small" onclick="moveCalendar(-1)">‹</button>
-    <button class="btn small" onclick="calendarDate=new Date();render()">今日</button>
-    <button class="btn small" onclick="moveCalendar(1)">›</button>
-    <div class="calendar-title">${y}年 ${m}月</div><div class="spacer"></div>
-    <select class="select" style="width:110px" onchange="calendarMode=this.value;render()">
-      <option value="month" ${calendarMode==="month"?"selected":""}>月</option>
-      <option value="week" ${calendarMode==="week"?"selected":""}>週</option>
-      <option value="day" ${calendarMode==="day"?"selected":""}>日</option>
-    </select>
-    <button class="btn primary" onclick="openEventModal()">＋ 予定</button>
-  </div>`;
-}
-function moveCalendar(n){
-  if(calendarMode==="month")calendarDate.setMonth(calendarDate.getMonth()+n);
-  else if(calendarMode==="week")calendarDate.setDate(calendarDate.getDate()+n*7);
-  else calendarDate.setDate(calendarDate.getDate()+n);
-  render();
-}
-function eventsForDate(d){
-  const ds=d.toISOString().slice(0,10);
-  return db.events.filter(e=>e.date===ds||recurringMatches(e,ds));
-}
-function recurringMatches(e,ds){
-  if(!e.repeat||e.date===ds)return false;
-  const start=new Date(e.date+"T00:00:00"),target=new Date(ds+"T00:00:00");
-  if(target<start)return false;
-  const diff=Math.floor((target-start)/86400000);
-  if(e.repeat==="daily")return true;
-  if(e.repeat==="weekly")return diff%7===0;
-  if(e.repeat==="monthly")return start.getDate()===target.getDate();
-  return false;
-}
-function renderMonthCalendar(){
-  const y=calendarDate.getFullYear(),m=calendarDate.getMonth();
-  const first=new Date(y,m,1),start=new Date(first);
-  start.setDate(1-first.getDay());
-  let html=calendarToolbar()+`<div class="calendar-grid">`;
-  ["日","月","火","水","木","金","土"].forEach(x=>html+=`<div class="calendar-weekday">${x}</div>`);
-  for(let i=0;i<42;i++){
-    const d=new Date(start);d.setDate(start.getDate()+i);
-    const ds=d.toISOString().slice(0,10);
-    const isOther=d.getMonth()!==m,isToday=ds===today();
-    const ev=eventsForDate(d);
-    const task=db.tasks.filter(t=>t.due===ds);
-    html+=`<div class="day ${isOther?"other":""} ${isToday?"today":""}" onclick="openEventModal(null,'${ds}')">
-      <div class="day-number">${d.getDate()}</div>
-      ${ev.slice(0,3).map(e=>`<div class="event-dot">${esc(e.time||"")} ${esc(e.title)}</div>`).join("")}
-      ${task.slice(0,2).map(t=>`<div class="event-dot task">✓ ${esc(t.title)}</div>`).join("")}
-    </div>`;
-  }
-  return `<div class="card">${html}</div>`;
-}
-function renderWeekCalendar(){
-  const base=new Date(calendarDate);base.setDate(base.getDate()-base.getDay());
-  let html=calendarToolbar()+`<div class="week-grid"><div class="week-cell"></div>`;
-  for(let i=0;i<7;i++){
-    const d=new Date(base);d.setDate(base.getDate()+i);
-    html+=`<div class="week-cell" style="height:45px;font-weight:800">${d.getMonth()+1}/${d.getDate()}</div>`;
-  }
-  for(let h=0;h<24;h++){
-    html+=`<div class="week-cell time-cell">${String(h).padStart(2,"0")}:00</div>`;
-    for(let i=0;i<7;i++){
-      const d=new Date(base);d.setDate(base.getDate()+i);
-      const ev=eventsForDate(d).filter(e=>Number((e.time||"00:00").slice(0,2))===h);
-      html+=`<div class="week-cell">${ev.map(e=>`<div class="week-event">${esc(e.title)}</div>`).join("")}</div>`;
-    }
-  }
-  return `<div class="card">${html}</div>`;
-}
-function renderDayCalendar(){
-  const ds=calendarDate.toISOString().slice(0,10);
-  const ev=eventsForDate(calendarDate);
-  const tasks=db.tasks.filter(t=>t.due===ds);
-  return `<div class="card">${calendarToolbar()}
-    <div class="list">${ev.map(e=>`<div class="list-item"><div class="list-item-main"><div class="list-title">${esc(e.title)}</div><div class="list-meta">${esc(e.time||"")} ・ ${esc(e.place||"")}</div></div><button class="btn small" onclick="openEventModal('${e.id}')">編集</button></div>`).join("")}
-    ${tasks.map(t=>`<div class="list-item"><div class="checkbox ${t.done?"done":""}" onclick="toggleTask('${t.id}')">${t.done?"✓":""}</div><div class="list-item-main"><div class="list-title">${esc(t.title)}</div><div class="list-meta">タスク</div></div></div>`).join("")}
-    ${!ev.length&&!tasks.length?`<div class="empty">予定はありません</div>`:""}</div>
-  </div>`;
-}
-
-/* TIMER */
-function formatTime(sec){
-  sec=Math.max(0,Math.floor(sec));
-  return `${String(Math.floor(sec/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`;
-}
-function renderTimer(){
-  return `<div class="grid">
-    <div class="card col-8">
-      <div class="card-title">◷ Focus Timer</div>
-      <div id="timerDisplay" class="timer-display">${formatTime(timer.remaining)}</div>
-      <div id="timerStatus" class="timer-status">${timer.running?"実行中":"停止中"} ・ ${timer.mode}</div>
-      <div class="timer-presets">
-        <button class="btn small" onclick="setTimer(300)">5分</button>
-        <button class="btn small" onclick="setTimer(900)">15分</button>
-        <button class="btn small" onclick="setTimer(1500)">25分</button>
-        <button class="btn small" onclick="setTimer(3000)">50分</button>
-        <button class="btn small" onclick="setTimer(3600)">60分</button>
-      </div>
-      <div class="timer-controls">
-        <button class="btn primary" onclick="toggleTimer()">${timer.running?"一時停止":"開始"}</button>
-        <button class="btn" onclick="resetTimer()">リセット</button>
-        <button class="btn" onclick="finishTimer()">終了して記録</button>
-      </div>
-      <div style="margin-top:20px" class="form-grid">
-        <div><label class="field">モード</label><select class="select" onchange="timer.mode=this.value"><option value="pomodoro">Pomodoro</option><option value="countdown">Countdown</option><option value="stopwatch">Stopwatch</option></select></div>
-        <div><label class="field">関連データ</label><select id="timerLink" class="select" onchange="timer.linkedId=this.value">
-          <option value="">なし</option>${timerLinkOptions()}
-        </select></div>
-      </div>
-    </div>
-    <div class="card col-4">
-      <div class="card-title">今日のFocus</div>
-      <div class="stat-value">${db.timerSessions.filter(x=>x.date===today()).reduce((a,b)=>a+(b.minutes||0),0)}<small>分</small></div>
-      <div class="stat-sub">セッション ${db.timerSessions.filter(x=>x.date===today()).length}</div>
-      <div class="list" style="margin-top:15px">${db.timerSessions.slice(0,8).map(x=>`<div class="list-item"><div class="list-item-main"><div class="list-title">${x.minutes}分</div><div class="list-meta">${fmtDateTime(x.date)}</div></div></div>`).join("")}</div>
-    </div>
-  </div>`;
-}
-function timerLinkOptions(){
-  return [
-    ...db.tasks.map(x=>`<option value="task:${x.id}" ${timer.linkedId===`task:${x.id}`?"selected":""}>✓ ${esc(x.title)}</option>`),
-    ...db.novels.map(x=>`<option value="novel:${x.id}" ${timer.linkedId===`novel:${x.id}`?"selected":""}>✎ ${esc(x.title)}</option>`),
-    ...db.games.map(x=>`<option value="game:${x.id}" ${timer.linkedId===`game:${x.id}`?"selected":""}>◇ ${esc(x.title)}</option>`)
-  ].join("");
-}
-function setTimer(sec){
-  clearInterval(timer.interval);
-  timer.running=false;timer.duration=sec;timer.remaining=sec;timer.startedAt=null;render();
-}
-function toggleTimer(){
-  if(timer.running){
-    clearInterval(timer.interval);timer.running=false;
-  }else{
-    timer.running=true;timer.startedAt=Date.now()-(timer.duration-timer.remaining)*1000;
-    timer.interval=setInterval(timerTick,1000);
-  }
-  updateTimerDOM();
-}
-function timerTick(){
-  if(timer.mode==="stopwatch")timer.remaining++;
-  else timer.remaining--;
-  if(timer.remaining<=0&&timer.mode!=="stopwatch"){
-    timer.remaining=0;clearInterval(timer.interval);timer.running=false;
-    finishTimer(true);return;
-  }
-  updateTimerDOM();
-}
-function updateTimerDOM(){
-  const d=document.getElementById("timerDisplay"),s=document.getElementById("timerStatus");
-  if(d)d.textContent=formatTime(timer.remaining);
-  if(s)s.textContent=`${timer.running?"実行中":"停止中"} ・ ${timer.mode}`;
-}
-function resetTimer(){
-  clearInterval(timer.interval);timer.running=false;timer.remaining=timer.duration;timer.startedAt=null;updateTimerDOM();
-}
-function finishTimer(auto=false){
-  clearInterval(timer.interval);
-  const elapsed=timer.mode==="stopwatch"?timer.remaining:Math.max(0,timer.duration-timer.remaining);
-  const minutes=Math.max(1,Math.round(elapsed/60));
-  if(elapsed>20){
-    db.timerSessions.unshift({id:uid("session"),date:today(),minutes,mode:timer.mode,linkedId:timer.linkedId});
-    addXP(Math.min(60,minutes),`Focus ${minutes}分`);
-    logActivity("timer",`Focus ${minutes}分`);
-    saveDB();
-  }
-  timer.running=false;
-  if(auto){
-    notify("NEXUS Timer","タイマーが終了しました");
-    toast("タイマー終了！");
-    playBeep();
-  }
-  if(currentView==="timer")render();
-}
-
-/* NOVELS */
-function renderNovels(){
-  return `<div class="toolbar">
-    <button class="btn primary" onclick="openNovelModal()">＋ 作品</button>
-    <button class="btn" onclick="openEpisodeModal()">＋ エピソード</button>
-  </div>
-  <div class="grid">${db.novels.map(n=>`
-    <div class="card col-6">
-      <div class="card-title">✎ ${esc(n.title)} <small>${esc(n.status||"")}</small></div>
-      <div class="list-meta">${esc(n.genre||"")} ・ ${esc(n.platform||"")}</div>
-      <p style="font-size:12px;color:var(--muted)">${esc(n.synopsis||"")}</p>
-      <div class="kpis">
-        <div class="kpi"><div class="stat-label">文字数</div><b>${(n.wordCount||0).toLocaleString()}</b></div>
-        <div class="kpi"><div class="stat-label">総PV</div><b>${(n.totalPV||0).toLocaleString()}</b></div>
-        <div class="kpi"><div class="stat-label">最高日</div><b>${(n.highestDayPV||0).toLocaleString()}</b></div>
-        <div class="kpi"><div class="stat-label">話数</div><b>${(n.episodes||[]).length}</b></div>
-      </div>
-      <div style="margin-top:12px" class="toolbar">
-        <button class="btn small" onclick="openNovelModal('${n.id}')">編集</button>
-        <button class="btn small" onclick="openEpisodeModal(null,'${n.id}')">＋ 話</button>
-        <button class="btn small" onclick="openPVModal('${n.id}')">PV記録</button>
-        <button class="btn small danger" onclick="trashItem('novels','${n.id}')">削除</button>
-      </div>
-      <div class="list">${(n.episodes||[]).map((e,i)=>`<div class="list-item"><div class="list-item-main"><div class="list-title">${i+1}. ${esc(e.title)}</div><div class="list-meta">${(e.wordCount||0).toLocaleString()}文字 ・ ${(e.pv||0).toLocaleString()} PV</div></div><button class="btn small" onclick="openEpisodeModal('${e.id}','${n.id}')">編集</button></div>`).join("")||`<div class="empty">エピソードなし</div>`}</div>
-    </div>`).join("")||`<div class="card col-12"><div class="empty">作品を追加してください</div></div>`}</div>`;
-}
-
-/* GAMES */
-function renderGames(){
-  return `<div class="toolbar"><button class="btn primary" onclick="openGameModal()">＋ ゲーム</button></div>
-  <div class="grid">${db.games.map(g=>`
-    <div class="card col-4">
-      <div class="card-title">◇ ${esc(g.title)} <small>Lv.${g.level||1}</small></div>
-      <div class="stat-value">${esc(g.score||0)}</div>
-      <div class="stat-label">Score</div>
-      <div style="margin-top:12px" class="list">
-        <div class="list-item"><div class="list-item-main"><div class="list-title">Rank</div><div class="list-meta">${esc(g.rank||"-")}</div></div></div>
-        <div class="list-item"><div class="list-item-main"><div class="list-title">Playtime</div><div class="list-meta">${esc(g.playtime||0)} hours</div></div></div>
-        <div class="list-item"><div class="list-item-main"><div class="list-title">Currency</div><div class="list-meta">${esc(g.currency||0)}</div></div></div>
-        <div class="list-item"><div class="list-item-main"><div class="list-title">Achievements</div><div class="list-meta">${(g.achievements||[]).filter(x=>x.done).length}/${(g.achievements||[]).length}</div></div></div>
-      </div>
-      <div class="toolbar" style="margin-top:10px"><button class="btn small" onclick="openGameModal('${g.id}')">編集</button><button class="btn small danger" onclick="trashItem('games','${g.id}')">削除</button></div>
-    </div>`).join("")||`<div class="card col-12"><div class="empty">ゲームを追加してください</div></div>`}</div>`;
-}
-
-/* STUDY */
-function renderStudy(){
-  const total=db.studies.reduce((a,b)=>a+(Number(b.minutes)||0),0);
-  return `<div class="toolbar"><button class="btn primary" onclick="openStudyModal()">＋ 学習記録</button></div>
-  <div class="grid">
-    <div class="card col-4"><div class="card-title">今日</div><div class="stat-value">${db.studies.filter(x=>x.date===today()).reduce((a,b)=>a+(Number(b.minutes)||0),0)}分</div><div class="stat-sub">累計 ${total}分</div></div>
-    <div class="card col-8"><div class="card-title">直近7日</div>${studyBars()}</div>
-    <div class="card col-12"><div class="card-title">学習履歴</div><div class="table-wrap"><table><thead><tr><th>日付</th><th>科目</th><th>分</th><th>内容</th><th></th></tr></thead><tbody>
-    ${db.studies.slice(0,50).map(s=>`<tr><td>${esc(s.date)}</td><td>${esc(s.subject)}</td><td>${s.minutes}</td><td>${esc(s.content||"")}</td><td><button class="btn small danger" onclick="trashItem('studies','${s.id}')">削除</button></td></tr>`).join("")}</tbody></table></div></div>
-  </div>`;
-}
-function studyBars(){
-  const days=[];
-  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);days.push({d:ds,m:db.studies.filter(x=>x.date===ds).reduce((a,b)=>a+(+b.minutes||0),0)})}
-  const max=Math.max(60,...days.map(x=>x.m));
-  return `<div class="bar-chart">${days.map(x=>`<div style="flex:1;text-align:center"><div class="bar-wrap"><div class="bar" style="height:${x.m/max*100}%"></div></div><div class="bar-label">${x.d.slice(5)}</div></div>`).join("")}</div>`;
-}
-
-/* HABITS */
-function renderHabits(){
-  return `<div class="toolbar"><button class="btn primary" onclick="openHabitModal()">＋ 習慣</button></div>
-  <div class="grid">${db.habits.map(h=>`
-    <div class="card col-4">
-      <div class="card-title">↻ ${esc(h.title)} <small>🔥 ${habitStreak(h)}</small></div>
-      <div class="list">
-        <div class="list-item"><div class="checkbox ${h.history?.[today()]?"done":""}" onclick="toggleHabit('${h.id}')">${h.history?.[today()]?"✓":""}</div><div class="list-item-main"><div class="list-title">今日</div><div class="list-meta">${h.history?.[today()]?"完了":"未完了"}</div></div></div>
-      </div>
-      <div style="margin-top:10px" class="toolbar"><button class="btn small" onclick="openHabitModal('${h.id}')">編集</button><button class="btn small danger" onclick="trashItem('habits','${h.id}')">削除</button></div>
-    </div>`).join("")||`<div class="card col-12"><div class="empty">習慣なし</div></div>`}</div>`;
-}
-function habitStreak(h){
-  let n=0,d=new Date();
-  while(h.history?.[d.toISOString().slice(0,10)]){
-    n++;d.setDate(d.getDate()-1);
-  }
-  return n;
-}
-function toggleHabit(id){
-  const h=getById("habits",id);if(!h)return;
-  h.history=h.history||{};
-  if(h.history[today()])delete h.history[today()];
-  else{h.history[today()]=true;addXP(10,`習慣: ${h.title}`)}
-  saveDB();render();
-}
-
-/* TAGS */
-function renderTags(){
-  const counts={};
-  ["tasks","notes","novels","games","habits"].forEach(type=>{
-    db[type].forEach(x=>(x.tags||[]).forEach(t=>counts[t]=(counts[t]||0)+1));
-  });
-  return `<div class="card"><div class="card-title"># Tags <small>${Object.keys(counts).length}</small></div>
-  <div>${Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`<span class="tag" style="font-size:12px;padding:8px 10px;margin:4px;cursor:pointer" onclick="searchByTag('${esc(t)}')">#${esc(t)} <small>${c}</small></span>`).join("")||`<div class="empty">タグなし</div>`}</div>
-  <div style="margin-top:20px"><input id="newTag" class="input" placeholder="新しいタグ名"><button class="btn primary" style="margin-top:8px" onclick="addTag()">追加</button></div>
-  </div>`;
-}
-function searchByTag(t){searchTerm=t;go("tasks")}
-function addTag(){
-  const v=document.getElementById("newTag")?.value.trim();if(!v)return;
-  if(!db.tags.includes(v))db.tags.push(v);
-  saveDB();render();toast("タグを追加しました");
-}
-
-/* LINKS */
-function renderLinks(){
-  return `<div class="toolbar"><button class="btn primary" onclick="openLinkModal()">＋ リンク</button></div>
-  <div class="grid">${db.links.map(l=>{
-    const a=linkedLabel(l.aType,l.aId),b=linkedLabel(l.bType,l.bId);
-    return `<div class="card col-6"><div class="card-title">∞ Linked Data</div>
-      <div class="list"><div class="list-item"><div class="list-item-main"><div class="list-title">${esc(a)}</div><div class="list-meta">${esc(l.aType)}</div></div></div>
-      <div style="text-align:center;color:var(--accent)">↕</div>
-      <div class="list-item"><div class="list-item-main"><div class="list-title">${esc(b)}</div><div class="list-meta">${esc(l.bType)}</div></div></div></div>
-      <div class="list-meta" style="margin-top:10px">${esc(l.note||"")}</div>
-      <button class="btn small danger" style="margin-top:10px" onclick="deleteLink('${l.id}')">解除</button>
-    </div>`;
-  }).join("")||`<div class="card col-12"><div class="empty">リンクなし</div></div>`}</div>`;
-}
-function linkedLabel(type,id){
-  const x=getById(type,id);
-  return x?.title||x?.name||"不明";
-}
-
-/* DATABASE */
-function renderDatabase(){
-  return `<div class="toolbar"><button class="btn primary" onclick="openDatabaseModal()">＋ データベース</button></div>
-  <div class="grid">${db.databases.map(d=>`
-    <div class="card col-6">
-      <div class="card-title">▦ ${esc(d.name)} <small>${d.records?.length||0} records</small></div>
-      <div class="list-meta">${esc(d.description||"")}</div>
-      <div class="toolbar" style="margin-top:10px"><button class="btn small" onclick="openDatabaseRecordModal('${d.id}')">＋ レコード</button><button class="btn small" onclick="openDatabaseModal('${d.id}')">編集</button><button class="btn small danger" onclick="trashItem('databases','${d.id}')">削除</button></div>
-      <div class="table-wrap"><table><thead><tr>${(d.fields||[]).map(f=>`<th>${esc(f.name)}</th>`).join("")}<th></th></tr></thead><tbody>
-      ${(d.records||[]).slice(0,10).map(r=>`<tr>${(d.fields||[]).map(f=>`<td>${esc(r[f.id]??"")}</td>`).join("")}<td><button class="btn small" onclick="openDatabaseRecordModal('${d.id}','${r.id}')">編集</button></td></tr>`).join("")}</tbody></table></div>
-    </div>`).join("")||`<div class="card col-12"><div class="empty">カスタムデータベースを作成できます</div></div>`}</div>`;
-}
-
-/* MONEY */
-function renderMoney(){
-  const total=db.money.reduce((a,x)=>a+(Number(x.amount)||0)*(x.type==="expense"?-1:1),0);
-  return `<div class="toolbar"><button class="btn primary" onclick="openMoneyModal()">＋ 記録</button></div>
-  <div class="grid">
-    <div class="card col-4"><div class="card-title">Balance</div><div class="stat-value">¥${total.toLocaleString()}</div></div>
-    <div class="card col-8"><div class="card-title">履歴</div><div class="table-wrap"><table><thead><tr><th>Date</th><th>内容</th><th>種別</th><th>金額</th><th></th></tr></thead><tbody>
-    ${db.money.slice(0,100).map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.title)}</td><td>${x.type==="expense"?"支出":"収入"}</td><td>¥${Number(x.amount).toLocaleString()}</td><td><button class="btn small danger" onclick="trashItem('money','${x.id}')">削除</button></td></tr>`).join("")}</tbody></table></div></div>
-  </div>`;
-}
-
-/* FILES */
-function renderFiles(){
-  return `<div class="toolbar"><label class="btn primary" style="display:inline-flex;align-items:center;cursor:pointer">＋ ファイル<input type="file" multiple hidden onchange="importFiles(this.files)"></label>
-  <button class="btn" onclick="exportFileManifest()">一覧をエクスポート</button></div>
-  <div class="grid">${db.files.map(f=>`
-    <div class="card col-4"><div class="card-title">▧ ${esc(f.name)}</div><div class="list-meta">${esc(f.type||"")} ・ ${formatBytes(f.size)}</div>
-    <div class="toolbar" style="margin-top:10px"><button class="btn small" onclick="downloadStoredFile('${f.id}')">開く</button><button class="btn small danger" onclick="trashItem('files','${f.id}')">削除</button></div></div>`).join("")||`<div class="card col-12"><div class="empty">ファイルなし</div></div>`}</div>`;
-}
-function formatBytes(n){
-  n=Number(n)||0;if(n<1024)return n+" B";if(n<1048576)return (n/1024).toFixed(1)+" KB";return (n/1048576).toFixed(1)+" MB";
-}
-async function importFiles(files){
-  for(const f of files){
-    if(f.size>5*1024*1024){toast("5MBを超えるファイルは保存できません");continue}
-    const data=await fileToDataURL(f);
-    db.files.unshift({id:uid("file"),name:f.name,type:f.type,size:f.size,data,createdAt:now()});
-  }
-  saveDB();render();toast("ファイルを保存しました");
-}
-function fileToDataURL(file){
-  return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})
-}
-function downloadStoredFile(id){
-  const f=getById("files",id);if(!f)return;
-  const a=document.createElement("a");a.href=f.data;a.download=f.name;a.target="_blank";a.click();
-}
-
-/* STATS */
-function renderStats(){
-  return `<div class="grid">
-    <div class="card col-3"><div class="stat-label">総XP</div><div class="stat-value">${db.xp}</div></div>
-    <div class="card col-3"><div class="stat-label">完了タスク</div><div class="stat-value">${db.tasks.filter(x=>x.done).length}</div></div>
-    <div class="card col-3"><div class="stat-label">Focus分</div><div class="stat-value">${db.timerSessions.reduce((a,b)=>a+(b.minutes||0),0)}</div></div>
-    <div class="card col-3"><div class="stat-label">習慣実績</div><div class="stat-value">${db.habits.reduce((a,h)=>a+Object.keys(h.history||{}).length,0)}</div></div>
-    <div class="card col-6"><div class="card-title">Study / Focus</div><canvas id="studyChart" class="chart" width="700" height="230"></canvas></div>
-    <div class="card col-6"><div class="card-title">Task Completion</div><canvas id="taskChart" class="chart" width="700" height="230"></canvas></div>
-    <div class="card col-6"><div class="card-title">Novel PV</div><canvas id="pvChart" class="chart" width="700" height="230"></canvas></div>
-    <div class="card col-6"><div class="card-title">Game Playtime</div><canvas id="gameChart" class="chart" width="700" height="230"></canvas></div>
-  </div>`;
-}
-function drawChart(id,data,labels){
-  const c=document.getElementById(id);if(!c)return;
-  const ctx=c.getContext("2d"),w=c.width,h=c.height;
-  ctx.clearRect(0,0,w,h);
-  const max=Math.max(1,...data);
-  ctx.strokeStyle="rgba(255,255,255,.1)";
-  for(let i=0;i<5;i++){const y=20+i*(h-55)/4;ctx.beginPath();ctx.moveTo(40,y);ctx.lineTo(w-15,y);ctx.stroke()}
-  ctx.beginPath();
-  data.forEach((v,i)=>{
-    const x=45+i*((w-70)/Math.max(1,data.length-1));
-    const y=20+(h-55)*(1-v/max);
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y)
-  });
-  ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#6c7cff";
-  ctx.lineWidth=3;ctx.stroke();
-  data.forEach((v,i)=>{
-    const x=45+i*((w-70)/Math.max(1,data.length-1));
-    const y=20+(h-55)*(1-v/max);
-    ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="rgba(255,255,255,.55)";ctx.font="9px sans-serif";ctx.fillText(labels[i],x-12,h-12);
-  });
-}
-function drawStatsCharts(){
-  const days=[],labels=[];
-  for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);days.push(ds);labels.push(ds.slice(5))}
-  const study=days.map(d=>db.studies.filter(x=>x.date===d).reduce((a,b)=>a+(+b.minutes||0),0));
-  const focus=days.map(d=>db.timerSessions.filter(x=>x.date===d).reduce((a,b)=>a+(+b.minutes||0),0));
-  const tasks=days.map(d=>db.tasks.filter(x=>x.done&&x.completedAt?.slice(0,10)===d).length);
-  const pv=days.map(d=>db.novels.reduce((a,n)=>a+(n.dailyPV?.[d]||0),0));
-  drawChart("studyChart",study,labels);
-  drawChart("taskChart",tasks,labels);
-  drawChart("pvChart",pv,labels);
-  drawChart("gameChart",focus,labels);
-}
-
-/* ACTIVITY */
-function renderActivity(){
-  return `<div class="card"><div class="toolbar"><button class="btn" onclick="db.activity=[];saveDB();render()">履歴をクリア</button></div>
-  <div class="list">${db.activity.map(a=>`<div class="list-item"><div class="list-item-main"><div class="list-title">${esc(a.title)}</div><div class="list-meta">${esc(a.detail||"")} ・ ${fmtDateTime(a.date)}</div></div><span class="tag">${esc(a.type)}</span></div>`).join("")||`<div class="empty">履歴なし</div>`}</div></div>`;
-}
-
-/* TRASH */
-function renderTrash(){
-  return `<div class="card"><div class="card-title">Trash <small>${db.trash.length}</small></div>
-  <div class="list">${db.trash.map(x=>`<div class="list-item"><div class="list-item-main"><div class="list-title">${esc(x.item?.title||x.item?.name||"削除データ")}</div><div class="list-meta">${esc(x.type)} ・ ${fmtDateTime(x.deletedAt)}</div></div>
-  <button class="btn small" onclick="restoreTrash('${x.id}')">復元</button><button class="btn small danger" onclick="deleteTrash('${x.id}')">完全削除</button></div>`).join("")||`<div class="empty">ゴミ箱は空です</div>`}</div>`;
-}
-function trashItem(type,id){
-  const list=db[type],i=list.findIndex(x=>x.id===id);if(i<0)return;
-  const item=list[i];
-  list.splice(i,1);
-  db.trash.unshift({id:uid("trash"),type,item,deletedAt:now()});
-  saveDB();logActivity("trash","データをゴミ箱へ",item.title||item.name||"");render();
-}
-function restoreTrash(id){
-  const x=db.trash.find(v=>v.id===id);if(!x)return;
-  if(db[x.type])db[x.type].push(x.item);
-  db.trash=db.trash.filter(v=>v.id!==id);
-  saveDB();render();toast("復元しました");
-}
-function deleteTrash(id){db.trash=db.trash.filter(v=>v.id!==id);saveDB();render();}
-
-/* SETTINGS */
-function renderSettings(){
-  const wallpaperCards=Object.entries(WALLPAPERS).map(([id,w])=>`
-    <div class="wallpaper ${db.settings.wallpaper===id?"selected":""}" style="background:${w[1]}" onclick="setWallpaper('${id}')">
-      <span>${esc(w[0])}</span>
-    </div>`).join("");
-  return `<div class="grid">
-    <div class="card col-6"><div class="card-title">Profile</div>
-      <label class="field">表示名</label><input class="input" value="${esc(db.user.name)}" onchange="db.user.name=this.value;saveDB();renderSidebar()">
-      <label class="field" style="margin-top:10px">アクセント</label><input type="color" class="input" style="height:45px;padding:4px" value="${db.settings.accent}" onchange="db.settings.accent=this.value;saveDB();applySettings();render()">
-    </div>
-    <div class="card col-6"><div class="card-title">Appearance</div>
-      <div class="toolbar"><button class="btn" onclick="toggleTheme()">☀ / ◐ テーマ</button><button class="btn" onclick="randomWallpaper()">🎲 ランダム壁紙</button><button class="btn" onclick="dailyWallpaper();render()">📅 今日の壁紙</button></div>
-      <label class="field">壁紙の暗さ</label><input type="range" min="0" max=".6" step=".01" value="${db.settings.overlay}" oninput="db.settings.overlay=+this.value;applySettings()" onchange="saveDB()">
-      <label class="field" style="margin-top:10px">表示密度</label><select class="select" onchange="db.settings.density=this.value;saveDB();render()"><option value="compact" ${db.settings.density==="compact"?"selected":""}>Compact</option><option value="normal" ${db.settings.density==="normal"?"selected":""}>Normal</option><option value="large" ${db.settings.density==="large"?"selected":""}>Large</option></select>
-    </div>
-    <div class="card col-12"><div class="card-title">20 Wallpapers <small>${WALLPAPERS[db.settings.wallpaper]?.[0]}</small></div>
-      <div class="wallpaper-grid">${wallpaperCards}</div>
-      <label style="display:flex;align-items:center;gap:8px;margin-top:13px;font-size:12px"><input type="checkbox" ${db.settings.autoWallpaper?"checked":""} onchange="db.settings.autoWallpaper=this.checked;saveDB()"> 毎日自動で壁紙を変更</label>
-    </div>
-    <div class="card col-6"><div class="card-title">Dashboard</div>
-      <div class="list">${db.dashboardOrder.map((id,i)=>`
-      <div class="list-item" draggable="true" ondragstart="dragDashboard='${id}'" ondragover="event.preventDefault()" ondrop="dropDashboard('${id}')">
-        <span>☷</span><div class="list-item-main"><div class="list-title">${esc(id)}</div></div>
-        <button class="btn small" onclick="toggleDashboardCard('${id}')">${db.dashboardHidden.includes(id)?"表示":"非表示"}</button>
-      </div>`).join("")}</div>
-    </div>
-    <div class="card col-6"><div class="card-title">Notifications / Sound</div>
-      <button class="btn" onclick="requestNotifications()">🔔 通知を許可</button>
-      <button class="btn" onclick="playBeep()">♪ サウンドテスト</button>
-      <label style="display:block;margin-top:12px;font-size:12px"><input type="checkbox" ${db.settings.sound?"checked":""} onchange="db.settings.sound=this.checked;saveDB()"> サウンド</label>
-      <label style="display:block;margin-top:10px;font-size:12px"><input type="checkbox" ${db.settings.animations?"checked":""} onchange="db.settings.animations=this.checked;saveDB()"> アニメーション</label>
-    </div>
-    <div class="card col-6"><div class="card-title">Security</div>
-      <label class="field">アプリPIN</label><input id="pinSetting" class="input" type="password" inputmode="numeric" maxlength="6" placeholder="4〜6桁">
-      <div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick="setPIN()">PINを設定</button><button class="btn danger" onclick="removePIN()">PINを解除</button></div>
-      <div class="list-meta">※このPINは端末上のアプリロック用です。完全な暗号化ストレージではありません。</div>
-    </div>
-    <div class="card col-6"><div class="card-title">Backup</div>
-      <div class="toolbar"><button class="btn" onclick="exportBackup()">JSONを書き出す</button><label class="btn">JSONを読み込む<input type="file" accept=".json" hidden onchange="importBackup(this.files[0])"></label></div>
-      <button class="btn danger" onclick="resetAll()">全データ初期化</button>
-    </div>
-  </div>`;
-}
-function setWallpaper(id){db.settings.wallpaper=id;saveDB();applySettings();render()}
-function toggleDashboardCard(id){
-  if(db.dashboardHidden.includes(id))db.dashboardHidden=db.dashboardHidden.filter(x=>x!==id);
-  else db.dashboardHidden.push(id);
-  saveDB();render();
-}
-function dropDashboard(target){
-  if(!dragDashboard||dragDashboard===target)return;
-  const a=db.dashboardOrder.indexOf(dragDashboard),b=db.dashboardOrder.indexOf(target);
-  db.dashboardOrder.splice(a,1);db.dashboardOrder.splice(b,0,dragDashboard);
-  dragDashboard=null;saveDB();render();
-}
-
-/* SEARCH */
-function globalSearch(){
-  showModal("NEXUS Search",`
-    <input id="globalSearchInput" class="search" placeholder="タスク、ノート、小説、ゲーム、予定..." autofocus oninput="runGlobalSearch(this.value)">
-    <div id="globalResults" class="list" style="margin-top:12px"></div>`);
-}
-function runGlobalSearch(q){
-  const out=document.getElementById("globalResults");if(!out)return;
-  q=q.toLowerCase().trim();
-  if(!q){out.innerHTML=`<div class="empty">検索語を入力</div>`;return}
-  const types=["tasks","notes","events","novels","games","habits","studies","money"];
-  let rows=[];
-  types.forEach(type=>db[type].forEach(x=>{
-    const text=JSON.stringify(x).toLowerCase();
-    if(text.includes(q))rows.push({type,x});
-  }));
-  out.innerHTML=rows.slice(0,50).map(r=>`<div class="list-item"><div class="list-item-main"><div class="list-title">${esc(r.x.title||r.x.name||r.x.subject||"データ")}</div><div class="list-meta">${r.type}</div></div><button class="btn small" onclick="closeModal();go('${typeToView(r.type)}')">開く</button></div>`).join("")||`<div class="empty">見つかりません</div>`;
-}
-function typeToView(t){
-  return {tasks:"tasks",notes:"notes",events:"calendar",novels:"novels",games:"games",habits:"habits",studies:"study",money:"money"}[t]||"dashboard";
-}
-
-/* QUICK ADD */
-function quickAdd(){
-  showModal("Quick Add",`
-    <div class="grid">
-      ${[
-        ["task","✓","タスク","openTaskModal()"],
-        ["note","▤","ノート","openNoteModal()"],
-        ["event","□","予定","openEventModal()"],
-        ["study","▣","学習","openStudyModal()"],
-        ["habit","↻","習慣","openHabitModal()"],
-        ["novel","✎","小説","openNovelModal()"],
-        ["game","◇","ゲーム","openGameModal()"],
-        ["money","¥","お金","openMoneyModal()"]
-      ].map(x=>`<div class="card" style="cursor:pointer" onclick="${x[3]}"><div style="font-size:25px">${x[1]}</div><b>${x[2]}</b></div>`).join("")}
-    </div>`);
-}
-
-/* MODALS */
-function showModal(title,body,foot=""){
-  currentModal={title,body,foot};
-  const m=document.getElementById("modal");
-  m.innerHTML=`<div class="modal-box">
-    <div class="modal-head"><div class="modal-title">${title}</div><button class="icon-btn modal-close" onclick="closeModal()">×</button></div>
-    <div class="modal-body">${body}</div>
-    ${foot?`<div class="modal-foot">${foot}</div>`:""}
-  </div>`;
-  m.classList.remove("hidden");
-}
-function closeModal(){document.getElementById("modal").classList.add("hidden");currentModal=null}
-
-function openTaskModal(id=null){
-  const t=id?getById("tasks",id):null;
-  showModal(t?"タスク編集":"タスク追加",`
-    <div class="form-grid">
-      <div class="full"><label class="field">タイトル</label><input id="fTitle" class="input" value="${esc(t?.title||"")}"></div>
-      <div class="full"><label class="field">説明</label><textarea id="fDesc" class="textarea">${esc(t?.description||"")}</textarea></div>
-      <div><label class="field">期限</label><input id="fDue" type="date" class="input" value="${t?.due||""}"></div>
-      <div><label class="field">時刻</label><input id="fTime" type="time" class="input" value="${t?.time||""}"></div>
-      <div><label class="field">優先度</label><select id="fPriority" class="select"><option value="low">低</option><option value="normal">通常</option><option value="high">高</option></select></div>
-      <div><label class="field">繰り返し</label><select id="fRepeat" class="select"><option value="">なし</option><option value="daily">毎日</option><option value="weekly">毎週</option><option value="monthly">毎月</option></select></div>
-      <div><label class="field">タグ</label><input id="fTags" class="input" value="${esc((t?.tags||[]).join(", "))}" placeholder="study,important"></div>
-      <div><label class="field">進捗 %</label><input id="fProgress" type="number" min="0" max="100" class="input" value="${t?.progress||0}"></div>
-      <div class="full"><label class="field">サブタスク（1行1つ）</label><textarea id="fSubtasks" class="textarea">${esc((t?.subtasks||[]).map(x=>x.title).join("\n"))}</textarea></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveTask('${id||""}')">保存</button>`);
-  if(t){
-    document.getElementById("fPriority").value=t.priority||"normal";
-    document.getElementById("fRepeat").value=t.repeat||"";
-  }
-}
 function saveTask(id){
-  const title=document.getElementById("fTitle").value.trim();if(!title)return toast("タイトルを入力してください");
-  const old=id?getById("tasks",id):null;
-  const obj=old||{id:uid("task"),createdAt:now(),done:false};
-  obj.title=title;obj.description=document.getElementById("fDesc").value;
-  obj.due=document.getElementById("fDue").value;obj.time=document.getElementById("fTime").value;
-  obj.priority=document.getElementById("fPriority").value;obj.repeat=document.getElementById("fRepeat").value;
-  obj.tags=document.getElementById("fTags").value.split(",").map(x=>x.trim()).filter(Boolean);
-  obj.progress=Math.max(0,Math.min(100,+document.getElementById("fProgress").value||0));
-  obj.subtasks=document.getElementById("fSubtasks").value.split("\n").map(x=>x.trim()).filter(Boolean).map((x,i)=>old?.subtasks?.[i]||{id:uid("sub"),title:x,done:false});
-  obj.updatedAt=now();
-  if(!old)db.tasks.unshift(obj);
-  saveDB();logActivity("task",old?"タスク編集":"タスク作成",title);closeModal();render();
+ const obj={id:id||uid(),title:g("fTitle"),due:g("fDue"),time:g("fTime"),priority:g("fPriority"),tags:split(g("fTags")),description:g("fDesc"),subtasks:g("fSubs").split("\n").filter(Boolean).map(x=>({id:uid(),title:x,done:false})),done:false,created:Date.now()};
+ const old=id&&S.tasks.find(x=>x.id===id);if(old){Object.assign(old,obj,{done:old.done,created:old.created,subtasks:old.subtasks?.map((x,i)=>({...obj.subtasks[i],done:x.done}))||obj.subtasks})}else{S.tasks.push(obj);log("task","タスクを作成："+obj.title,5)}
+ save();closeModal();render();
 }
+function saveNote(id){let old=id&&S.notes.find(x=>x.id===id),obj={id:id||uid(),title:g("fTitle")||"無題",category:g("fCat"),tags:split(g("fTags")),body:g("fBody"),pin:g("fPin")==="1",created:old?.created||Date.now(),updated:Date.now(),history:old?.history||[]};if(old){old.history.push({body:old.body,time:Date.now()});Object.assign(old,obj)}else{S.notes.unshift(obj);log("note","ノートを作成："+obj.title,3)}save();closeModal();render()}
+function saveEvent(id){let obj={id:id||uid(),title:g("fTitle"),date:g("fDate"),time:g("fTime"),place:g("fPlace"),category:g("fCat"),description:g("fDesc")},old=id&&S.events.find(x=>x.id===id);if(old)Object.assign(old,obj);else{S.events.push(obj);log("event","予定を追加："+obj.title,3)}save();closeModal();render()}
+function saveNovel(id){let old=id&&S.novels.find(x=>x.id===id),obj={id:id||uid(),title:g("fTitle"),genre:g("fGenre"),synopsis:g("fDesc"),status:g("fStatus"),words:+g("fWords")||0,pv:+g("fPV")||0,progress:clamp(+g("fProgress")||0,0,100),tags:split(g("fTags")),episodes:old?.episodes||[],created:old?.created||Date.now()};if(old)Object.assign(old,obj);else{S.novels.push(obj);log("novel","作品を作成："+obj.title,5)}save();closeModal();render()}
+function saveGame(id){let old=id&&S.games.find(x=>x.id===id),obj={id:id||uid(),title:g("fTitle"),platform:g("fPlatform"),level:+g("fLevel")||1,score:+g("fScore")||0,minutes:+g("fMinutes")||0,achievements:split(g("fAch")),created:old?.created||Date.now()};if(old)Object.assign(old,obj);else{S.games.push(obj);log("game","ゲームを登録："+obj.title,3)}save();closeModal();render()}
+function saveStudy(){let m=+g("fMinutes")||0;S.studies.push({id:uid(),subject:g("fSubject"),date:g("fDate"),minutes:m,memo:g("fMemo")});log("study",`${g("fSubject")}を${m}分勉強`,Math.min(100,Math.round(m)));save();closeModal();render()}
+function saveHabit(id){let old=id&&S.habits.find(x=>x.id===id),obj={id:id||uid(),name:g("fName"),goal:g("fGoal"),logs:old?.logs||[]};if(old)Object.assign(old,obj);else{S.habits.push(obj);log("habit","習慣を作成："+obj.name,3)}save();closeModal();render()}
+function saveLink(){S.links.push({id:uid(),a:g("fA"),b:g("fB"),memo:g("fMemo")});log("link","NEXUS LINKを作成",5);save();closeModal();render()}
+function saveDb(id){let old=id&&S.databases.find(x=>x.id===id),obj={id:id||uid(),name:g("fName"),fields:g("fFields").split(",").filter(Boolean).map(n=>({id:uid(),name:n.trim(),type:"text"})),records:old?.records||[]};if(old)Object.assign(old,obj);else S.databases.push(obj);save();closeModal();render()}
+function g(id){return document.getElementById(id)?.value||""}function split(s){return s.split(",").map(x=>x.trim()).filter(Boolean)}
 
-function openNoteModal(id=null){
-  const n=id?getById("notes",id):null;
-  showModal(n?"ノート編集":"ノート追加",`
-    <div class="form-grid">
-      <div class="full"><label class="field">タイトル</label><input id="nTitle" class="input" value="${esc(n?.title||"")}"></div>
-      <div class="full"><label class="field">本文</label><textarea id="nContent" class="textarea" style="min-height:300px">${esc(n?.content||"")}</textarea></div>
-      <div><label class="field">タグ</label><input id="nTags" class="input" value="${esc((n?.tags||[]).join(", "))}"></div>
-      <div><label class="field">カテゴリ</label><input id="nCategory" class="input" value="${esc(n?.category||"")}></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveNote('${id||""}')">保存</button>`);
+function startTimer(){
+ if(S.timer.mode==="countdown"&&!S.timer.remaining){return}
+ S.timer.running=true;S.timer.started=Date.now()-(S.timer.elapsed||0)*1000;save();toast("タイマー開始")
 }
-function saveNote(id){
-  const title=document.getElementById("nTitle").value.trim()||"無題";
-  const content=document.getElementById("nContent").value;
-  const old=id?getById("notes",id):null;
-  const n=old||{id:uid("note"),createdAt:now(),history:[],pinned:false};
-  if(old&&old.content!==content)n.history.unshift({title:n.title,content:n.content,date:now()});
-  n.title=title;n.content=content;n.tags=document.getElementById("nTags").value.split(",").map(x=>x.trim()).filter(Boolean);n.category=document.getElementById("nCategory").value;n.updatedAt=now();
-  if(!old)db.notes.unshift(n);
-  saveDB();logActivity("note",old?"ノート編集":"ノート作成",title);closeModal();selectedNoteId=n.id;render();
+function pauseTimer(){
+ if(!S.timer.running)return;S.timer.elapsed=(Date.now()-S.timer.started)/1000;S.timer.remaining=Math.max(0,S.timer.remaining-(S.timer.elapsed-(S.timer.lastTick||0)));S.timer.lastTick=S.timer.elapsed;S.timer.running=false;save()
 }
+function resetTimer(){S.timer.running=false;S.timer.elapsed=0;S.timer.lastTick=0;S.timer.remaining=S.timer.total;save();updateTimerUI()}
+function completeTimer(){
+ const mins=Math.max(1,Math.round((S.timer.total-S.timer.remaining)/60));
+ S.timer.sessions.unshift({id:uid(),minutes:mins,time:Date.now(),label:timerLabel()});
+ log("timer",`${timerLabel()}を${mins}分実行`,Math.min(100,mins));
+ S.timer.running=false;S.timer.remaining=S.timer.total;S.timer.elapsed=0;S.timer.lastTick=0;save();
+ notify("⏱ NEXUS タイマー",`${timerLabel()}が終了しました`);
+ playBeep();render();
+}
+function timerLabel(){if(S.timer.linkId)return resolveName(S.timer.linkType+":"+S.timer.linkId);return"フリータイマー"}
+function updateTimerUI(){
+ const el=document.getElementById("timerDisplay")||document.getElementById("dashTimer");if(!el)return;
+ if(S.timer.running){
+   let elapsed=(Date.now()-S.timer.started)/1000;
+   if(S.timer.mode==="stopwatch")el.textContent=clock(Math.floor(elapsed));
+   else{let r=Math.max(0,S.timer.remaining-Math.floor(elapsed-(S.timer.lastTick||0)));el.textContent=clock(r)}
+ }else el.textContent=timerText();
+}
+function clock(sec){sec=Math.max(0,sec);return `${String(Math.floor(sec/3600)).padStart(2,"0")}:${String(Math.floor(sec%3600/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`}
+setInterval(()=>{
+ if(!S.timer.running)return;
+ if(S.timer.mode==="stopwatch"){updateTimerUI();return}
+ let elapsed=Math.floor((Date.now()-S.timer.started)/1000),r=S.timer.remaining-Math.max(0,elapsed-(S.timer.lastTick||0));
+ const el=document.getElementById("timerDisplay")||document.getElementById("dashTimer");if(el)el.textContent=clock(r);
+ if(r<=0)completeTimer();
+},250);
 
-function openEventModal(id=null,date=null){
-  const e=id?getById("events",id):null;
-  showModal(e?"予定編集":"予定追加",`
-    <div class="form-grid">
-      <div class="full"><label class="field">タイトル</label><input id="eTitle" class="input" value="${esc(e?.title||"")}"></div>
-      <div><label class="field">日付</label><input id="eDate" type="date" class="input" value="${e?.date||date||today()}"></div>
-      <div><label class="field">時刻</label><input id="eTime" type="time" class="input" value="${e?.time||"09:00"}"></div>
-      <div><label class="field">場所</label><input id="ePlace" class="input" value="${esc(e?.place||"")}"></div>
-      <div><label class="field">カテゴリ</label><input id="eCategory" class="input" value="${esc(e?.category||"")}"></div>
-      <div><label class="field">繰り返し</label><select id="eRepeat" class="select"><option value="">なし</option><option value="daily">毎日</option><option value="weekly">毎週</option><option value="monthly">毎月</option></select></div>
-      <div><label class="field">リマインド（分前）</label><input id="eReminder" type="number" class="input" value="${e?.reminder||0}"></div>
-      <div class="full"><label class="field">詳細</label><textarea id="eDetails" class="textarea">${esc(e?.details||"")}</textarea></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveEvent('${id||""}')">保存</button>`);
-  if(e)document.getElementById("eRepeat").value=e.repeat||"";
-}
-function saveEvent(id){
-  const title=document.getElementById("eTitle").value.trim();if(!title)return;
-  const old=id?getById("events",id):null;
-  const e=old||{id:uid("event"),createdAt:now()};
-  e.title=title;e.date=document.getElementById("eDate").value;e.time=document.getElementById("eTime").value;
-  e.place=document.getElementById("ePlace").value;e.category=document.getElementById("eCategory").value;
-  e.repeat=document.getElementById("eRepeat").value;e.reminder=+document.getElementById("eReminder").value||0;e.details=document.getElementById("eDetails").value;e.updatedAt=now();
-  if(!old)db.events.push(e);
-  saveDB();logActivity("calendar",old?"予定編集":"予定作成",title);closeModal();render();
-}
-
-function openNovelModal(id=null){
-  const n=id?getById("novels",id):null;
-  showModal(n?"作品編集":"作品追加",`
-    <div class="form-grid">
-      <div class="full"><label class="field">作品名</label><input id="vTitle" class="input" value="${esc(n?.title||"")}"></div>
-      <div><label class="field">ジャンル</label><input id="vGenre" class="input" value="${esc(n?.genre||"")}"></div>
-      <div><label class="field">ステータス</label><select id="vStatus" class="select"><option>執筆中</option><option>完結</option><option>休止</option><option>企画</option></select></div>
-      <div><label class="field">投稿サイト</label><input id="vPlatform" class="input" value="${esc(n?.platform||"")}"></div>
-      <div><label class="field">文字数</label><input id="vWords" type="number" class="input" value="${n?.wordCount||0}"></div>
-      <div class="full"><label class="field">あらすじ</label><textarea id="vSynopsis" class="textarea">${esc(n?.synopsis||"")}</textarea></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveNovel('${id||""}')">保存</button>`);
-  if(n)document.getElementById("vStatus").value=n.status||"執筆中";
-}
-function saveNovel(id){
-  const title=document.getElementById("vTitle").value.trim();if(!title)return;
-  const old=id?getById("novels",id):null;
-  const n=old||{id:uid("novel"),createdAt:now(),episodes:[],dailyPV:{},pvHistory:[]};
-  n.title=title;n.genre=document.getElementById("vGenre").value;n.status=document.getElementById("vStatus").value;n.platform=document.getElementById("vPlatform").value;n.wordCount=+document.getElementById("vWords").value||0;n.synopsis=document.getElementById("vSynopsis").value;
-  n.totalPV=Object.values(n.dailyPV||{}).reduce((a,b)=>a+(+b||0),0);
-  n.highestDayPV=Math.max(0,...Object.values(n.dailyPV||{}).map(Number));
-  if(!old)db.novels.push(n);
-  saveDB();logActivity("novel",old?"作品編集":"作品作成",title);closeModal();render();
-}
-function openEpisodeModal(id=null,novelId=null){
-  let parent=novelId?getById("novels",novelId):db.novels[0];
-  let existing=null;
-  if(id){
-    for(const n of db.novels){existing=n.episodes?.find(e=>e.id===id);if(existing){parent=n;break}}
-  }
-  if(!parent)return toast("先に作品を作成してください");
-  showModal("エピソード",`
-    <div class="form-grid">
-      <div class="full"><label class="field">作品</label><select id="epNovel" class="select">${db.novels.map(n=>`<option value="${n.id}" ${n.id===parent.id?"selected":""}>${esc(n.title)}</option>`).join("")}</select></div>
-      <div><label class="field">タイトル</label><input id="epTitle" class="input" value="${esc(existing?.title||"")}"></div>
-      <div><label class="field">文字数</label><input id="epWords" type="number" class="input" value="${existing?.wordCount||0}"></div>
-      <div><label class="field">PV</label><input id="epPV" type="number" class="input" value="${existing?.pv||0}"></div>
-      <div><label class="field">投稿状況</label><select id="epStatus" class="select"><option>未投稿</option><option>投稿済</option><option>予約</option></select></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveEpisode('${id||""}')">保存</button>`);
-  if(existing)document.getElementById("epStatus").value=existing.status||"未投稿";
-}
-function saveEpisode(id){
-  const novel=getById("novels",document.getElementById("epNovel").value);if(!novel)return;
-  const old=id?novel.episodes.find(x=>x.id===id):null;
-  const e=old||{id:uid("episode"),createdAt:now()};
-  e.title=document.getElementById("epTitle").value.trim()||"無題";e.wordCount=+document.getElementById("epWords").value||0;e.pv=+document.getElementById("epPV").value||0;e.status=document.getElementById("epStatus").value;
-  if(!old)novel.episodes.push(e);
-  novel.wordCount=novel.episodes.reduce((a,b)=>a+(+b.wordCount||0),0);
-  saveDB();closeModal();render();
-}
-function openPVModal(id){
-  const n=getById("novels",id);
-  showModal("PV記録",`
-    <div class="form-grid">
-      <div><label class="field">日付</label><input id="pvDate" type="date" class="input" value="${today()}"></div>
-      <div><label class="field">PV</label><input id="pvValue" type="number" class="input" value="0"></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="savePV('${id}')">保存</button>`);
-}
-function savePV(id){
-  const n=getById("novels",id),d=document.getElementById("pvDate").value,v=+document.getElementById("pvValue").value||0;
-  if(!n)return;n.dailyPV=n.dailyPV||{};n.dailyPV[d]=v;n.totalPV=Object.values(n.dailyPV).reduce((a,b)=>a+(+b||0),0);n.highestDayPV=Math.max(0,...Object.values(n.dailyPV).map(Number));
-  saveDB();closeModal();render();
-}
-
-/* GAMES */
-function openGameModal(id=null){
-  const g=id?getById("games",id):null;
-  showModal(g?"ゲーム編集":"ゲーム追加",`
-    <div class="form-grid">
-      <div class="full"><label class="field">ゲーム名</label><input id="gTitle" class="input" value="${esc(g?.title||"")}"></div>
-      <div><label class="field">レベル</label><input id="gLevel" type="number" class="input" value="${g?.level||1}"></div>
-      <div><label class="field">ランク</label><input id="gRank" class="input" value="${esc(g?.rank||"")}"></div>
-      <div><label class="field">スコア</label><input id="gScore" type="number" class="input" value="${g?.score||0}"></div>
-      <div><label class="field">通貨</label><input id="gCurrency" type="number" class="input" value="${g?.currency||0}"></div>
-      <div><label class="field">プレイ時間</label><input id="gPlaytime" type="number" step=".1" class="input" value="${g?.playtime||0}"></div>
-      <div><label class="field">タグ</label><input id="gTags" class="input" value="${esc((g?.tags||[]).join(", "))}"></div>
-      <div class="full"><label class="field">実績（1行1つ）</label><textarea id="gAch" class="textarea">${esc((g?.achievements||[]).map(x=>x.title).join("\n"))}</textarea></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveGame('${id||""}')">保存</button>`);
-}
-function saveGame(id){
-  const title=document.getElementById("gTitle").value.trim();if(!title)return;
-  const old=id?getById("games",id):null;
-  const g=old||{id:uid("game"),createdAt:now(),history:[]};
-  g.title=title;g.level=+document.getElementById("gLevel").value||1;g.rank=document.getElementById("gRank").value;g.score=+document.getElementById("gScore").value||0;g.currency=+document.getElementById("gCurrency").value||0;g.playtime=+document.getElementById("gPlaytime").value||0;g.tags=document.getElementById("gTags").value.split(",").map(x=>x.trim()).filter(Boolean);
-  const oldAch=g.achievements||[];
-  g.achievements=document.getElementById("gAch").value.split("\n").map(x=>x.trim()).filter(Boolean).map((x,i)=>oldAch[i]||{id:uid("ach"),title:x,done:false});
-  if(!old)db.games.push(g);
-  saveDB();closeModal();render();
-}
-
-/* STUDY */
-function openStudyModal(){
-  showModal("学習記録",`
-    <div class="form-grid">
-      <div><label class="field">日付</label><input id="sDate" type="date" class="input" value="${today()}"></div>
-      <div><label class="field">科目</label><input id="sSubject" class="input" placeholder="数学"></div>
-      <div><label class="field">時間（分）</label><input id="sMinutes" type="number" class="input" value="30"></div>
-      <div><label class="field">内容</label><input id="sContent" class="input"></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveStudy()">保存</button>`);
-}
-function saveStudy(){
-  const x={id:uid("study"),date:document.getElementById("sDate").value,subject:document.getElementById("sSubject").value,minutes:+document.getElementById("sMinutes").value||0,content:document.getElementById("sContent").value};
-  db.studies.unshift(x);addXP(Math.min(30,Math.floor(x.minutes/10)),`学習 ${x.minutes}分`);saveDB();closeModal();render();
-}
-
-/* HABIT */
-function openHabitModal(id=null){
-  const h=id?getById("habits",id):null;
-  showModal(h?"習慣編集":"習慣追加",`
-    <div class="form-grid">
-      <div class="full"><label class="field">習慣名</label><input id="hTitle" class="input" value="${esc(h?.title||"")}"></div>
-      <div><label class="field">目標</label><input id="hTarget" class="input" value="${esc(h?.target||"毎日")}"></div>
-      <div><label class="field">タグ</label><input id="hTags" class="input" value="${esc((h?.tags||[]).join(", "))}"></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveHabit('${id||""}')">保存</button>`);
-}
-function saveHabit(id){
-  const title=document.getElementById("hTitle").value.trim();if(!title)return;
-  const old=id?getById("habits",id):null;
-  const h=old||{id:uid("habit"),history:{},createdAt:now()};
-  h.title=title;h.target=document.getElementById("hTarget").value;h.tags=document.getElementById("hTags").value.split(",").map(x=>x.trim()).filter(Boolean);
-  if(!old)db.habits.push(h);
-  saveDB();closeModal();render();
-}
-
-/* LINK */
-function linkedOptions(){
-  return ["tasks","notes","events","novels","games","habits","studies","money"].map(type=>
-    db[type].map(x=>`<option value="${type}|${x.id}">${type}: ${esc(x.title||x.name||x.subject||"データ")}</option>`).join("")
-  ).join("");
-}
-function openLinkModal(){
-  showModal("NEXUS LINK",`
-    <label class="field">データA</label><select id="lA" class="select">${linkedOptions()}</select>
-    <label class="field" style="margin-top:10px">データB</label><select id="lB" class="select">${linkedOptions()}</select>
-    <label class="field" style="margin-top:10px">メモ</label><textarea id="lNote" class="textarea"></textarea>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveLink()">リンクする</button>`);
-}
-function saveLink(){
-  const a=document.getElementById("lA").value.split("|"),b=document.getElementById("lB").value.split("|");
-  db.links.push({id:uid("link"),aType:a[0],aId:a[1],bType:b[0],bId:b[1],note:document.getElementById("lNote").value});
-  saveDB();closeModal();render();
-}
-function deleteLink(id){db.links=db.links.filter(x=>x.id!==id);saveDB();render()}
-
-/* DATABASE */
-function openDatabaseModal(id=null){
-  const d=id?getById("databases",id):null;
-  showModal(d?"データベース編集":"データベース作成",`
-    <label class="field">名前</label><input id="dbName" class="input" value="${esc(d?.name||"")}">
-    <label class="field" style="margin-top:10px">説明</label><textarea id="dbDesc" class="textarea">${esc(d?.description||"")}</textarea>
-    <label class="field" style="margin-top:10px">フィールド</label>
-    <textarea id="dbFields" class="textarea" placeholder="名前:text&#10;数値:number&#10;日付:date">${esc((d?.fields||[]).map(f=>`${f.name}:${f.type}`).join("\n"))}</textarea>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveDatabase('${id||""}')">保存</button>`);
-}
-function saveDatabase(id){
-  const name=document.getElementById("dbName").value.trim();if(!name)return;
-  const old=id?getById("databases",id):null;
-  const d=old||{id:uid("db"),records:[],createdAt:now()};
-  d.name=name;d.description=document.getElementById("dbDesc").value;
-  d.fields=document.getElementById("dbFields").value.split("\n").map(x=>x.trim()).filter(Boolean).map(line=>{const p=line.split(":");return{id:uid("field"),name:p[0],type:p[1]||"text"}})
-  if(!old)db.databases.push(d);
-  saveDB();closeModal();render();
-}
-function openDatabaseRecordModal(dbid,rid=null){
-  const d=getById("databases",dbid);if(!d)return;
-  const r=rid?d.records.find(x=>x.id===rid):null;
-  showModal("レコード",`<div class="form-grid">${d.fields.map(f=>`<div><label class="field">${esc(f.name)}</label><input id="rf_${f.id}" type="${f.type==="number"?"number":f.type==="date"?"date":"text"}" class="input" value="${esc(r?.[f.id]??"")}"></div>`).join("")}</div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveDatabaseRecord('${dbid}','${rid||""}')">保存</button>`);
-}
-function saveDatabaseRecord(dbid,rid){
-  const d=getById("databases",dbid);if(!d)return;
-  const r=rid?d.records.find(x=>x.id===rid):{id:uid("record")};
-  d.fields.forEach(f=>r[f.id]=document.getElementById("rf_"+f.id)?.value||"");
-  if(!rid)d.records.push(r);
-  saveDB();closeModal();render();
-}
-
-/* MONEY */
-function openMoneyModal(){
-  showModal("お金の記録",`
-    <div class="form-grid">
-      <div><label class="field">日付</label><input id="mDate" type="date" class="input" value="${today()}"></div>
-      <div><label class="field">内容</label><input id="mTitle" class="input"></div>
-      <div><label class="field">金額</label><input id="mAmount" type="number" class="input"></div>
-      <div><label class="field">種別</label><select id="mType" class="select"><option value="expense">支出</option><option value="income">収入</option></select></div>
-    </div>`,
-    `<button class="btn" onclick="closeModal()">キャンセル</button><button class="btn primary" onclick="saveMoney()">保存</button>`);
-}
-function saveMoney(){
-  db.money.unshift({id:uid("money"),date:document.getElementById("mDate").value,title:document.getElementById("mTitle").value,amount:+document.getElementById("mAmount").value||0,type:document.getElementById("mType").value});
-  saveDB();closeModal();render();
-}
-
-/* BACKUP */
-function exportBackup(){
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`NEXUS-backup-${today()}.json`;a.click();URL.revokeObjectURL(a.href);
-}
-async function importBackup(file){
-  if(!file)return;
-  try{
-    const text=await file.text(),data=JSON.parse(text);
-    if(!confirm("現在のデータを読み込んだデータで置き換えますか？"))return;
-    db=deepMerge(clone(DEFAULT),data);saveDB();applySettings();renderSidebar();render();toast("バックアップを復元しました");
-  }catch(e){toast("JSONを読み込めませんでした")}
-}
-function exportFileManifest(){
-  const blob=new Blob([JSON.stringify(db.files.map(({data,...x})=>x),null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="NEXUS-files.json";a.click();
-}
-function resetAll(){
-  if(!confirm("本当に全データを削除しますか？"))return;
-  localStorage.removeItem(KEY);db=clone(DEFAULT);saveDB();applySettings();renderSidebar();render();toast("初期化しました");
-}
-
-/* PIN */
-async function hashPin(pin){
-  const data=new TextEncoder().encode(pin);
-  const hash=await crypto.subtle.digest("SHA-256",data);
-  return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,"0")).join("");
-}
-async function setPIN(){
-  const p=document.getElementById("pinSetting")?.value||"";
-  if(!/^\d{4,6}$/.test(p))return toast("4〜6桁の数字を入力してください");
-  db.settings.pin=await hashPin(p);db.settings.lock=true;saveDB();toast("PINを設定しました");
-}
-async function removePIN(){db.settings.pin="";db.settings.lock=false;saveDB();toast("PINを解除しました")}
-async function unlockApp(){
-  const p=document.getElementById("lockPin").value;
-  if(await hashPin(p)===db.settings.pin){
-    document.getElementById("lockScreen").classList.add("hidden");
-    document.getElementById("lockPin").value="";
-  }else toast("PINが違います");
-}
-function initLock(){
-  if(db.settings.lock&&db.settings.pin)document.getElementById("lockScreen").classList.remove("hidden");
-}
-
-/* NOTIFICATIONS */
-async function requestNotifications(){
-  if(!("Notification" in window))return toast("このブラウザは通知に対応していません");
-  const p=await Notification.requestPermission();
-  toast(p==="granted"?"通知を許可しました":"通知は許可されませんでした");
-}
 function notify(title,body){
-  if("Notification" in window&&Notification.permission==="granted"){
-    try{new Notification(title,{body,icon:""})}catch(e){}
-  }
+ if(S.settings.notifications&&"Notification"in window&&Notification.permission==="granted"){
+   try{new Notification(title,{body,tag:"nexus"})}catch{}
+ }
 }
-function notificationLoop(){
-  const nowMs=Date.now();
-  db.events.forEach(e=>{
-    if(!e.reminder||!e.date||!e.time)return;
-    const t=new Date(`${e.date}T${e.time}`).getTime()-e.reminder*60000;
-    if(Math.abs(t-nowMs)<35000&&!e._notified){
-      e._notified=true;saveDB();notify("NEXUS予定",e.title);
-    }
-  });
-  db.tasks.forEach(t=>{
-    if(!t.due||t.done)return;
-    if(t.due===today()&&t.time){
-      const target=new Date(`${t.due}T${t.time}`).getTime();
-      if(Math.abs(target-nowMs)<35000&&!t._notified){
-        t._notified=true;saveDB();notify("NEXUSタスク",t.title);
-      }
-    }
-  });
-}
-
-/* SOUND */
 function playBeep(){
-  if(!db.settings.sound)return;
-  try{
-    const C=window.AudioContext||window.webkitAudioContext;
-    const c=new C(),o=c.createOscillator(),g=c.createGain();
-    o.frequency.value=740;g.gain.value=.06;o.connect(g);g.connect(c.destination);o.start();
-    setTimeout(()=>{o.frequency.value=980},120);
-    setTimeout(()=>{o.stop();c.close()},280);
-  }catch(e){}
+ if(!S.settings.sounds)return;
+ try{let c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.08;o.start();setTimeout(()=>{o.stop();c.close()},500)}catch{}
 }
 
-/* SERVICE WORKER */
-async function registerSW(){
-  if("serviceWorker" in navigator){
-    try{await navigator.serviceWorker.register("./sw.js",{scope:"./"})}catch(e){}
-  }
+function bindView(){
+ document.querySelectorAll("[data-action]").forEach(b=>b.onclick=()=>actions(b.dataset.action));
+ document.querySelectorAll("[data-modal-action]").forEach(b=>{b.onclick=()=>{closeModal();actions(b.dataset.modalAction)}});
+ document.querySelectorAll("[data-task]").forEach(e=>e.onchange=()=>toggleTask(e.dataset.task));
+ document.querySelectorAll("[data-habit]").forEach(e=>e.onclick=()=>toggleHabit(e.dataset.habit));
+ document.querySelectorAll("[data-edit-task]").forEach(e=>e.onclick=()=>{let x=S.tasks.find(x=>x.id===e.dataset.editTask);openModal("タスクを編集",taskForm(x))});
+ document.querySelectorAll("[data-edit-note]").forEach(e=>e.onclick=()=>{let x=S.notes.find(x=>x.id===e.dataset.editNote);openModal("ノートを編集",noteForm(x))});
+ document.querySelectorAll("[data-edit-novel]").forEach(e=>e.onclick=()=>{let x=S.novels.find(x=>x.id===e.dataset.editNovel);openModal("作品を編集",novelForm(x))});
+ document.querySelectorAll("[data-edit-game]").forEach(e=>e.onclick=()=>{let x=S.games.find(x=>x.id===e.dataset.editGame);openModal("ゲームを編集",gameForm(x))});
+ document.querySelectorAll("[data-edit-habit]").forEach(e=>e.onclick=()=>{let x=S.habits.find(x=>x.id===e.dataset.editHabit);openModal("習慣を編集",habitForm(x))});
+ document.querySelectorAll("[data-save-task]").forEach(e=>e.onclick=()=>saveTask(e.dataset.saveTask||null));
+ document.querySelectorAll("[data-save-note]").forEach(e=>e.onclick=()=>saveNote(e.dataset.saveNote||null));
+ document.querySelectorAll("[data-save-event]").forEach(e=>e.onclick=()=>saveEvent(e.dataset.saveEvent||null));
+ document.querySelectorAll("[data-save-novel]").forEach(e=>e.onclick=()=>saveNovel(e.dataset.saveNovel||null));
+ document.querySelectorAll("[data-save-game]").forEach(e=>e.onclick=()=>saveGame(e.dataset.saveGame||null));
+ document.querySelectorAll("[data-save-study]").forEach(e=>e.onclick=saveStudy);
+ document.querySelectorAll("[data-save-habit]").forEach(e=>e.onclick=()=>saveHabit(e.dataset.saveHabit||null));
+ document.querySelectorAll("[data-save-link]").forEach(e=>e.onclick=saveLink);
+ document.querySelectorAll("[data-save-db]").forEach(e=>e.onclick=()=>saveDb(e.dataset.saveDb||null));
+ document.querySelectorAll("[data-delete-event]").forEach(e=>e.onclick=()=>{trash("events",e.dataset.deleteEvent);render()});
+ document.querySelectorAll("[data-delete-link]").forEach(e=>e.onclick=()=>{S.links=S.links.filter(x=>x.id!==e.dataset.deleteLink);save();render()});
+ document.querySelectorAll("[data-restore]").forEach(e=>e.onclick=()=>restoreTrash(e.dataset.restore));
+ document.querySelectorAll("[data-purge]").forEach(e=>e.onclick=()=>{S.trash=S.trash.filter(x=>x.id!==e.dataset.purge);save();render()});
+ document.querySelectorAll("[data-cal]").forEach(e=>e.onclick=()=>{S.calendar.month+=+e.dataset.cal;if(S.calendar.month<0){S.calendar.month=11;S.calendar.year--}if(S.calendar.month>11){S.calendar.month=0;S.calendar.year++}save();render()});
+ document.querySelectorAll("[data-preset]").forEach(e=>e.onclick=()=>setTimer(+e.dataset.preset*60));
+ document.querySelectorAll("[data-route2]").forEach(e=>e.onclick=()=>{route=e.dataset.route2;render()});
+ if(document.getElementById("taskFilter"))document.getElementById("taskFilter").oninput=e=>{window.taskFilter=e.target.value;render()};
+ document.querySelectorAll("[data-wall]").forEach(e=>e.onclick=()=>{S.settings.wall=e.dataset.wall;S.settings.customWall="";save();render();toast("壁紙を変更しました")});
+ document.querySelectorAll("[data-color]").forEach(e=>e.onclick=()=>{S.settings.accent=e.dataset.color;save();render()});
+ const wf=document.getElementById("wallFile");if(wf)wf.onchange=()=>{let f=wf.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{S.settings.customWall=r.result;save();render();toast("自分の画像を壁紙にしました")};r.readAsDataURL(f)};
+ const ov=document.getElementById("overlay");if(ov)ov.oninput=e=>{S.settings.overlay=+e.target.value;save();document.documentElement.style.setProperty("--overlay",S.settings.overlay)};
+ const bl=document.getElementById("blur");if(bl)bl.oninput=e=>{S.settings.blur=+e.target.value;save();document.documentElement.style.setProperty("--blur",S.settings.blur+"px")};
+ const sw=document.getElementById("sidebarWidth");if(sw)sw.oninput=e=>{S.settings.sidebar=+e.target.value;save()};
+ const fs=document.getElementById("fontSize");if(fs)fs.oninput=e=>{S.settings.font=+e.target.value;save()};
+ const den=document.getElementById("density");if(den)den.onchange=e=>{S.settings.density=+e.target.value;save();render()};
+ const snd=document.getElementById("sounds");if(snd)snd.onchange=e=>{S.settings.sounds=e.target.value==="on";save()};
+ const wa=document.getElementById("wallAuto");if(wa)wa.onchange=e=>{S.settings.wallRandom=e.target.value==="random";S.settings.dailyWall=e.target.value==="daily";if(S.settings.wallRandom||S.settings.dailyWall)randomWall();save();render()};
+ const th=document.getElementById("timerH");if(th)[th,document.getElementById("timerM"),document.getElementById("timerS")].forEach(x=>x.onchange=syncTimerInputs);
+ const tm=document.getElementById("timerMode");if(tm)tm.onchange=()=>{S.timer.mode=tm.value;save()};
+ const tl=document.getElementById("timerLink");if(tl)tl.onchange=()=>{let [type,id]=(tl.value||":").split(":");S.timer.linkType=type;S.timer.linkId=id;save()};
+ const sr=document.getElementById("taskSort");if(sr)sr.onchange=()=>render();
+ document.querySelectorAll("[data-delete-reminder]").forEach(e=>e.onclick=()=>{S.settings.reminders=(S.settings.reminders||[]).filter(x=>x.id!==e.dataset.deleteReminder);save();render()});
+ if(route==="stats")drawChart();
+}
+function actions(a){
+ if(a==="quick")quickAdd();
+ if(a==="addTask")openModal("新しいタスク",taskForm());
+ if(a==="addNote")openModal("新しいノート",noteForm());
+ if(a==="addEvent")openModal("新しい予定",eventForm());
+ if(a==="addNovel")openModal("新しい作品",novelForm());
+ if(a==="addGame")openModal("新しいゲーム",gameForm());
+ if(a==="addStudy")openModal("勉強を記録",studyForm());
+ if(a==="addHabit")openModal("新しい習慣",habitForm());
+ if(a==="addLink")openModal("NEXUS LINKを作成",linkForm());
+ if(a==="addDatabase")openModal("新しいデータベース",dbForm());
+ if(a==="timerOpen"){route="timer";render()}
+ if(a==="timerToggle"){toggleTimer();render()}
+ if(a==="timerReset"){resetTimer();render()}
+ if(a==="requestNotify")requestNotify();
+ if(a==="addReminder")addReminder();
+ if(a==="export")exportData();
+ if(a==="import")importData();
+ if(a==="reset"){if(confirm("全データを削除しますか？")){localStorage.removeItem(KEY);location.reload()}}
+ if(a==="emptyTrash"){if(confirm("ゴミ箱を完全に空にしますか？")){S.trash=[];save();render()}}
+ if(a==="pin")setPin();
+}
+function toggleTask(id){let t=S.tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done)log("task","タスク完了："+t.title,20);save();render()}
+function toggleHabit(id){let h=S.habits.find(x=>x.id===id);if(!h)return;h.logs=h.logs||[];if(!h.logs.includes(today())){h.logs.push(today());log("habit","習慣達成："+h.name,10)}save();render()}
+function trash(type,id){
+ const arr=S[type];const i=arr.findIndex(x=>x.id===id);if(i<0)return;const obj=arr[i];arr.splice(i,1);S.trash.push({id:uid(),originalId:obj.id,type,title:obj.title||obj.name||obj.subject,data:obj,deletedAt:Date.now()});save()
+}
+function restoreTrash(id){let x=S.trash.find(x=>x.id===id);if(!x)return;if(S[x.type])S[x.type].push(x.data);S.trash=S.trash.filter(x=>x.id!==id);save();render()}
+function setTimer(sec){S.timer.mode="countdown";S.timer.total=sec;S.timer.remaining=sec;S.timer.elapsed=0;S.timer.lastTick=0;S.timer.running=false;save();render()}
+function syncTimerInputs(){let h=+g("timerH")||0,m=+g("timerM")||0,s=+g("timerS")||0;S.timer.total=h*3600+m*60+s;S.timer.remaining=S.timer.total;S.timer.running=false;S.timer.elapsed=0;save();updateTimerUI()}
+function toggleTimer(){
+ if(S.timer.running){pauseTimer();toast("タイマーを一時停止しました")}
+ else{if(!S.timer.remaining)S.timer.remaining=S.timer.total;S.timer.started=Date.now();S.timer.lastTick=0;S.timer.running=true;save();toast("タイマー開始")}
+}
+function randomWall(){let keys=Object.keys(walls);S.settings.wall=keys[Math.floor(Math.random()*keys.length)];S.settings.customWall=""}
+async function requestNotify(){if(!("Notification"in window)){toast("通知非対応ブラウザです");return}let p=await Notification.requestPermission();S.settings.notifications=p==="granted";save();toast(p==="granted"?"通知ON":"通知OFF");render()}
+function addReminder(){openModal("リマインダー",`<div class="form-grid"><div class="field"><label>内容</label><input id="fTitle"></div><div class="field"><label>日時</label><input id="fAt" type="datetime-local"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-reminder>保存</button></div>`)}
+function exportData(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}));a.download=`NEXUS-backup-${today()}.json`;a.click();URL.revokeObjectURL(a.href);toast("バックアップを書き出しました")}
+function importData(){let i=document.createElement("input");i.type="file";i.accept=".json";i.onchange=()=>{let r=new FileReader();r.onload=()=>{try{S={...defaults,...JSON.parse(r.result)};save();render();toast("復元しました")}catch{toast("JSONが正しくありません")}};r.readAsText(i.files[0])};i.click()}
+function setPin(){let p=prompt("4〜8桁のPINを設定");if(!p)return;if(!/^\d{4,8}$/.test(p)){toast("数字4〜8桁で設定してください");return}S.settings.pin=btoa(p);save();toast("PINを設定しました")}
+function checkPin(){if(!S.settings.pin)return true;let p=prompt("NEXUS PINを入力");if(p===atob(S.settings.pin))return true;alert("PINが違います");return false}
+function drawChart(){
+ const c=document.getElementById("studyChart");if(!c)return;const ctx=c.getContext("2d"),w=c.width=c.clientWidth*devicePixelRatio,h=c.height=230*devicePixelRatio;ctx.clearRect(0,0,w,h);const vals=[],labs=[];
+ for(let i=13;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let ds=d.toISOString().slice(0,10);labs.push(ds.slice(5));vals.push(S.studies.filter(x=>x.date===ds).reduce((a,x)=>a+(+x.minutes||0),0))}
+ const max=Math.max(30,...vals),pad=35*devicePixelRatio;ctx.strokeStyle="rgba(255,255,255,.12)";ctx.lineWidth=1;
+ for(let j=0;j<5;j++){let y=pad+(h-pad*1.5)*j/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-10,y);ctx.stroke()}
+ ctx.beginPath();vals.forEach((v,i)=>{let x=pad+i*(w-pad-15)/(vals.length-1),y=h-pad-(h-pad*1.7)*v/max;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--accent");ctx.lineWidth=4;ctx.stroke();
+ ctx.fillStyle="#94a3b8";ctx.font=`${11*devicePixelRatio}px sans-serif`;labs.forEach((l,i)=>{let x=pad+i*(w-pad-15)/(labs.length-1);ctx.fillText(l,x-12,h-7*devicePixelRatio)});
 }
 
-/* AUTO WALLPAPER */
-function checkDailyWallpaper(){
-  if(!db.settings.autoWallpaper)return;
-  const last=localStorage.getItem("NEXUS_WP_DAY");
-  const d=today();
-  if(last!==d){
-    dailyWallpaper();
-    localStorage.setItem("NEXUS_WP_DAY",d);
-  }
+document.addEventListener("click",e=>{
+ if(e.target.closest("[data-save-reminder]")){let r={id:uid(),title:g("fTitle"),at:g("fAt")};S.settings.reminders=S.settings.reminders||[];S.settings.reminders.push(r);save();closeModal();render()}
+});
+function reminderLoop(){
+ const now=Date.now();(S.settings.reminders||[]).forEach(r=>{if(!r.done&&new Date(r.at).getTime()<=now){notify("🔔 NEXUS リマインダー",r.title);r.done=true;save()}});
+ S.events.forEach(e=>{if(e.date===today()&&e.time&&!e._notified){let t=new Date(`${e.date}T${e.time}`).getTime();if(t-now<60000&&t-now>-60000){notify("📅 NEXUS 予定",e.title);e._notified=true;save()}}});
+ S.tasks.forEach(t=>{if(!t.done&&t.due===today()&&!t._notified){notify("📋 NEXUS タスク",`期限：${t.title}`);t._notified=true;save()}});
 }
+setInterval(reminderLoop,30000);
 
-/* INITIAL */
-function init(){
-  checkDailyWallpaper();
-  applySettings();
-  renderSidebar();
-  render();
-  initLock();
-  setInterval(notificationLoop,30000);
-  registerSW();
-}
-init();
+if(S.settings.dailyWall){
+ const key="NEXUS_WALL_DATE",d=today();
+ if(localStorage.getItem(key)!==d){randomWall();localStorage.setItem(key,d);save()}
+}else if(S.settings.wallRandom){randomWall();save()}
+
+document.addEventListener("keydown",e=>{
+ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();document.getElementById("globalSearch").focus()}
+ if(e.key==="Escape")closeModal();
+});
+S.calendar=S.calendar||{year:new Date().getFullYear(),month:new Date().getMonth()};
+if(!checkPin())document.body.innerHTML="<div style='height:100vh;display:grid;place-items:center;background:#080b12;color:white;font-family:sans-serif'><h2>🔒 NEXUS Locked</h2></div>";
+else{render();if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});}
 </script>
 </body>
 </html>
