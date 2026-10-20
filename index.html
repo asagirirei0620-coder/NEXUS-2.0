@@ -3,587 +3,3701 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#0b1020">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NEXUS 2.0</title>
+<meta name="apple-mobile-web-app-title" content="NEXUS">
 <link rel="manifest" href="manifest.json">
+<title>NEXUS 3.0</title>
+
 <style>
 :root{
-  --accent:#7c3aed;--accent2:#06b6d4;--bg:#080b12;--panel:rgba(17,24,39,.82);
-  --panel2:rgba(255,255,255,.055);--text:#f8fafc;--muted:#94a3b8;--border:rgba(255,255,255,.09);
-  --danger:#ef4444;--success:#22c55e;--warning:#f59e0b;--radius:18px;
-  --sidebar:245px;--blur:18px;--overlay:.28;--density:1;
+  --bg:#0b1020;
+  --panel:rgba(18,25,45,.82);
+  --panel2:rgba(25,34,59,.86);
+  --text:#f5f7ff;
+  --muted:#8d98b5;
+  --line:rgba(255,255,255,.09);
+  --accent:#7c5cff;
+  --accent2:#20d9ff;
+  --danger:#ff5577;
+  --success:#39d98a;
+  --warning:#ffca5c;
+  --radius:18px;
+  --sidebar:260px;
+  --density:1;
+  --font:15px;
+  --wallpaper:linear-gradient(135deg,#090b18,#141a39 45%,#38206d);
 }
+
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:var(--text);background:#080b12}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  font-size:var(--font);
+  color:var(--text);
+  background:var(--wallpaper);
+  background-attachment:fixed;
+}
 button,input,textarea,select{font:inherit}
-button{cursor:pointer;color:inherit}
-body:before{
-  content:"";position:fixed;inset:0;z-index:-4;background:var(--wallpaper,#101827) center/cover fixed no-repeat;
-}
-body:after{
-  content:"";position:fixed;inset:0;z-index:-3;background:rgba(0,0,0,var(--overlay));
-  pointer-events:none;
-}
-#app{height:100%;display:flex;position:relative}
-.sidebar{
-  width:var(--sidebar);height:100%;flex:none;background:rgba(7,11,19,.82);
-  backdrop-filter:blur(var(--blur));border-right:1px solid var(--border);
-  display:flex;flex-direction:column;z-index:20;overflow:hidden;
-}
-.brand{height:76px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--border);flex:none}
-.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:900;font-size:19px;box-shadow:0 8px 30px rgba(124,58,237,.35)}
-.brand-text{margin-left:11px}.brand-text b{font-size:17px;display:block}.brand-text span{font-size:10px;color:var(--muted);letter-spacing:2px}
-.nav{flex:1;overflow:auto;padding:10px 9px}
-.nav-section{font-size:10px;color:#64748b;letter-spacing:1.5px;padding:13px 10px 6px;font-weight:800}
-.nav button{
-  width:100%;border:0;background:transparent;border-radius:11px;padding:10px 12px;margin:2px 0;
-  display:flex;align-items:center;gap:11px;text-align:left;color:#aeb9c9;transition:.16s;
-}
-.nav button:hover{background:var(--panel2);color:white}
-.nav button.active{background:linear-gradient(90deg,rgba(124,58,237,.24),rgba(6,182,212,.08));color:white;box-shadow:inset 3px 0 var(--accent)}
-.nav .ico{width:20px;text-align:center;font-size:16px}.nav-label{flex:1}.nav-badge{font-size:10px;background:var(--accent);padding:2px 7px;border-radius:10px}
-.side-bottom{padding:10px;border-top:1px solid var(--border);flex:none}
-.user-mini{display:flex;align-items:center;gap:10px;padding:8px}.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800}
-.main{min-width:0;flex:1;height:100%;overflow:auto;scroll-behavior:smooth}
-.topbar{height:70px;display:flex;align-items:center;gap:12px;padding:0 24px;border-bottom:1px solid var(--border);background:rgba(8,11,18,.52);backdrop-filter:blur(var(--blur));position:sticky;top:0;z-index:15}
-.mobile-menu{display:none}
-.search{max-width:430px;flex:1;position:relative}.search input{width:100%;height:42px;padding:0 14px 0 40px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:white;outline:none}.search span{position:absolute;left:14px;top:10px}
-.top-actions{margin-left:auto;display:flex;gap:8px}.icon-btn,.btn{
-  border:1px solid var(--border);background:rgba(255,255,255,.055);border-radius:11px;min-height:40px;padding:0 13px;color:#dbe4ef;
-}
-.icon-btn{width:40px;padding:0;display:grid;place-items:center}.btn:hover,.icon-btn:hover{background:rgba(255,255,255,.1)}
-.btn.primary{background:linear-gradient(135deg,var(--accent),#5b21b6);border:0}.btn.success{background:#15803d;border:0}.btn.danger{background:#991b1b;border:0}
-.page{padding:24px;max-width:1500px;margin:auto}
-.page-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px}
-.page-title{font-size:28px;font-weight:850;letter-spacing:-.5px}.page-sub{color:var(--muted);font-size:13px;margin-top:4px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.card{
-  background:var(--panel);backdrop-filter:blur(var(--blur));border:1px solid var(--border);
-  border-radius:var(--radius);padding:18px;box-shadow:0 10px 35px rgba(0,0,0,.12);
-}
-.card-title{font-weight:750;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.muted{color:var(--muted)}.small{font-size:12px}.tiny{font-size:10px}
-.stat{font-size:29px;font-weight:850;margin:4px 0}.accent{color:#c4b5fd}.green{color:#86efac}.cyan{color:#67e8f9}.yellow{color:#fde68a}
-.progress{height:8px;background:rgba(255,255,255,.08);border-radius:20px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px}
-.list{display:flex;flex-direction:column;gap:8px}.item{border:1px solid var(--border);background:rgba(255,255,255,.035);padding:12px;border-radius:13px}
-.item-row{display:flex;align-items:center;gap:10px}.grow{flex:1;min-width:0}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.check{width:21px;height:21px;accent-color:var(--accent)}
-.tag{display:inline-flex;align-items:center;background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.3);color:#d8caff;padding:3px 7px;border-radius:7px;font-size:10px;margin:2px}
-.badge{display:inline-block;padding:4px 8px;border-radius:7px;font-size:10px;background:rgba(255,255,255,.08);color:#cbd5e1}
-.priority-high{color:#fca5a5}.priority-mid{color:#fde68a}.priority-low{color:#86efac}
-.empty{padding:35px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:14px}
-table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:12px}th{color:var(--muted)}
-canvas{width:100%;height:230px}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:var(--muted)}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
 input,textarea,select{
-  width:100%;background:rgba(0,0,0,.22);color:white;border:1px solid var(--border);border-radius:10px;
-  padding:10px 11px;outline:none;min-height:40px;
+  width:100%;
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.18);
+  color:var(--text);
+  border-radius:12px;
+  padding:11px 13px;
+  outline:none;
 }
-textarea{min-height:100px;resize:vertical}select option{background:#111827}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
-.modal-bg.show{display:flex}.modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#111827;border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 100px #000;padding:20px}
-.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.modal-title{font-size:20px;font-weight:800}
-.modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
-.toast{position:fixed;right:20px;bottom:20px;z-index:200;transform:translateY(100px);opacity:0;transition:.25s;background:#111827;border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:0 20px 60px #000;max-width:360px}.toast.show{transform:none;opacity:1}
-.timer-big{text-align:center;font-size:72px;font-weight:900;letter-spacing:2px;margin:25px 0}.timer-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.timer-presets{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
-.calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);border-radius:14px;overflow:hidden}.dow,.day{min-height:105px;padding:8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}.dow{min-height:auto;text-align:center;background:rgba(255,255,255,.04);color:var(--muted);font-size:11px}.day:nth-child(7n){border-right:0}.day-num{font-size:12px;color:var(--muted)}.today .day-num{background:var(--accent);color:white;padding:3px 6px;border-radius:7px}.cal-event{font-size:10px;padding:4px 5px;border-radius:5px;background:rgba(124,58,237,.25);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wall-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.wall{height:90px;border:2px solid transparent;border-radius:12px;overflow:hidden;cursor:pointer;position:relative;background-size:cover;background-position:center}.wall.selected{border-color:white;box-shadow:0 0 0 2px var(--accent)}.wall span{position:absolute;left:7px;bottom:6px;font-size:10px;text-shadow:0 2px 4px #000}
-.color-row{display:flex;gap:10px;flex-wrap:wrap}.color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent}.color-dot.active{border-color:white}
-.link-line{height:1px;background:var(--border);margin:12px 0}
-.kpi{display:flex;align-items:center;justify-content:space-between}.kpi-icon{width:40px;height:40px;border-radius:11px;background:rgba(124,58,237,.16);display:grid;place-items:center;font-size:18px}
-.mission{display:flex;align-items:center;gap:10px}.mission.done{opacity:.55;text-decoration:line-through}
-.quick-add{position:fixed;right:24px;bottom:24px;z-index:30;width:54px;height:54px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));font-size:26px;box-shadow:0 15px 40px rgba(0,0,0,.4)}
-.toast-action{margin-left:10px;color:#c4b5fd}
-@media(max-width:900px){
-  :root{--sidebar:215px}
-  .g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}
+textarea{min-height:110px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+button{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  color:var(--text);
+  background:rgba(255,255,255,.08);
 }
-@media(max-width:700px){
-  .sidebar{position:fixed;left:-260px;top:0;transition:.2s;box-shadow:20px 0 60px #000}.sidebar.open{left:0}.mobile-menu{display:grid}.topbar{padding:0 12px}.page{padding:15px}.search{display:none}.g2,.g3,.g4{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.wall-grid{grid-template-columns:repeat(2,1fr)}.calendar-grid{font-size:9px}.dow,.day{min-height:70px;padding:5px}.timer-big{font-size:53px}
+button:hover{background:rgba(255,255,255,.13)}
+.primary{background:linear-gradient(135deg,var(--accent),#9a6cff)}
+.primary:hover{filter:brightness(1.1)}
+.success{background:rgba(57,217,138,.18);color:#72efb1}
+.danger{background:rgba(255,85,119,.16);color:#ff829b}
+.warning{background:rgba(255,202,92,.15);color:#ffd878}
+.icon-btn{width:42px;height:42px;padding:0;display:grid;place-items:center}
+.small{font-size:12px}
+.muted{color:var(--muted)}
+.bold{font-weight:700}
+.hidden{display:none!important}
+
+.app{
+  height:100vh;
+  display:flex;
+  position:relative;
+  overflow:hidden;
 }
+.app:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:rgba(0,0,0,var(--overlay,0));
+  z-index:0;
+}
+.app:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  backdrop-filter:blur(var(--blur,0px));
+  z-index:0;
+}
+
+.sidebar{
+  width:var(--sidebar);
+  min-width:var(--sidebar);
+  height:100%;
+  position:relative;
+  z-index:10;
+  display:flex;
+  flex-direction:column;
+  background:rgba(8,12,26,.9);
+  border-right:1px solid var(--line);
+  backdrop-filter:blur(22px);
+}
+.brand{
+  height:76px;
+  padding:18px 20px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--line);
+}
+.logo{
+  width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;font-weight:900;
+  box-shadow:0 8px 30px rgba(124,92,255,.35);
+}
+.brand-title{font-weight:900;letter-spacing:1.5px}
+.brand-sub{font-size:10px;color:var(--muted);margin-top:2px}
+
+.nav{
+  flex:1;
+  overflow:auto;
+  padding:12px 10px 20px;
+}
+.nav::-webkit-scrollbar,.main::-webkit-scrollbar{width:7px}
+.nav::-webkit-scrollbar-thumb,.main::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.12);border-radius:10px
+}
+.nav-group{
+  margin:14px 7px 7px;
+  color:#6e7895;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+}
+.nav-item{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:10px 12px;
+  margin:2px 0;
+  color:#aeb7cf;
+  background:transparent;
+  text-align:left;
+  border-radius:11px;
+}
+.nav-item:hover{background:rgba(255,255,255,.06)}
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(124,92,255,.25),rgba(32,217,255,.06));
+  color:#fff;
+  box-shadow:inset 3px 0 0 var(--accent);
+}
+.nav-icon{width:22px;text-align:center}
+.sidebar-bottom{
+  border-top:1px solid var(--line);
+  padding:10px;
+}
+.level-mini{
+  padding:11px;
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+}
+.level-row{display:flex;justify-content:space-between;align-items:center}
+.xpbar{
+  height:6px;background:rgba(255,255,255,.08);
+  border-radius:99px;overflow:hidden;margin-top:8px;
+}
+.xpbar>i{
+  display:block;height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:99px;
+}
+
+.main{
+  flex:1;
+  min-width:0;
+  height:100%;
+  overflow:auto;
+  position:relative;
+  z-index:1;
+}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:8;
+  height:70px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 20px;
+  background:rgba(8,12,26,.72);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+}
+.top-title{font-size:20px;font-weight:800;flex:1}
+.search{
+  max-width:320px;
+  background:rgba(255,255,255,.07);
+}
+.content{
+  max-width:1600px;
+  margin:auto;
+  padding:20px;
+}
+.mobile-menu{display:none}
+
+.grid{
+  display:grid;
+  gap:14px;
+}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.auto{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:calc(16px * var(--density));
+  backdrop-filter:blur(18px);
+  box-shadow:0 12px 40px rgba(0,0,0,.14);
+}
+.card-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:13px;
+}
+.card-title h2,.card-title h3{margin:0}
+.stat{
+  min-height:130px;
+}
+.stat-value{font-size:30px;font-weight:900;margin:8px 0}
+.stat-label{color:var(--muted);font-size:12px}
+.stat-icon{font-size:25px}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+
+.list{display:flex;flex-direction:column;gap:8px}
+.list-item{
+  padding:11px 12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.05);
+}
+.list-item:hover{background:rgba(255,255,255,.07)}
+.row{display:flex;align-items:center;gap:9px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wrap{flex-wrap:wrap}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#bfc8df;
+  font-size:11px;
+}
+.badge.accent{background:rgba(124,92,255,.2);color:#c5b7ff}
+.badge.green{background:rgba(57,217,138,.14);color:#72efb1}
+.badge.red{background:rgba(255,85,119,.14);color:#ff91a5}
+.badge.yellow{background:rgba(255,202,92,.14);color:#ffd979}
+
+.progress{
+  height:8px;border-radius:99px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+}
+.progress>i{
+  display:block;height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+}
+
+.section-title{
+  margin:25px 0 12px;
+  font-size:18px;
+  font-weight:800;
+}
+.empty{
+  text-align:center;
+  padding:30px 15px;
+  color:var(--muted);
+}
+
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+}
+.cal-head{
+  padding:9px;
+  text-align:center;
+  background:rgba(255,255,255,.05);
+  color:var(--muted);
+  font-size:12px;
+}
+.cal-day{
+  min-height:105px;
+  padding:8px;
+  border-top:1px solid var(--line);
+  border-right:1px solid var(--line);
+  background:rgba(0,0,0,.07);
+}
+.cal-day:nth-child(7n){border-right:0}
+.cal-day.muted-day{opacity:.38}
+.cal-day.today{box-shadow:inset 0 0 0 2px var(--accent)}
+.day-num{font-weight:800;margin-bottom:6px}
+.cal-event{
+  font-size:10px;
+  padding:4px 5px;
+  margin:3px 0;
+  border-radius:6px;
+  background:rgba(124,92,255,.2);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.timer-display{
+  font-size:72px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-align:center;
+  padding:20px 0;
+}
+.timer-ring{
+  width:280px;height:280px;border-radius:50%;
+  margin:10px auto 20px;
+  display:grid;place-items:center;
+  background:conic-gradient(var(--accent) var(--timer-progress,0%),rgba(255,255,255,.07) 0);
+  position:relative;
+}
+.timer-ring:after{
+  content:"";position:absolute;inset:10px;
+  border-radius:50%;background:#0d1428;
+}
+.timer-ring .timer-display{position:relative;z-index:1}
+
+.modal-backdrop{
+  position:fixed;inset:0;z-index:100;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.62);
+  backdrop-filter:blur(10px);
+  padding:18px;
+}
+.modal-backdrop.show{display:flex}
+.modal{
+  width:min(700px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#11182d;
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:0 30px 100px rgba(0,0,0,.45);
+  padding:20px;
+}
+.modal.large{width:min(1050px,100%)}
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;color:var(--muted)}
+.modal-actions{
+  display:flex;justify-content:flex-end;gap:8px;
+  margin-top:18px;
+}
+.toast{
+  position:fixed;right:20px;bottom:20px;z-index:300;
+  padding:13px 16px;
+  border-radius:13px;
+  background:#151d35;
+  border:1px solid var(--line);
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+  transform:translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+}
+.toast.show{opacity:1;transform:none}
+
+.command{
+  position:fixed;inset:0;z-index:150;
+  display:none;align-items:flex-start;justify-content:center;
+  padding-top:100px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(8px);
+}
+.command.show{display:flex}
+.command-box{
+  width:min(760px,94%);
+  background:#10172b;
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
+}
+.command-input{
+  border:0;border-bottom:1px solid var(--line);
+  border-radius:0;font-size:17px;padding:17px;
+}
+.command-results{max-height:450px;overflow:auto;padding:8px}
+.command-result{
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
+}
+.command-result:hover{background:rgba(255,255,255,.07)}
+
+.dashboard-hero{
+  padding:22px;
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 80% 20%,rgba(32,217,255,.18),transparent 35%),
+    radial-gradient(circle at 20% 80%,rgba(124,92,255,.22),transparent 40%),
+    rgba(18,25,45,.85);
+  border:1px solid var(--line);
+  margin-bottom:15px;
+}
+.hero-title{font-size:28px;font-weight:900}
+.hero-sub{color:var(--muted);margin-top:5px}
+
+.chart{
+  width:100%;
+  height:230px;
+  display:block;
+  background:rgba(0,0,0,.12);
+  border-radius:12px;
+}
+
+.timeline{
+  border-left:2px solid rgba(124,92,255,.35);
+  margin-left:9px;
+  padding-left:15px;
+}
+.timeline-item{
+  position:relative;
+  padding-bottom:14px;
+}
+.timeline-item:before{
+  content:"";
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--accent);
+  position:absolute;
+  left:-20px;top:5px;
+}
+
+.settings-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.wallpapers{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+}
+.wall{
+  aspect-ratio:16/9;
+  border-radius:12px;
+  border:2px solid transparent;
+  cursor:pointer;
+}
+.wall.active{border-color:white}
+.wall-label{
+  font-size:10px;
+  text-align:center;
+  margin-top:4px;
+  color:var(--muted);
+}
+
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{
+  text-align:left;
+  padding:10px;
+  border-bottom:1px solid var(--line);
+}
+th{color:var(--muted);font-size:12px}
+
+.goal-ring{
+  width:120px;height:120px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:conic-gradient(var(--accent) var(--p,0%),rgba(255,255,255,.08) 0);
+  margin:auto;
+}
+.goal-ring:after{
+  content:"";
+  position:absolute;
+}
+.goal-ring-inner{
+  width:94px;height:94px;border-radius:50%;
+  background:#11182d;
+  display:grid;place-items:center;
+  font-size:21px;font-weight:900;
+}
+
+.graph-canvas{
+  width:100%;
+  min-height:450px;
+  background:rgba(0,0,0,.12);
+  border-radius:15px;
+}
+
+.lock-screen{
+  position:fixed;inset:0;z-index:999;
+  background:#080c18;
+  display:none;
+  place-items:center;
+  padding:20px;
+}
+.lock-screen.show{display:grid}
+.lock-box{
+  width:min(390px,100%);
+  padding:30px;
+  background:#11182d;
+  border:1px solid var(--line);
+  border-radius:24px;
+  text-align:center;
+}
+
+.overlay-preview{
+  height:120px;border-radius:15px;
+  background:var(--wallpaper);
+  border:1px solid var(--line);
+}
+
+@media(max-width:1100px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .settings-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  :root{--sidebar:280px}
+  .sidebar{
+    position:fixed;
+    left:0;top:0;bottom:0;
+    transform:translateX(-100%);
+    transition:.25s;
+    box-shadow:20px 0 70px rgba(0,0,0,.35);
+  }
+  .sidebar.open{transform:none}
+  .mobile-menu{display:grid}
+  .topbar{padding:10px 12px}
+  .top-title{font-size:17px}
+  .search{display:none}
+  .content{padding:12px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .calendar{font-size:11px}
+  .cal-day{min-height:75px;padding:5px}
+  .timer-ring{width:230px;height:230px}
+  .timer-display{font-size:48px}
+  .wallpapers{grid-template-columns:repeat(2,1fr)}
+  .settings-grid{grid-template-columns:1fr}
+}
+
+body.light{
+  --bg:#eef2fa;
+  --panel:rgba(255,255,255,.84);
+  --panel2:rgba(255,255,255,.95);
+  --text:#172033;
+  --muted:#68738a;
+  --line:rgba(30,40,65,.12);
+}
+body.light .sidebar{background:rgba(245,247,252,.92)}
+body.light .topbar{background:rgba(245,247,252,.76)}
+body.light .timer-ring:after{background:#f1f4fa}
+body.light .goal-ring-inner{background:#f1f4fa}
+body.light .modal,.light .command-box{background:#f8f9fd}
+body.light .input,body.light input,body.light textarea,body.light select{background:rgba(255,255,255,.8)}
 </style>
 </head>
-<body>
-<div id="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="logo">N</div>
-      <div class="brand-text"><b>NEXUS</b><span>PERSONAL OS 2.0</span></div>
-    </div>
-    <nav class="nav" id="nav"></nav>
-    <div class="side-bottom">
-      <div class="user-mini"><div class="avatar">N</div><div><b id="sideLevel">Lv.1</b><div class="tiny muted">NEXUS USER</div></div></div>
-    </div>
-  </aside>
 
-  <main class="main" id="main">
-    <header class="topbar">
-      <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
-      <div class="search"><span>⌕</span><input id="globalSearch" placeholder="NEXUSを検索…"></div>
-      <div class="top-actions">
-        <button class="icon-btn" id="notifyBtn" title="通知">🔔</button>
-        <button class="icon-btn" id="themeBtn" title="テーマ">◐</button>
+<body>
+<div class="app" id="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="logo">N</div>
+    <div>
+      <div class="brand-title">NEXUS</div>
+      <div class="brand-sub">PERSONAL OPERATING SYSTEM</div>
+    </div>
+  </div>
+
+  <nav class="nav" id="nav"></nav>
+
+  <div class="sidebar-bottom">
+    <div class="level-mini">
+      <div class="level-row">
+        <span class="bold" id="miniLevel">Lv.1</span>
+        <span class="small muted" id="miniXP">0 XP</span>
       </div>
-    </header>
-    <section id="content"></section>
-  </main>
+      <div class="xpbar"><i id="miniXPBar" style="width:0%"></i></div>
+    </div>
+  </div>
+</aside>
+
+<main class="main" id="main">
+  <header class="topbar">
+    <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
+    <div class="top-title" id="pageTitle">ホーム</div>
+    <input class="search" id="globalSearch" placeholder="⌘K / Ctrl+K で検索">
+    <button class="icon-btn" id="commandBtn">⌘</button>
+    <button class="icon-btn" id="quickBtn">＋</button>
+  </header>
+  <div class="content" id="content"></div>
+</main>
 </div>
 
-<button class="quick-add" id="quickAdd">＋</button>
 <div class="toast" id="toast"></div>
-<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="command" id="command">
+  <div class="command-box">
+    <input class="command-input" id="commandInput" placeholder="NEXUSに指示… 例：数学 30分 / ノート アイデア">
+    <div class="command-results" id="commandResults"></div>
+  </div>
+</div>
+
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-box">
+    <div class="logo" style="margin:auto">N</div>
+    <h2>NEXUS LOCK</h2>
+    <p class="muted">ロックを解除してください</p>
+    <input id="unlockPin" type="password" inputmode="numeric" maxlength="12" placeholder="PIN">
+    <button class="primary" style="width:100%;margin-top:10px" onclick="unlockApp()">解除</button>
+    <div id="unlockError" class="danger small" style="margin-top:8px"></div>
+  </div>
+</div>
 
 <script>
-const KEY="NEXUS_2_0_COMPLETE";
-const today=()=>new Date().toISOString().slice(0,10);
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-const fmtDate=d=>d?new Date(d).toLocaleDateString("ja-JP",{year:"numeric",month:"short",day:"numeric"}):"";
-const fmtMin=m=>{m=Math.max(0,Math.round(m||0));const h=Math.floor(m/60),x=m%60;return h?`${h}時間${x}分`:`${x}分`};
-const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+"use strict";
 
-const walls={
-"space":"radial-gradient(circle at 20% 20%,#243b80 0 2%,transparent 3%),radial-gradient(circle at 80% 70%,#6d28d9 0 3%,transparent 4%),radial-gradient(circle at 50% 30%,#fff 0 1px,transparent 2px),linear-gradient(135deg,#030712,#111827 55%,#312e81)",
-"galaxy":"radial-gradient(ellipse at 65% 45%,#a855f7 0,transparent 22%),radial-gradient(ellipse at 25% 65%,#2563eb,transparent 25%),linear-gradient(140deg,#09001f,#020617)",
-"neon":"linear-gradient(120deg,transparent 35%,rgba(0,255,255,.2),transparent 36%),linear-gradient(0deg,#09001a,#16002e 50%,#001b2e)",
-"aurora":"radial-gradient(ellipse at 50% 0,#22d3ee,transparent 40%),radial-gradient(ellipse at 20% 30%,#22c55e,transparent 35%),linear-gradient(#06111c,#07111a 60%,#020617)",
-"ocean":"linear-gradient(160deg,#082f49,#0369a1 45%,#0e7490 70%,#082f49)",
-"forest":"radial-gradient(circle at 50% 80%,#166534,transparent 35%),linear-gradient(120deg,#052e16,#14532d 50%,#020617)",
-"volcano":"radial-gradient(ellipse at 50% 100%,#ef4444,transparent 28%),linear-gradient(#180000,#451a03 45%,#090909)",
-"sunset":"linear-gradient(150deg,#1e1b4b 0%,#7c2d12 48%,#f97316 75%,#facc15)",
-"sunrise":"linear-gradient(#172554,#3b82f6 35%,#fb923c 72%,#fef3c7)",
-"rain":"repeating-linear-gradient(105deg,rgba(147,197,253,.12) 0 1px,transparent 1px 18px),linear-gradient(#0f172a,#1e293b)",
-"snow":"radial-gradient(circle,rgba(255,255,255,.9) 0 2px,transparent 3px) 0 0/55px 55px,linear-gradient(#64748b,#0f172a)",
-"desert":"linear-gradient(#451a03,#d97706 50%,#fbbf24)",
-"night":"radial-gradient(circle at 70% 20%,#fef3c7 0 2%,transparent 3%),linear-gradient(#020617,#0f172a)",
-"sky":"linear-gradient(#38bdf8,#60a5fa 45%,#bfdbfe 75%,#e0f2fe)",
-"cyber":"linear-gradient(90deg,rgba(0,255,255,.12) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(rgba(255,0,255,.1) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(135deg,#020617,#1e0035)",
-"grid":"linear-gradient(rgba(59,130,246,.16) 1px,transparent 1px) 0 0/30px 30px,linear-gradient(90deg,rgba(59,130,246,.16) 1px,transparent 1px) 0 0/30px 30px,#020617",
-"nebula":"radial-gradient(ellipse at 25% 25%,#ec4899,transparent 25%),radial-gradient(ellipse at 70% 70%,#7c3aed,transparent 28%),#05000d",
-"crimson":"radial-gradient(circle at 80% 20%,#ef4444,transparent 20%),linear-gradient(135deg,#090909,#3f0a0a,#170000)",
-"minimal":"linear-gradient(135deg,#111827,#030712)",
-"matrix":"repeating-linear-gradient(90deg,rgba(34,197,94,.13) 0 1px,transparent 1px 12px),repeating-linear-gradient(0deg,rgba(34,197,94,.08) 0 1px,transparent 1px 18px),#020b05"
+/* =========================================================
+   NEXUS 3.0
+   Local-first / PWA / Personal OS
+========================================================= */
+
+const KEY = "NEXUS_3_0_COMPLETE";
+const VERSION = "3.0.0";
+
+const now = () => new Date();
+const uid = (p="id") => p + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const today = () => new Date().toISOString().slice(0,10);
+const esc = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const fmtDate = d => d ? new Date(d).toLocaleDateString("ja-JP") : "";
+const fmtDateTime = d => d ? new Date(d).toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}) : "";
+const clamp = (n,a,b)=>Math.max(a,Math.min(b,n));
+const pct = (n,d)=>d ? clamp(n/d*100,0,100) : 0;
+
+const WALLPAPERS = {
+  space:"radial-gradient(circle at 20% 20%,#263b80 0 3%,transparent 4%),radial-gradient(circle at 80% 30%,#7b39a8 0 2%,transparent 3%),linear-gradient(135deg,#050817,#111b43,#260e4d)",
+  galaxy:"radial-gradient(circle at 70% 20%,#ff72db,transparent 20%),radial-gradient(circle at 20% 80%,#4e7cff,transparent 25%),linear-gradient(130deg,#080817,#32185f,#090b23)",
+  neon:"linear-gradient(135deg,#090016,#180044 40%,#004b5d),repeating-linear-gradient(90deg,transparent 0 40px,rgba(0,255,255,.08) 41px 42px)",
+  aurora:"radial-gradient(ellipse at 50% 10%,#54ffd0,transparent 30%),linear-gradient(160deg,#041622,#172b4e,#120c2f)",
+  ocean:"linear-gradient(145deg,#03152a,#075878 45%,#13a4a4)",
+  forest:"linear-gradient(145deg,#06130c,#123d25 45%,#277347)",
+  volcano:"radial-gradient(circle at 50% 100%,#ff5b19,transparent 35%),linear-gradient(145deg,#170707,#411010,#110509)",
+  sunset:"linear-gradient(180deg,#21184b,#a44c76 50%,#ff9d58)",
+  sunrise:"linear-gradient(180deg,#f0a86c,#ffd48b 45%,#e9edf9)",
+  rain:"repeating-linear-gradient(120deg,rgba(130,170,255,.08) 0 2px,transparent 2px 18px),linear-gradient(145deg,#07101f,#1d3556)",
+  snow:"radial-gradient(circle,rgba(255,255,255,.5) 0 1px,transparent 2px),linear-gradient(145deg,#7d93ad,#dce7f4)",
+  desert:"linear-gradient(150deg,#8c542e,#d69a55 55%,#e9c477)",
+  night:"linear-gradient(145deg,#03050c,#0b1021,#101a3b)",
+  sky:"linear-gradient(180deg,#4b9cff,#8ed7ff 55%,#eefaff)",
+  cyber:"linear-gradient(135deg,#03040a,#0b2c36,#3b0055)",
+  grid:"linear-gradient(rgba(50,180,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(50,180,255,.12) 1px,transparent 1px),#07101e",
+  nebula:"radial-gradient(circle at 30% 30%,#9a5cff,transparent 30%),radial-gradient(circle at 70% 60%,#22cfff,transparent 25%),#080a1d",
+  crimson:"radial-gradient(circle at 70% 20%,#ff294d,transparent 30%),linear-gradient(135deg,#080307,#350812)",
+  minimal:"linear-gradient(145deg,#111,#242424)",
+  matrix:"repeating-linear-gradient(90deg,rgba(0,255,90,.06) 0 1px,transparent 1px 12px),#020a05"
 };
-const wallNames={space:"Deep Space",galaxy:"Galaxy",neon:"Neon City",aurora:"Aurora",ocean:"Ocean",forest:"Forest",volcano:"Volcano",sunset:"Sunset",sunrise:"Sunrise",rain:"Rain",snow:"Snow",desert:"Desert",night:"Night",sky:"Sky",cyber:"Cyber",grid:"Blue Grid",nebula:"Purple Nebula",crimson:"Crimson",minimal:"Dark Minimal",matrix:"Matrix"};
 
-const defaults={
- tasks:[],notes:[],events:[],novels:[],games:[],studies:[],habits:[],links:[],tags:[],
- activity:[],trash:[],databases:[],xp:0,level:1,streak:0,
- settings:{theme:"dark",wall:"space",customWall:"",dailyWall:false,overlay:.28,blur:18,accent:"#7c3aed",density:1,font:1,sidebar:245,sounds:true,notifications:true,wallRandom:false},
- timer:{mode:"countdown",total:1500,remaining:1500,running:false,started:0,pausedAt:0,linkType:"",linkId:"",sessions:[]},
- dashboard:["today","tasks","timer","study","xp","habits","activity"],
- history:[],missions:[]
+const defaults = {
+  version:VERSION,
+  tasks:[],
+  notes:[],
+  events:[],
+  novels:[],
+  games:[],
+  studies:[],
+  habits:[],
+  goals:[],
+  projects:[],
+  workflows:[],
+  databases:[],
+  dbRecords:[],
+  links:[],
+  tags:[],
+  activity:[],
+  journal:[],
+  trash:[],
+  reminders:[],
+  notifications:[],
+  templates:[],
+  files:[],
+  achievements:[],
+  missions:[],
+  xp:0,
+  level:1,
+  streak:0,
+  bestStreak:0,
+  lastActive:null,
+  score:0,
+  settings:{
+    theme:"dark",
+    wall:"space",
+    customWall:"",
+    dailyWall:false,
+    overlay:.08,
+    blur:0,
+    accent:"#7c5cff",
+    density:1,
+    font:15,
+    sidebar:260,
+    sounds:true,
+    notifications:true,
+    autoLock:false,
+    pin:"",
+    commandHistory:[]
+  },
+  timer:{
+    mode:"countdown",
+    total:1500,
+    remaining:1500,
+    running:false,
+    endAt:null,
+    stopwatchStarted:null,
+    linkType:"",
+    linkId:"",
+    title:"",
+    sessions:[]
+  },
+  dashboard:{
+    cards:["today","tasks","timer","study","goals","habits","writing","activity","xp","score"],
+    hidden:[]
+  },
+  calendar:{
+    year:new Date().getFullYear(),
+    month:new Date().getMonth()
+  },
+  system:{
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  }
 };
-let S=load();
-function load(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return structuredClone(defaults)}}
-function save(){localStorage.setItem(KEY,JSON.stringify(S));applySettings()}
-function log(type,text,xp=0){
- S.activity.unshift({id:uid(),type,text,time:Date.now()});S.activity=S.activity.slice(0,300);
- if(xp){S.xp+=xp;while(S.xp>=S.level*500){S.xp-=S.level*500;S.level++;toast("🎉 LEVEL UP! Lv."+S.level)}}
- save();
-}
-function toast(t){const e=document.getElementById("toast");e.innerHTML=esc(t);e.classList.add("show");clearTimeout(window._toast);window._toast=setTimeout(()=>e.classList.remove("show"),2600)}
-function applySettings(){
- const s=S.settings||defaults.settings;
- document.documentElement.style.setProperty("--accent",s.accent);
- document.documentElement.style.setProperty("--overlay",s.overlay);
- document.documentElement.style.setProperty("--blur",s.blur+"px");
- document.documentElement.style.setProperty("--sidebar",s.sidebar+"px");
- document.documentElement.style.setProperty("--density",s.density);
- document.documentElement.style.fontSize=(s.font||1)+"em";
- let bg=s.customWall?`url("${s.customWall}")`:walls[s.wall]||walls.space;
- document.body.style.setProperty("--wallpaper",bg);
- document.body.dataset.theme=s.theme;
-}
-applySettings();
 
-const NAV=[
- ["HOME","ホーム","dashboard","⌂"],
- ["PLAN","タスク","tasks","✓"],["PLAN","カレンダー","calendar","▦"],["PLAN","習慣","habits","🔥"],
- ["CREATE","ノート","notes","✎"],["CREATE","小説","novels","📖"],
- ["TRACK","タイマー","timer","⏱"],["TRACK","勉強","study","📚"],["TRACK","ゲーム","games","🎮"],
- ["DATA","NEXUS LINK","link","🔗"],["DATA","データベース","database","▤"],["DATA","統計","stats","◒"],
- ["SYSTEM","通知","notifications","🔔"],["SYSTEM","ゴミ箱","trash","♻"],["SYSTEM","設定","settings","⚙"]
-];
-let route="dashboard";
-function renderNav(){
- const n=document.getElementById("nav");let sec="";
- NAV.forEach(([g,label,id,ico],i)=>{
-   if(i===0||NAV[i-1][0]!==g)sec+=`<div class="nav-section">${g}</div>`;
-   const badge=id==="tasks"?S.tasks.filter(x=>!x.done).length:"";
-   sec+=`<button data-route="${id}" class="${route===id?"active":""}"><span class="ico">${ico}</span><span class="nav-label">${label}</span>${badge?`<span class="nav-badge">${badge}</span>`:""}</button>`;
- });n.innerHTML=sec;
-}
-document.getElementById("nav").addEventListener("click",e=>{
- const b=e.target.closest("[data-route]");if(!b)return;
- route=b.dataset.route;renderNav();render();document.getElementById("sidebar").classList.remove("open");
-});
-document.getElementById("mobileMenu").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
-document.getElementById("themeBtn").onclick=()=>{S.settings.theme=S.settings.theme==="dark"?"light":"dark";save();document.body.style.filter=S.settings.theme==="light"?"invert(.02)":"none";toast("テーマを変更しました")};
-document.getElementById("notifyBtn").onclick=async()=>{
- if(!("Notification"in window)){toast("このブラウザは通知に対応していません");return}
- const p=await Notification.requestPermission();S.settings.notifications=p==="granted";save();toast(p==="granted"?"通知を許可しました":"通知は許可されませんでした");
-};
-document.getElementById("globalSearch").addEventListener("input",e=>{if(e.target.value.trim())openSearch(e.target.value.trim())});
-document.getElementById("quickAdd").onclick=()=>quickAdd();
+let S = loadState();
+let route = location.hash.replace("#/","") || "home";
+let timerInterval = null;
+let reminderInterval = null;
 
-function render(){const c=document.getElementById("content");c.innerHTML=views[route]?views[route]():notFound();bindView();updateTimerUI();renderNav()}
-function notFound(){return `<div class="page"><div class="empty">ページが見つかりません</div></div>`}
+function deepClone(x){return JSON.parse(JSON.stringify(x));}
 
-function head(title,sub,buttons=""){return `<div class="page-head"><div><div class="page-title">${title}</div><div class="page-sub">${sub}</div></div><div class="actions">${buttons}</div></div>`}
-function viewsDashboard(){
- const due=S.tasks.filter(x=>!x.done).sort((a,b)=>(a.due||"").localeCompare(b.due||"")).slice(0,5);
- const ev=S.events.filter(x=>x.date>=today()).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,4);
- return `<div class="page">${head("NEXUS","あなたの情報を一つにつなぐPersonal OS",`<button class="btn primary" data-action="quick">＋ 追加</button>`)}
- <div class="grid g4">${[
- ["📋","未完了タスク",S.tasks.filter(x=>!x.done).length,"accent"],
- ["📚","今日の勉強",fmtMin(S.studies.filter(x=>x.date===today()).reduce((a,x)=>a+(+x.minutes||0),0)),"cyan"],
- ["✍️","小説PV",S.novels.reduce((a,x)=>a+(+x.pv||0),0).toLocaleString(),"green"],
- ["⚡","NEXUS XP",S.xp.toLocaleString(),"yellow"]
- ].map(x=>`<div class="card"><div class="kpi"><div><div class="small muted">${x[1]}</div><div class="stat ${x[3]}">${x[2]}</div></div><div class="kpi-icon">${x[0]}</div></div></div>`).join("")}</div>
- <div class="grid g2" style="margin-top:16px">
- <div class="card"><div class="card-title">📋 今日のタスク <button class="btn" data-action="addTask">＋</button></div>
- ${due.length?`<div class="list">${due.map(taskRow).join("")}</div>`:`<div class="empty">未完了タスクはありません 🎉</div>`}</div>
- <div class="card"><div class="card-title">📅 予定 <button class="btn" data-route2="calendar">すべて</button></div>
- ${ev.length?`<div class="list">${ev.map(e=>`<div class="item"><b>${esc(e.title)}</b><div class="small muted">${fmtDate(e.date)} ${esc(e.time||"")} ${e.place?"・"+esc(e.place):""}</div></div>`).join("")}`:`<div class="empty">予定なし</div>`}</div></div>
- <div class="grid g3" style="margin-top:16px">
- <div class="card"><div class="card-title">⏱ タイマー</div><div class="timer-big" id="dashTimer" style="font-size:42px;margin:10px 0">${timerText()}</div><div class="timer-controls"><button class="btn primary" data-action="timerToggle">${S.timer.running?"一時停止":"開始"}</button><button class="btn" data-action="timerOpen">詳細</button></div></div>
- <div class="card"><div class="card-title">🔥 習慣</div>${habitMini()}</div>
- <div class="card"><div class="card-title">⭐ NEXUS LEVEL</div><div class="stat">Lv.${S.level}</div><div class="progress"><i style="width:${Math.min(100,S.xp/(S.level*500)*100)}%"></i></div><div class="small muted" style="margin-top:7px">${S.xp} / ${S.level*500} XP</div></div>
- </div>
- <div class="card" style="margin-top:16px"><div class="card-title">🕘 最近の活動</div>${activityList(6)}</div></div>`;
-}
-function taskRow(t){return `<div class="item"><div class="item-row"><input class="check" type="checkbox" data-task="${t.id}" ${t.done?"checked":""}><div class="grow"><b class="${t.done?"muted":""}">${esc(t.title)}</b><div class="small muted">${t.due?fmtDate(t.due):"期限なし"} ${t.priority?`・<span class="priority-${t.priority}">${t.priority}</span>`:""}</div></div><button class="icon-btn" data-edit-task="${t.id}">⋯</button></div></div>`}
-function habitMini(){return S.habits.slice(0,4).map(h=>`<div class="mission ${h.logs?.includes(today())?"done":""}"><input class="check" type="checkbox" data-habit="${h.id}" ${h.logs?.includes(today())?"checked":""}><span>${esc(h.name)}</span></div>`).join("")||`<div class="empty">習慣を追加しよう</div>`}
-function activityList(n=10){return S.activity.slice(0,n).map(a=>`<div class="item"><div class="small muted">${new Date(a.time).toLocaleString("ja-JP")}</div><div>${esc(a.text)}</div></div>`).join("")||`<div class="empty">まだ活動履歴がありません</div>`}
-
-function viewsTasks(){
- return `<div class="page">${head("タスク","期限・優先度・タグ・サブタスクを管理",`<button class="btn primary" data-action="addTask">＋ タスク</button>`)}
- <div class="card"><div class="item-row"><input id="taskFilter" placeholder="タスクを検索…" value="${esc(window.taskFilter||"")}"><select id="taskSort" style="max-width:180px"><option value="due">期限順</option><option value="priority">優先度順</option><option value="new">新しい順</option></select></div></div>
- <div class="list" style="margin-top:14px">${taskListHTML()}</div></div>`;
-}
-function taskListHTML(){
- let a=[...S.tasks],q=(window.taskFilter||"").toLowerCase();if(q)a=a.filter(t=>(t.title+" "+(t.description||"")+" "+(t.tags||[]).join(" ")).toLowerCase().includes(q));
- a.sort((x,y)=>(x.done-y.done)||((x.due||"9999").localeCompare(y.due||"9999")));
- return a.map(t=>`<div class="card">${taskRow(t)}
- ${t.description?`<div class="small muted" style="margin:8px 0 0 31px">${esc(t.description)}</div>`:""}
- ${t.subtasks?.length?`<div style="margin:10px 0 0 31px"><div class="progress"><i style="width:${t.subtasks.filter(x=>x.done).length/t.subtasks.length*100}%"></i></div><div class="small muted">${t.subtasks.filter(x=>x.done).length}/${t.subtasks.length} サブタスク</div></div>`:""}
- <div style="margin-left:31px">${(t.tags||[]).map(x=>`<span class="tag">#${esc(x)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">タスクはありません</div>`;
+function mergeDefaults(base, data){
+  const out=deepClone(base);
+  for(const k in data){
+    if(data[k] && typeof data[k]==="object" && !Array.isArray(data[k]) &&
+       out[k] && typeof out[k]==="object" && !Array.isArray(out[k])){
+      out[k]={...out[k],...data[k]};
+    }else{
+      out[k]=data[k];
+    }
+  }
+  return out;
 }
 
-function viewsNotes(){
- return `<div class="page">${head("ノート","アイデア・メモ・情報を保存",`<button class="btn primary" data-action="addNote">＋ ノート</button>`)}
- <div class="grid g3">${S.notes.map(n=>`<div class="card"><div class="card-title"><span>${n.pin?"📌 ":""}${esc(n.title)}</span><button class="icon-btn" data-edit-note="${n.id}">⋯</button></div><div class="small muted">${esc(n.category||"未分類")} ・ ${fmtDate(n.updated||n.created)}</div><p>${esc((n.body||"").slice(0,180))}</p><div>${(n.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">ノートを作成しよう</div>`}</div></div>`;
+function loadState(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(!raw)return deepClone(defaults);
+    return mergeDefaults(defaults,JSON.parse(raw));
+  }catch(e){
+    console.error(e);
+    return deepClone(defaults);
+  }
 }
 
-function viewsCalendar(){
- const d=new Date(S.calendar.year,S.calendar.month,1),year=d.getFullYear(),month=d.getMonth(),first=d.getDay(),last=new Date(year,month+1,0).getDate();
- let cells="";for(let i=0;i<first;i++)cells+=`<div class="day"></div>`;
- for(let day=1;day<=last;day++){let date=`${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`,es=S.events.filter(e=>e.date===date),ts=S.tasks.filter(t=>t.due===date);cells+=`<div class="day ${date===today()?"today":""}"><div class="day-num">${day}</div>${es.map(e=>`<div class="cal-event">${esc(e.title)}</div>`).join("")}${ts.map(t=>`<div class="cal-event" style="background:rgba(34,197,94,.18)">✓ ${esc(t.title)}</div>`).join("")}</div>`}
- return `<div class="page">${head("カレンダー","予定・タスク・締切をまとめて表示",`<button class="btn primary" data-action="addEvent">＋ 予定</button>`)}
- <div class="card"><div class="calendar-head"><button class="btn" data-cal="-1">‹</button><b>${year}年 ${month+1}月</b><button class="btn" data-cal="1">›</button></div><div class="calendar-grid"><div class="dow">日</div><div class="dow">月</div><div class="dow">火</div><div class="dow">水</div><div class="dow">木</div><div class="dow">金</div><div class="dow">土</div>${cells}</div></div>
- <div class="card" style="margin-top:16px"><div class="card-title">予定一覧</div><div class="list">${S.events.filter(e=>e.date.slice(0,7)===`${year}-${String(month+1).padStart(2,"0")}`).sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="item"><b>${esc(e.title)}</b><div class="small muted">${fmtDate(e.date)} ${esc(e.time||"")} ${e.place?"・"+esc(e.place):""}</div><button class="btn" style="margin-top:7px" data-delete-event="${e.id}">削除</button></div>`).join("")||`<div class="empty">予定なし</div>`}</div></div></div>`;
+function save(){
+  S.system.updatedAt=new Date().toISOString();
+  localStorage.setItem(KEY,JSON.stringify(S));
+  updateMini();
 }
 
-function timerText(){
- let sec=Math.max(0,Math.floor(S.timer.remaining||0));return `${String(Math.floor(sec/3600)).padStart(2,"0")}:${String(Math.floor(sec%3600/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`;
-}
-function viewsTimer(){
- return `<div class="page">${head("タイマー","時間を自由に設定。タスクや勉強にも連携できます")}
- <div class="grid g2"><div class="card">
- <div class="timer-big" id="timerDisplay">${timerText()}</div>
- <div class="timer-controls"><button class="btn primary" data-action="timerToggle">${S.timer.running?"⏸ 一時停止":"▶ 開始"}</button><button class="btn" data-action="timerReset">↺ リセット</button></div>
- <div class="link-line"></div><div class="timer-presets">${[5,10,15,25,30,45,60,90].map(m=>`<button class="btn" data-preset="${m}">${m}分</button>`).join("")}</div>
- </div><div class="card"><div class="card-title">⚙️ 自由設定</div><div class="form-grid">
- <div class="field"><label>時間</label><input id="timerH" type="number" min="0" value="${Math.floor(S.timer.remaining/3600)}"></div>
- <div class="field"><label>分</label><input id="timerM" type="number" min="0" max="59" value="${Math.floor(S.timer.remaining%3600/60)}"></div>
- <div class="field"><label>秒</label><input id="timerS" type="number" min="0" max="59" value="${S.timer.remaining%60}"></div>
- <div class="field"><label>モード</label><select id="timerMode"><option value="countdown" ${S.timer.mode==="countdown"?"selected":""}>カウントダウン</option><option value="stopwatch" ${S.timer.mode==="stopwatch"?"selected":""}>ストップウォッチ</option><option value="pomodoro" ${S.timer.mode==="pomodoro"?"selected":""}>ポモドーロ</option></select></div>
- <div class="field"><label>連携</label><select id="timerLink"><option value="">なし</option>${S.tasks.map(x=>`<option value="task:${x.id}">タスク：${esc(x.title)}</option>`).join("")}${S.novels.map(x=>`<option value="novel:${x.id}">小説：${esc(x.title)}</option>`).join("")}${S.games.map(x=>`<option value="game:${x.id}">ゲーム：${esc(x.title)}</option>`).join("")}</select></div>
- <div class="field"><label>音</label><select id="timerSound"><option value="on">ON</option><option value="off">OFF</option></select></div>
- </div></div></div>
- <div class="card" style="margin-top:16px"><div class="card-title">セッション履歴</div><div class="list">${S.timer.sessions.slice(0,15).map(x=>`<div class="item"><b>${fmtMin(x.minutes)}</b> <span class="muted">${esc(x.label||"フリータイマー")}</span><div class="small muted">${new Date(x.time).toLocaleString("ja-JP")}</div></div>`).join("")||`<div class="empty">まだ記録がありません</div>`}</div></div></div>`;
+function toast(msg){
+  const el=document.getElementById("toast");
+  el.textContent=msg;
+  el.classList.add("show");
+  clearTimeout(toast.t);
+  toast.t=setTimeout(()=>el.classList.remove("show"),2300);
 }
 
-function viewsNovels(){
- return `<div class="page">${head("小説","作品・エピソード・PV・執筆進捗",`<button class="btn primary" data-action="addNovel">＋ 作品</button>`)}
- <div class="grid g2">${S.novels.map(n=>`<div class="card"><div class="card-title"><span>📖 ${esc(n.title)}</span><button class="icon-btn" data-edit-novel="${n.id}">⋯</button></div><div class="small muted">${esc(n.genre||"未設定")} ・ ${esc(n.status||"執筆中")}</div><p>${esc(n.synopsis||"")}</p><div class="grid g3"><div><div class="small muted">PV</div><b>${(+n.pv||0).toLocaleString()}</b></div><div><div class="small muted">文字数</div><b>${(+n.words||0).toLocaleString()}</b></div><div><div class="small muted">話数</div><b>${(n.episodes||[]).length}</b></div></div><div style="margin-top:12px"><div class="progress"><i style="width:${clamp(+n.progress||0,0,100)}%"></i></div><div class="small muted" style="margin-top:5px">執筆進捗 ${+n.progress||0}%</div></div><div style="margin-top:10px">${(n.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">作品を登録しよう</div>`}</div></div>`;
+function playSound(type="done"){
+  if(!S.settings.sounds)return;
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;
+    if(!C)return;
+    const c=new C();
+    const o=c.createOscillator();
+    const g=c.createGain();
+    o.frequency.value=type==="achievement"?880:660;
+    o.type="sine";
+    g.gain.value=.05;
+    o.connect(g);g.connect(c.destination);
+    o.start();
+    o.frequency.exponentialRampToValueAtTime(1100,c.currentTime+.18);
+    g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.35);
+    o.stop(c.currentTime+.35);
+  }catch{}
 }
-function viewsGames(){
- return `<div class="page">${head("ゲーム","プレイ時間・レベル・実績・目標",`<button class="btn primary" data-action="addGame">＋ ゲーム</button>`)}
- <div class="grid g3">${S.games.map(g=>`<div class="card"><div class="card-title">🎮 ${esc(g.title)} <button class="icon-btn" data-edit-game="${g.id}">⋯</button></div><div class="small muted">${esc(g.platform||"")}</div><div class="stat">Lv.${g.level||1}</div><div class="grid g2"><div><span class="small muted">スコア</span><br><b>${(+g.score||0).toLocaleString()}</b></div><div><span class="small muted">プレイ時間</span><br><b>${fmtMin(g.minutes)}</b></div></div><div style="margin-top:10px">${(g.achievements||[]).map(a=>`<span class="badge">🏆 ${esc(a)}</span>`).join("")}</div></div>`).join("")||`<div class="empty">ゲームを登録しよう</div>`}</div></div>`;
-}
-function viewsStudy(){
- const total=S.studies.reduce((a,x)=>a+(+x.minutes||0),0),todayMin=S.studies.filter(x=>x.date===today()).reduce((a,x)=>a+(+x.minutes||0),0);
- return `<div class="page">${head("勉強","勉強時間・科目・目標を記録",`<button class="btn primary" data-action="addStudy">＋ 記録</button>`)}
- <div class="grid g3"><div class="card"><div class="small muted">今日</div><div class="stat cyan">${fmtMin(todayMin)}</div></div><div class="card"><div class="small muted">累計</div><div class="stat">${fmtMin(total)}</div></div><div class="card"><div class="small muted">記録数</div><div class="stat">${S.studies.length}</div></div></div>
- <div class="card" style="margin-top:16px"><div class="card-title">最近の勉強</div><div class="list">${S.studies.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30).map(x=>`<div class="item item-row"><span>📚</span><div class="grow"><b>${esc(x.subject)}</b><div class="small muted">${fmtDate(x.date)} ・ ${fmtMin(x.minutes)} ${x.memo?"・"+esc(x.memo):""}</div></div></div>`).join("")||`<div class="empty">勉強記録なし</div>`}</div></div></div>`;
-}
-function viewsHabits(){
- return `<div class="page">${head("習慣","毎日の行動を記録してストリークを伸ばす",`<button class="btn primary" data-action="addHabit">＋ 習慣</button>`)}
- <div class="grid g3">${S.habits.map(h=>{let logs=h.logs||[],streak=0,d=new Date();while(logs.includes(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1)}return `<div class="card"><div class="card-title">${esc(h.name)} <button class="icon-btn" data-edit-habit="${h.id}">⋯</button></div><div class="stat">🔥 ${streak}</div><div class="small muted">連続日数</div><button class="btn ${logs.includes(today())?"success":""}" style="margin-top:12px;width:100%" data-habit="${h.id}" ${logs.includes(today())?"disabled":""}>${logs.includes(today())?"✓ 今日達成":"今日達成する"}</button></div>`}).join("")||`<div class="empty">習慣を追加しよう</div>`}</div></div>`;
-}
-function viewsLink(){
- return `<div class="page">${head("NEXUS LINK","モジュール同士をつないで関連情報を表示",`<button class="btn primary" data-action="addLink">＋ リンク</button>`)}
- <div class="list">${S.links.map(l=>`<div class="card"><div class="item-row"><b>${esc(resolveName(l.a))}</b><span class="muted">↔</span><b>${esc(resolveName(l.b))}</b><div class="grow"></div><button class="btn danger" data-delete-link="${l.id}">削除</button></div>${l.memo?`<div class="small muted" style="margin-top:8px">${esc(l.memo)}</div>`:""}</div>`).join("")||`<div class="empty">まだリンクがありません</div>`}</div></div>`;
-}
-function resolveName(v){if(!v)return"未選択";let [type,id]=v.split(":");let arr={task:S.tasks,note:S.notes,novel:S.novels,game:S.games,event:S.events,study:S.studies,habit:S.habits}[type]||[];let x=arr.find(x=>x.id===id);return `${type.toUpperCase()} · ${x?.title||x?.name||x?.subject||"不明"}`}
-function viewsDatabase(){
- return `<div class="page">${head("データベース","自分専用のカスタムデータを作成",`<button class="btn primary" data-action="addDatabase">＋ コレクション</button>`)}
- <div class="grid g3">${S.databases.map(d=>`<div class="card"><div class="card-title">▤ ${esc(d.name)} <button class="icon-btn" data-edit-db="${d.id}">⋯</button></div><div class="small muted">${d.fields?.length||0} フィールド ・ ${d.records?.length||0} レコード</div><button class="btn" style="margin-top:12px" data-open-db="${d.id}">開く</button></div>`).join("")||`<div class="empty">カスタムデータベースを作成しよう</div>`}</div></div>`;
-}
-function viewsStats(){
- const study=S.studies.reduce((a,x)=>a+(+x.minutes||0),0),focus=S.timer.sessions.reduce((a,x)=>a+(+x.minutes||0),0),done=S.tasks.filter(x=>x.done).length,pv=S.novels.reduce((a,x)=>a+(+x.pv||0),0),game=S.games.reduce((a,x)=>a+(+x.minutes||0),0);
- return `<div class="page">${head("統計","NEXUSに蓄積されたデータを可視化")}
- <div class="grid g4">${[["📚","勉強時間",fmtMin(study)],["⏱","集中時間",fmtMin(focus)],["✓","完了タスク",done],["📖","小説PV",pv.toLocaleString()],["🎮","ゲーム時間",fmtMin(game)],["⚡","XP",S.xp],["🔥","習慣",S.habits.reduce((a,h)=>a+(h.logs?.length||0),0)],["📈","活動数",S.activity.length]].map(x=>`<div class="card"><div class="small muted">${x[0]} ${x[1]}</div><div class="stat">${x[2]}</div></div>`).join("")}</div>
- <div class="card" style="margin-top:16px"><div class="card-title">📊 直近14日の勉強時間</div><canvas id="studyChart" height="230"></canvas></div>
- <div class="card" style="margin-top:16px"><div class="card-title">🏆 NEXUS SCORE</div><div class="stat accent">${nexusScore()}</div><div class="small muted">活動・XP・習慣・完了タスク・執筆を総合したスコア</div></div></div>`;
-}
-function nexusScore(){return Math.round(S.xp+S.tasks.filter(x=>x.done).length*25+S.studies.reduce((a,x)=>a+(+x.minutes||0),0)*.5+S.activity.length+S.habits.reduce((a,h)=>a+(h.logs?.length||0),0)*10)}
-function viewsActivity(){return `<div class="page">${head("活動履歴","NEXUSで行った操作を記録")}${`<div class="card">${activityList(100)}</div>`}</div>`}
-function viewsTrash(){return `<div class="page">${head("ゴミ箱","削除したデータを復元・完全削除",`<button class="btn danger" data-action="emptyTrash">完全削除</button>`)}<div class="list">${S.trash.map(x=>`<div class="card item-row"><div class="grow"><b>${esc(x.title||x.name||"データ")}</b><div class="small muted">${esc(x.type)} ・ ${new Date(x.deletedAt).toLocaleString("ja-JP")}</div></div><button class="btn" data-restore="${x.id}">復元</button><button class="btn danger" data-purge="${x.id}">削除</button></div>`).join("")||`<div class="empty">ゴミ箱は空です</div>`}</div></div>`}
-function viewsNotifications(){
- return `<div class="page">${head("通知","NEXUSのリマインダーとブラウザ通知を管理")}
- <div class="grid g2"><div class="card"><div class="card-title">🔔 通知状態</div><div class="stat">${S.settings.notifications?"ON":"OFF"}</div><button class="btn primary" data-action="requestNotify">通知を許可 / 更新</button></div>
- <div class="card"><div class="card-title">📌 通知できるもの</div><div class="list">${["タイマー終了","タスク期限","カレンダー予定","習慣リマインダー","小説投稿予定","カスタムリマインダー"].map(x=>`<div class="item">${x}</div>`).join("")}</div></div></div>
- <div class="card" style="margin-top:16px"><div class="card-title">自分で通知を追加</div><button class="btn primary" data-action="addReminder">＋ リマインダー</button></div>
- <div class="card" style="margin-top:16px"><div class="card-title">登録済み</div>${(S.settings.reminders||[]).map(r=>`<div class="item item-row"><div class="grow"><b>${esc(r.title)}</b><div class="small muted">${new Date(r.at).toLocaleString("ja-JP")}</div></div><button class="btn danger" data-delete-reminder="${r.id}">削除</button></div>`).join("")||`<div class="empty">なし</div>`}</div></div>`;
-}
-function viewsSettings(){
- const s=S.settings;
- return `<div class="page">${head("設定","NEXUSの外観・壁紙・動作をカスタマイズ")}
- <div class="grid g2"><div class="card"><div class="card-title">🖼️ 壁紙</div><div class="wall-grid">${Object.entries(walls).map(([k,v])=>`<div class="wall ${s.wall===k&&!s.customWall?"selected":""}" style="background:${v}" data-wall="${k}"><span>${wallNames[k]}</span></div>`).join("")}</div>
- <div class="form-grid" style="margin-top:14px"><div class="field"><label>自分の画像</label><input id="wallFile" type="file" accept="image/*"></div><div class="field"><label>ランダム / 毎日</label><select id="wallAuto"><option value="none">固定</option><option value="random" ${s.wallRandom?"selected":""}>起動時ランダム</option><option value="daily" ${s.dailyWall?"selected":""}>毎日変更</option></select></div></div>
- <div class="form-grid" style="margin-top:12px"><div class="field"><label>暗幕 ${Math.round(s.overlay*100)}%</label><input id="overlay" type="range" min="0" max=".75" step=".01" value="${s.overlay}"></div><div class="field"><label>ぼかし ${s.blur}px</label><input id="blur" type="range" min="0" max="30" value="${s.blur}"></div></div></div>
- <div class="card"><div class="card-title">🎨 UI</div><div class="field"><label>アクセントカラー</label><div class="color-row" id="colors">${["#7c3aed","#2563eb","#06b6d4","#16a34a","#eab308","#f97316","#ef4444","#ec4899"].map(c=>`<div class="color-dot ${s.accent===c?"active":""}" style="background:${c}" data-color="${c}"></div>`).join("")}</div></div>
- <div class="form-grid" style="margin-top:15px"><div class="field"><label>サイドバー幅</label><input id="sidebarWidth" type="range" min="190" max="330" value="${s.sidebar}"></div><div class="field"><label>文字サイズ</label><input id="fontSize" type="range" min=".85" max="1.15" step=".05" value="${s.font}"></div><div class="field"><label>カード密度</label><select id="density"><option value="1">標準</option><option value=".85" ${s.density<1?"selected":""}>コンパクト</option><option value="1.15" ${s.density>1?"selected":""}>ゆったり</option></select></div><div class="field"><label>サウンド</label><select id="sounds"><option value="on" ${s.sounds?"selected":""}>ON</option><option value="off" ${!s.sounds?"selected":""}>OFF</option></select></div></div></div></div>
- <div class="grid g3" style="margin-top:16px"><div class="card"><div class="card-title">💾 バックアップ</div><button class="btn primary" data-action="export">JSONを書き出す</button> <button class="btn" data-action="import">復元</button></div><div class="card"><div class="card-title">🔐 アプリロック</div><button class="btn" data-action="pin">PIN設定</button><div class="small muted" style="margin-top:7px">端末内の簡易ロック</div></div><div class="card"><div class="card-title">⚠️ データ</div><button class="btn danger" data-action="reset">全データ初期化</button></div></div></div>`;
-}
-const views={dashboard:viewsDashboard,tasks:viewsTasks,notes:viewsNotes,calendar:viewsCalendar,timer:viewsTimer,novels:viewsNovels,games:viewsGames,study:viewsStudy,habits:viewsHabits,link:viewsLink,database:viewsDatabase,stats:viewsStats,activity:viewsActivity,trash:viewsTrash,notifications:viewsNotifications,settings:viewsSettings};
-
-function quickAdd(){openModal("クイック追加",`<div class="grid g2">${[
-["📋","タスク","addTask"],["📝","ノート","addNote"],["📅","予定","addEvent"],["⏱","タイマー","timerOpen"],["📖","小説","addNovel"],["🎮","ゲーム","addGame"],["📚","勉強","addStudy"],["🔥","習慣","addHabit"],["🔗","リンク","addLink"]
-].map(x=>`<button class="card" data-modal-action="${x[2]}" style="text-align:left;border:1px solid var(--border)"><div style="font-size:25px">${x[0]}</div><b>${x[1]}</b></button>`).join("")}</div>`)}
-function openModal(title,body,foot=""){document.getElementById("modal").innerHTML=`<div class="modal-head"><div class="modal-title">${title}</div><button class="icon-btn" data-close>×</button></div>${body}${foot}`;document.getElementById("modalBg").classList.add("show")}
-function closeModal(){document.getElementById("modalBg").classList.remove("show")}
-document.getElementById("modalBg").addEventListener("click",e=>{if(e.target.id==="modalBg"||e.target.closest("[data-close]"))closeModal()});
-
-function taskForm(t={}){
- return `<div class="form-grid"><div class="field full"><label>タイトル</label><input id="fTitle" value="${esc(t.title)}" autofocus></div><div class="field"><label>期限</label><input id="fDue" type="date" value="${t.due||""}"></div><div class="field"><label>時刻</label><input id="fTime" type="time" value="${t.time||""}"></div><div class="field"><label>優先度</label><select id="fPriority"><option value="">なし</option><option value="high" ${t.priority==="high"?"selected":""}>高</option><option value="mid" ${t.priority==="mid"?"selected":""}>中</option><option value="low" ${t.priority==="low"?"selected":""}>低</option></select></div><div class="field"><label>タグ（カンマ区切り）</label><input id="fTags" value="${esc((t.tags||[]).join(","))}"></div><div class="field full"><label>説明</label><textarea id="fDesc">${esc(t.description)}</textarea></div><div class="field full"><label>サブタスク（1行1つ）</label><textarea id="fSubs">${esc((t.subtasks||[]).map(x=>x.title).join("\\n"))}</textarea></div></div>
- <div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-task="${t.id||""}">保存</button></div>`;
-}
-function noteForm(n={}){
- return `<div class="form-grid"><div class="field"><label>タイトル</label><input id="fTitle" value="${esc(n.title)}" autofocus></div><div class="field"><label>カテゴリ</label><input id="fCat" value="${esc(n.category)}"></div><div class="field full"><label>タグ</label><input id="fTags" value="${esc((n.tags||[]).join(","))}"></div><div class="field full"><label>本文</label><textarea id="fBody" style="min-height:260px">${esc(n.body)}</textarea></div><div class="field"><label>固定</label><select id="fPin"><option value="0">しない</option><option value="1" ${n.pin?"selected":""}>固定</option></select></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-note="${n.id||""}">保存</button></div>`;
-}
-function eventForm(e={}){
- return `<div class="form-grid"><div class="field full"><label>タイトル</label><input id="fTitle" value="${esc(e.title)}"></div><div class="field"><label>日付</label><input id="fDate" type="date" value="${e.date||today()}"></div><div class="field"><label>時刻</label><input id="fTime" type="time" value="${e.time||""}"></div><div class="field"><label>場所</label><input id="fPlace" value="${esc(e.place)}"></div><div class="field"><label>カテゴリ</label><input id="fCat" value="${esc(e.category)}"></div><div class="field full"><label>詳細</label><textarea id="fDesc">${esc(e.description)}</textarea></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-event="${e.id||""}">保存</button></div>`;
-}
-function novelForm(n={}){
- return `<div class="form-grid"><div class="field"><label>作品名</label><input id="fTitle" value="${esc(n.title)}"></div><div class="field"><label>ジャンル</label><input id="fGenre" value="${esc(n.genre)}"></div><div class="field full"><label>あらすじ</label><textarea id="fDesc">${esc(n.synopsis)}</textarea></div><div class="field"><label>ステータス</label><select id="fStatus"><option>執筆中</option><option ${n.status==="完結"?"selected":""}>完結</option><option ${n.status==="休止"?"selected":""}>休止</option></select></div><div class="field"><label>文字数</label><input id="fWords" type="number" value="${n.words||0}"></div><div class="field"><label>PV</label><input id="fPV" type="number" value="${n.pv||0}"></div><div class="field"><label>進捗%</label><input id="fProgress" type="number" min="0" max="100" value="${n.progress||0}"></div><div class="field full"><label>タグ</label><input id="fTags" value="${esc((n.tags||[]).join(","))}"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-novel="${n.id||""}">保存</button></div>`;
-}
-function gameForm(g={}){
- return `<div class="form-grid"><div class="field"><label>ゲーム名</label><input id="fTitle" value="${esc(g.title)}"></div><div class="field"><label>機種</label><input id="fPlatform" value="${esc(g.platform)}"></div><div class="field"><label>レベル</label><input id="fLevel" type="number" value="${g.level||1}"></div><div class="field"><label>スコア</label><input id="fScore" type="number" value="${g.score||0}"></div><div class="field"><label>プレイ時間（分）</label><input id="fMinutes" type="number" value="${g.minutes||0}"></div><div class="field full"><label>実績（カンマ区切り）</label><input id="fAch" value="${esc((g.achievements||[]).join(","))}"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-game="${g.id||""}">保存</button></div>`;
-}
-function studyForm(){
- return `<div class="form-grid"><div class="field"><label>科目</label><input id="fSubject" placeholder="数学"></div><div class="field"><label>日付</label><input id="fDate" type="date" value="${today()}"></div><div class="field"><label>時間（分）</label><input id="fMinutes" type="number" min="1" value="30"></div><div class="field"><label>メモ</label><input id="fMemo"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-study>保存</button></div>`;
-}
-function habitForm(h={}){
- return `<div class="field"><label>習慣名</label><input id="fName" value="${esc(h.name)}" autofocus></div><div class="field" style="margin-top:12px"><label>目標</label><input id="fGoal" value="${esc(h.goal||"毎日")}" placeholder="毎日"></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-habit="${h.id||""}">保存</button></div>`;
-}
-function linkForm(){
- const opts=()=>Object.entries({task:S.tasks,note:S.notes,novel:S.novels,game:S.games,event:S.events,habit:S.habits}).flatMap(([type,a])=>a.map(x=>`<option value="${type}:${x.id}">${type.toUpperCase()} · ${esc(x.title||x.name)}</option>`)).join("");
- return `<div class="field"><label>左側</label><select id="fA">${opts()}</select></div><div class="field" style="margin-top:12px"><label>右側</label><select id="fB">${opts()}</select></div><div class="field" style="margin-top:12px"><label>メモ</label><input id="fMemo"></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-link>保存</button></div>`;
-}
-function dbForm(d={}){
- return `<div class="form-grid"><div class="field full"><label>コレクション名</label><input id="fName" value="${esc(d.name)}"></div><div class="field full"><label>フィールド名（カンマ区切り）</label><input id="fFields" value="${esc((d.fields||[]).map(x=>x.name).join(","))}"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-db="${d.id||""}">保存</button></div>`;
-}
-
-function openSearch(q){
- const all=[
- ...S.tasks.map(x=>({type:"タスク",name:x.title,id:x.id})),...S.notes.map(x=>({type:"ノート",name:x.title,id:x.id})),
- ...S.novels.map(x=>({type:"小説",name:x.title,id:x.id})),...S.games.map(x=>({type:"ゲーム",name:x.title,id:x.id}))
- ].filter(x=>x.name.toLowerCase().includes(q.toLowerCase())).slice(0,30);
- openModal("検索結果",all.length?`<div class="list">${all.map(x=>`<div class="item"><span class="badge">${x.type}</span> <b>${esc(x.name)}</b></div>`).join("")}</div>`:`<div class="empty">「${esc(q)}」に一致するものはありません</div>`);
-}
-
-function saveTask(id){
- const obj={id:id||uid(),title:g("fTitle"),due:g("fDue"),time:g("fTime"),priority:g("fPriority"),tags:split(g("fTags")),description:g("fDesc"),subtasks:g("fSubs").split("\n").filter(Boolean).map(x=>({id:uid(),title:x,done:false})),done:false,created:Date.now()};
- const old=id&&S.tasks.find(x=>x.id===id);if(old){Object.assign(old,obj,{done:old.done,created:old.created,subtasks:old.subtasks?.map((x,i)=>({...obj.subtasks[i],done:x.done}))||obj.subtasks})}else{S.tasks.push(obj);log("task","タスクを作成："+obj.title,5)}
- save();closeModal();render();
-}
-function saveNote(id){let old=id&&S.notes.find(x=>x.id===id),obj={id:id||uid(),title:g("fTitle")||"無題",category:g("fCat"),tags:split(g("fTags")),body:g("fBody"),pin:g("fPin")==="1",created:old?.created||Date.now(),updated:Date.now(),history:old?.history||[]};if(old){old.history.push({body:old.body,time:Date.now()});Object.assign(old,obj)}else{S.notes.unshift(obj);log("note","ノートを作成："+obj.title,3)}save();closeModal();render()}
-function saveEvent(id){let obj={id:id||uid(),title:g("fTitle"),date:g("fDate"),time:g("fTime"),place:g("fPlace"),category:g("fCat"),description:g("fDesc")},old=id&&S.events.find(x=>x.id===id);if(old)Object.assign(old,obj);else{S.events.push(obj);log("event","予定を追加："+obj.title,3)}save();closeModal();render()}
-function saveNovel(id){let old=id&&S.novels.find(x=>x.id===id),obj={id:id||uid(),title:g("fTitle"),genre:g("fGenre"),synopsis:g("fDesc"),status:g("fStatus"),words:+g("fWords")||0,pv:+g("fPV")||0,progress:clamp(+g("fProgress")||0,0,100),tags:split(g("fTags")),episodes:old?.episodes||[],created:old?.created||Date.now()};if(old)Object.assign(old,obj);else{S.novels.push(obj);log("novel","作品を作成："+obj.title,5)}save();closeModal();render()}
-function saveGame(id){let old=id&&S.games.find(x=>x.id===id),obj={id:id||uid(),title:g("fTitle"),platform:g("fPlatform"),level:+g("fLevel")||1,score:+g("fScore")||0,minutes:+g("fMinutes")||0,achievements:split(g("fAch")),created:old?.created||Date.now()};if(old)Object.assign(old,obj);else{S.games.push(obj);log("game","ゲームを登録："+obj.title,3)}save();closeModal();render()}
-function saveStudy(){let m=+g("fMinutes")||0;S.studies.push({id:uid(),subject:g("fSubject"),date:g("fDate"),minutes:m,memo:g("fMemo")});log("study",`${g("fSubject")}を${m}分勉強`,Math.min(100,Math.round(m)));save();closeModal();render()}
-function saveHabit(id){let old=id&&S.habits.find(x=>x.id===id),obj={id:id||uid(),name:g("fName"),goal:g("fGoal"),logs:old?.logs||[]};if(old)Object.assign(old,obj);else{S.habits.push(obj);log("habit","習慣を作成："+obj.name,3)}save();closeModal();render()}
-function saveLink(){S.links.push({id:uid(),a:g("fA"),b:g("fB"),memo:g("fMemo")});log("link","NEXUS LINKを作成",5);save();closeModal();render()}
-function saveDb(id){let old=id&&S.databases.find(x=>x.id===id),obj={id:id||uid(),name:g("fName"),fields:g("fFields").split(",").filter(Boolean).map(n=>({id:uid(),name:n.trim(),type:"text"})),records:old?.records||[]};if(old)Object.assign(old,obj);else S.databases.push(obj);save();closeModal();render()}
-function g(id){return document.getElementById(id)?.value||""}function split(s){return s.split(",").map(x=>x.trim()).filter(Boolean)}
-
-function startTimer(){
- if(S.timer.mode==="countdown"&&!S.timer.remaining){return}
- S.timer.running=true;S.timer.started=Date.now()-(S.timer.elapsed||0)*1000;save();toast("タイマー開始")
-}
-function pauseTimer(){
- if(!S.timer.running)return;S.timer.elapsed=(Date.now()-S.timer.started)/1000;S.timer.remaining=Math.max(0,S.timer.remaining-(S.timer.elapsed-(S.timer.lastTick||0)));S.timer.lastTick=S.timer.elapsed;S.timer.running=false;save()
-}
-function resetTimer(){S.timer.running=false;S.timer.elapsed=0;S.timer.lastTick=0;S.timer.remaining=S.timer.total;save();updateTimerUI()}
-function completeTimer(){
- const mins=Math.max(1,Math.round((S.timer.total-S.timer.remaining)/60));
- S.timer.sessions.unshift({id:uid(),minutes:mins,time:Date.now(),label:timerLabel()});
- log("timer",`${timerLabel()}を${mins}分実行`,Math.min(100,mins));
- S.timer.running=false;S.timer.remaining=S.timer.total;S.timer.elapsed=0;S.timer.lastTick=0;save();
- notify("⏱ NEXUS タイマー",`${timerLabel()}が終了しました`);
- playBeep();render();
-}
-function timerLabel(){if(S.timer.linkId)return resolveName(S.timer.linkType+":"+S.timer.linkId);return"フリータイマー"}
-function updateTimerUI(){
- const el=document.getElementById("timerDisplay")||document.getElementById("dashTimer");if(!el)return;
- if(S.timer.running){
-   let elapsed=(Date.now()-S.timer.started)/1000;
-   if(S.timer.mode==="stopwatch")el.textContent=clock(Math.floor(elapsed));
-   else{let r=Math.max(0,S.timer.remaining-Math.floor(elapsed-(S.timer.lastTick||0)));el.textContent=clock(r)}
- }else el.textContent=timerText();
-}
-function clock(sec){sec=Math.max(0,sec);return `${String(Math.floor(sec/3600)).padStart(2,"0")}:${String(Math.floor(sec%3600/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`}
-setInterval(()=>{
- if(!S.timer.running)return;
- if(S.timer.mode==="stopwatch"){updateTimerUI();return}
- let elapsed=Math.floor((Date.now()-S.timer.started)/1000),r=S.timer.remaining-Math.max(0,elapsed-(S.timer.lastTick||0));
- const el=document.getElementById("timerDisplay")||document.getElementById("dashTimer");if(el)el.textContent=clock(r);
- if(r<=0)completeTimer();
-},250);
 
 function notify(title,body){
- if(S.settings.notifications&&"Notification"in window&&Notification.permission==="granted"){
-   try{new Notification(title,{body,tag:"nexus"})}catch{}
- }
-}
-function playBeep(){
- if(!S.settings.sounds)return;
- try{let c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.08;o.start();setTimeout(()=>{o.stop();c.close()},500)}catch{}
+  S.notifications.unshift({
+    id:uid("notice"),title,body,
+    date:new Date().toISOString(),read:false
+  });
+  S.notifications=S.notifications.slice(0,100);
+  save();
+
+  if(S.settings.notifications && "Notification" in window && Notification.permission==="granted"){
+    try{new Notification(title,{body})}catch{}
+  }
 }
 
-function bindView(){
- document.querySelectorAll("[data-action]").forEach(b=>b.onclick=()=>actions(b.dataset.action));
- document.querySelectorAll("[data-modal-action]").forEach(b=>{b.onclick=()=>{closeModal();actions(b.dataset.modalAction)}});
- document.querySelectorAll("[data-task]").forEach(e=>e.onchange=()=>toggleTask(e.dataset.task));
- document.querySelectorAll("[data-habit]").forEach(e=>e.onclick=()=>toggleHabit(e.dataset.habit));
- document.querySelectorAll("[data-edit-task]").forEach(e=>e.onclick=()=>{let x=S.tasks.find(x=>x.id===e.dataset.editTask);openModal("タスクを編集",taskForm(x))});
- document.querySelectorAll("[data-edit-note]").forEach(e=>e.onclick=()=>{let x=S.notes.find(x=>x.id===e.dataset.editNote);openModal("ノートを編集",noteForm(x))});
- document.querySelectorAll("[data-edit-novel]").forEach(e=>e.onclick=()=>{let x=S.novels.find(x=>x.id===e.dataset.editNovel);openModal("作品を編集",novelForm(x))});
- document.querySelectorAll("[data-edit-game]").forEach(e=>e.onclick=()=>{let x=S.games.find(x=>x.id===e.dataset.editGame);openModal("ゲームを編集",gameForm(x))});
- document.querySelectorAll("[data-edit-habit]").forEach(e=>e.onclick=()=>{let x=S.habits.find(x=>x.id===e.dataset.editHabit);openModal("習慣を編集",habitForm(x))});
- document.querySelectorAll("[data-save-task]").forEach(e=>e.onclick=()=>saveTask(e.dataset.saveTask||null));
- document.querySelectorAll("[data-save-note]").forEach(e=>e.onclick=()=>saveNote(e.dataset.saveNote||null));
- document.querySelectorAll("[data-save-event]").forEach(e=>e.onclick=()=>saveEvent(e.dataset.saveEvent||null));
- document.querySelectorAll("[data-save-novel]").forEach(e=>e.onclick=()=>saveNovel(e.dataset.saveNovel||null));
- document.querySelectorAll("[data-save-game]").forEach(e=>e.onclick=()=>saveGame(e.dataset.saveGame||null));
- document.querySelectorAll("[data-save-study]").forEach(e=>e.onclick=saveStudy);
- document.querySelectorAll("[data-save-habit]").forEach(e=>e.onclick=()=>saveHabit(e.dataset.saveHabit||null));
- document.querySelectorAll("[data-save-link]").forEach(e=>e.onclick=saveLink);
- document.querySelectorAll("[data-save-db]").forEach(e=>e.onclick=()=>saveDb(e.dataset.saveDb||null));
- document.querySelectorAll("[data-delete-event]").forEach(e=>e.onclick=()=>{trash("events",e.dataset.deleteEvent);render()});
- document.querySelectorAll("[data-delete-link]").forEach(e=>e.onclick=()=>{S.links=S.links.filter(x=>x.id!==e.dataset.deleteLink);save();render()});
- document.querySelectorAll("[data-restore]").forEach(e=>e.onclick=()=>restoreTrash(e.dataset.restore));
- document.querySelectorAll("[data-purge]").forEach(e=>e.onclick=()=>{S.trash=S.trash.filter(x=>x.id!==e.dataset.purge);save();render()});
- document.querySelectorAll("[data-cal]").forEach(e=>e.onclick=()=>{S.calendar.month+=+e.dataset.cal;if(S.calendar.month<0){S.calendar.month=11;S.calendar.year--}if(S.calendar.month>11){S.calendar.month=0;S.calendar.year++}save();render()});
- document.querySelectorAll("[data-preset]").forEach(e=>e.onclick=()=>setTimer(+e.dataset.preset*60));
- document.querySelectorAll("[data-route2]").forEach(e=>e.onclick=()=>{route=e.dataset.route2;render()});
- if(document.getElementById("taskFilter"))document.getElementById("taskFilter").oninput=e=>{window.taskFilter=e.target.value;render()};
- document.querySelectorAll("[data-wall]").forEach(e=>e.onclick=()=>{S.settings.wall=e.dataset.wall;S.settings.customWall="";save();render();toast("壁紙を変更しました")});
- document.querySelectorAll("[data-color]").forEach(e=>e.onclick=()=>{S.settings.accent=e.dataset.color;save();render()});
- const wf=document.getElementById("wallFile");if(wf)wf.onchange=()=>{let f=wf.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{S.settings.customWall=r.result;save();render();toast("自分の画像を壁紙にしました")};r.readAsDataURL(f)};
- const ov=document.getElementById("overlay");if(ov)ov.oninput=e=>{S.settings.overlay=+e.target.value;save();document.documentElement.style.setProperty("--overlay",S.settings.overlay)};
- const bl=document.getElementById("blur");if(bl)bl.oninput=e=>{S.settings.blur=+e.target.value;save();document.documentElement.style.setProperty("--blur",S.settings.blur+"px")};
- const sw=document.getElementById("sidebarWidth");if(sw)sw.oninput=e=>{S.settings.sidebar=+e.target.value;save()};
- const fs=document.getElementById("fontSize");if(fs)fs.oninput=e=>{S.settings.font=+e.target.value;save()};
- const den=document.getElementById("density");if(den)den.onchange=e=>{S.settings.density=+e.target.value;save();render()};
- const snd=document.getElementById("sounds");if(snd)snd.onchange=e=>{S.settings.sounds=e.target.value==="on";save()};
- const wa=document.getElementById("wallAuto");if(wa)wa.onchange=e=>{S.settings.wallRandom=e.target.value==="random";S.settings.dailyWall=e.target.value==="daily";if(S.settings.wallRandom||S.settings.dailyWall)randomWall();save();render()};
- const th=document.getElementById("timerH");if(th)[th,document.getElementById("timerM"),document.getElementById("timerS")].forEach(x=>x.onchange=syncTimerInputs);
- const tm=document.getElementById("timerMode");if(tm)tm.onchange=()=>{S.timer.mode=tm.value;save()};
- const tl=document.getElementById("timerLink");if(tl)tl.onchange=()=>{let [type,id]=(tl.value||":").split(":");S.timer.linkType=type;S.timer.linkId=id;save()};
- const sr=document.getElementById("taskSort");if(sr)sr.onchange=()=>render();
- document.querySelectorAll("[data-delete-reminder]").forEach(e=>e.onclick=()=>{S.settings.reminders=(S.settings.reminders||[]).filter(x=>x.id!==e.dataset.deleteReminder);save();render()});
- if(route==="stats")drawChart();
+function logActivity(type,title,meta=""){
+  S.activity.unshift({
+    id:uid("act"),
+    type,title,meta,
+    date:new Date().toISOString()
+  });
+  S.activity=S.activity.slice(0,300);
+  save();
 }
-function actions(a){
- if(a==="quick")quickAdd();
- if(a==="addTask")openModal("新しいタスク",taskForm());
- if(a==="addNote")openModal("新しいノート",noteForm());
- if(a==="addEvent")openModal("新しい予定",eventForm());
- if(a==="addNovel")openModal("新しい作品",novelForm());
- if(a==="addGame")openModal("新しいゲーム",gameForm());
- if(a==="addStudy")openModal("勉強を記録",studyForm());
- if(a==="addHabit")openModal("新しい習慣",habitForm());
- if(a==="addLink")openModal("NEXUS LINKを作成",linkForm());
- if(a==="addDatabase")openModal("新しいデータベース",dbForm());
- if(a==="timerOpen"){route="timer";render()}
- if(a==="timerToggle"){toggleTimer();render()}
- if(a==="timerReset"){resetTimer();render()}
- if(a==="requestNotify")requestNotify();
- if(a==="addReminder")addReminder();
- if(a==="export")exportData();
- if(a==="import")importData();
- if(a==="reset"){if(confirm("全データを削除しますか？")){localStorage.removeItem(KEY);location.reload()}}
- if(a==="emptyTrash"){if(confirm("ゴミ箱を完全に空にしますか？")){S.trash=[];save();render()}}
- if(a==="pin")setPin();
+
+function addXP(amount,reason=""){
+  amount=Math.max(0,Number(amount)||0);
+  S.xp+=amount;
+  let gained=0;
+  while(S.xp >= S.level*100){
+    S.xp-=S.level*100;
+    S.level++;
+    gained++;
+  }
+  S.score += Math.round(amount);
+  if(gained){
+    notify("🎉 レベルアップ!",`NEXUS Lv.${S.level}になった！`);
+    playSound("achievement");
+  }
+  if(reason)logActivity("xp",`+${amount} XP`,reason);
+  checkAchievements();
+  save();
 }
-function toggleTask(id){let t=S.tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done)log("task","タスク完了："+t.title,20);save();render()}
-function toggleHabit(id){let h=S.habits.find(x=>x.id===id);if(!h)return;h.logs=h.logs||[];if(!h.logs.includes(today())){h.logs.push(today());log("habit","習慣達成："+h.name,10)}save();render()}
-function trash(type,id){
- const arr=S[type];const i=arr.findIndex(x=>x.id===id);if(i<0)return;const obj=arr[i];arr.splice(i,1);S.trash.push({id:uid(),originalId:obj.id,type,title:obj.title||obj.name||obj.subject,data:obj,deletedAt:Date.now()});save()
+
+function totalXP(){
+  let total=0;
+  for(let i=1;i<S.level;i++)total+=i*100;
+  return total+S.xp;
 }
-function restoreTrash(id){let x=S.trash.find(x=>x.id===id);if(!x)return;if(S[x.type])S[x.type].push(x.data);S.trash=S.trash.filter(x=>x.id!==id);save();render()}
-function setTimer(sec){S.timer.mode="countdown";S.timer.total=sec;S.timer.remaining=sec;S.timer.elapsed=0;S.timer.lastTick=0;S.timer.running=false;save();render()}
-function syncTimerInputs(){let h=+g("timerH")||0,m=+g("timerM")||0,s=+g("timerS")||0;S.timer.total=h*3600+m*60+s;S.timer.remaining=S.timer.total;S.timer.running=false;S.timer.elapsed=0;save();updateTimerUI()}
+
+function updateStreak(){
+  const d=today();
+  if(S.lastActive===d)return;
+  const yesterdayDate=new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate()-1);
+  const y=yesterdayDate.toISOString().slice(0,10);
+
+  if(S.lastActive===y)S.streak++;
+  else S.streak=1;
+
+  S.bestStreak=Math.max(S.bestStreak,S.streak);
+  S.lastActive=d;
+  save();
+}
+
+function checkAchievements(){
+  const unlock=(id,name,desc,xp)=>{
+    if(S.achievements.some(a=>a.id===id))return;
+    S.achievements.push({
+      id,name,desc,xp,
+      unlockedAt:new Date().toISOString()
+    });
+    S.score+=xp;
+    notify("🏆 実績解除",`${name} — ${desc}`);
+    playSound("achievement");
+  };
+
+  if(S.tasks.filter(t=>t.done).length>=1)
+    unlock("first_task","はじめの一歩","タスクを1つ完了",20);
+
+  if(S.tasks.filter(t=>t.done).length>=10)
+    unlock("ten_tasks","タスクマスター","タスクを10個完了",50);
+
+  if(S.notes.length>=10)
+    unlock("ten_notes","記録者","ノートを10個作成",50);
+
+  if(S.streak>=7)
+    unlock("week_streak","継続者","7日連続で活動",100);
+
+  if(S.studies.reduce((a,b)=>a+Number(b.minutes||0),0)>=600)
+    unlock("study10","10時間","勉強時間が10時間に到達",100);
+
+  if(S.novels.length>=1)
+    unlock("writer","創作者","作品を1つ登録",30);
+
+  if(S.goals.some(g=>Number(g.progress)>=100))
+    unlock("goal_clear","目標達成","目標を1つ達成",150);
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+const NAV=[
+  {group:"NEXUS",items:[
+    ["home","⌂","ホーム"],
+    ["command","⌘","COMMAND"]
+  ]},
+  {group:"PLAN",items:[
+    ["tasks","✓","タスク"],
+    ["calendar","▦","カレンダー"],
+    ["goals","◎","目標"],
+    ["projects","▣","プロジェクト"],
+    ["workflows","⇄","ワークフロー"],
+    ["habits","🔥","習慣"]
+  ]},
+  {group:"CREATE",items:[
+    ["notes","✎","ノート"],
+    ["novels","📖","小説"],
+    ["journal","☀","ジャーナル"],
+    ["templates","▤","テンプレート"]
+  ]},
+  {group:"TRACK",items:[
+    ["timer","◷","タイマー"],
+    ["study","📚","勉強"],
+    ["games","🎮","ゲーム"]
+  ]},
+  {group:"DATA",items:[
+    ["link","🔗","NEXUS LINK"],
+    ["database","▤","データベース"],
+    ["files","📁","ファイル"],
+    ["analytics","▥","統計"],
+    ["graph","◎","グラフ"],
+    ["activity","◴","活動履歴"]
+  ]},
+  {group:"SYSTEM",items:[
+    ["notifications","🔔","通知"],
+    ["achievements","🏆","実績"],
+    ["rpg","⚔","NEXUS RPG"],
+    ["trash","♻","ゴミ箱"],
+    ["settings","⚙","設定"]
+  ]}
+];
+
+const TITLES={};
+NAV.forEach(g=>g.items.forEach(x=>TITLES[x[0]]=x[2]));
+
+function renderNav(){
+  const nav=document.getElementById("nav");
+  const oldScroll=nav.scrollTop;
+  nav.innerHTML=NAV.map(g=>`
+    <div class="nav-group">${g.group}</div>
+    ${g.items.map(([r,icon,name])=>`
+      <button class="nav-item ${route===r?"active":""}" onclick="go('${r}')">
+        <span class="nav-icon">${icon}</span><span>${name}</span>
+      </button>
+    `).join("")}
+  `).join("");
+  requestAnimationFrame(()=>nav.scrollTop=oldScroll);
+}
+
+function go(r){
+  if(r==="command"){
+    openCommand();
+    return;
+  }
+  route=r;
+  location.hash="#/"+r;
+  document.getElementById("sidebar").classList.remove("open");
+  render();
+}
+
+function render(){
+  if(!TITLES[route])route="home";
+  document.getElementById("pageTitle").textContent=TITLES[route]||"ホーム";
+  renderNav();
+  const c=document.getElementById("content");
+
+  const map={
+    home:viewHome,
+    tasks:viewTasks,
+    calendar:viewCalendar,
+    goals:viewGoals,
+    projects:viewProjects,
+    workflows:viewWorkflows,
+    habits:viewHabits,
+    notes:viewNotes,
+    novels:viewNovels,
+    journal:viewJournal,
+    templates:viewTemplates,
+    timer:viewTimer,
+    study:viewStudy,
+    games:viewGames,
+    link:viewLink,
+    database:viewDatabase,
+    files:viewFiles,
+    analytics:viewAnalytics,
+    graph:viewGraph,
+    activity:viewActivity,
+    notifications:viewNotifications,
+    achievements:viewAchievements,
+    rpg:viewRPG,
+    trash:viewTrash,
+    settings:viewSettings
+  };
+
+  c.innerHTML=(map[route]||viewHome)();
+  afterRender();
+}
+
+function afterRender(){
+  applySettings();
+  updateMini();
+
+  if(route==="analytics")drawAnalyticsChart();
+  if(route==="graph")drawGraph();
+
+  if(route==="timer")updateTimerUI();
+
+  document.querySelectorAll("[data-action]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const action=el.dataset.action;
+      if(action==="quick")openQuick();
+    });
+  });
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function viewHome(){
+  const d=new Date();
+  const greeting=d.getHours()<6?"こんばんは":d.getHours()<12?"おはよう":d.getHours()<18?"こんにちは":"こんばんは";
+  const completed=S.tasks.filter(t=>t.done).length;
+  const todayTasks=S.tasks.filter(t=>t.due===today()&&!t.done);
+  const todayEvents=S.events.filter(e=>e.date===today());
+  const studyToday=S.studies.filter(x=>x.date===today()).reduce((a,b)=>a+Number(b.minutes||0),0);
+  const writingToday=S.novels.reduce((a,n)=>a+Number(n.todayWords||0),0);
+  const goalDone=S.goals.filter(g=>Number(g.progress)>=100).length;
+
+  const card=(id,html)=>S.dashboard.hidden.includes(id)?"":html;
+
+  return `
+    <div class="dashboard-hero">
+      <div class="between wrap">
+        <div>
+          <div class="hero-title">${greeting}、NEXUS。</div>
+          <div class="hero-sub">${fmtDate(d)} · 今日もデータを積み上げよう。</div>
+        </div>
+        <div class="actions">
+          <button class="primary" onclick="openQuick()">＋ Quick Add</button>
+          <button onclick="openCommand()">⌘ Command</button>
+        </div>
+      </div>
+    </div>
+
+    ${card("today",`
+    <div class="kpi-grid">
+      <div class="card stat">
+        <div class="stat-icon">✓</div>
+        <div class="stat-value">${todayTasks.length}</div>
+        <div class="stat-label">今日の未完了タスク</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value">${todayEvents.length}</div>
+        <div class="stat-label">今日の予定</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value">${studyToday}m</div>
+        <div class="stat-label">今日の勉強</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-icon">✍️</div>
+        <div class="stat-value">${writingToday}</div>
+        <div class="stat-label">今日の文字数</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">${S.streak}</div>
+        <div class="stat-label">活動ストリーク</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value">${S.score}</div>
+        <div class="stat-label">NEXUS SCORE</div>
+      </div>
+    </div>`)}
+    
+    <div class="grid g2" style="margin-top:14px">
+      ${card("tasks",`
+      <div class="card">
+        <div class="card-title">
+          <h3>今日やること</h3>
+          <button onclick="go('tasks')">すべて見る</button>
+        </div>
+        <div class="list">
+          ${todayTasks.slice(0,6).map(t=>`
+            <div class="list-item">
+              <div class="between">
+                <label class="row">
+                  <input type="checkbox" ${t.done?"checked":""} onchange="toggleTask('${t.id}')">
+                  <span>${esc(t.title)}</span>
+                </label>
+                <span class="badge ${t.priority==="high"?"red":t.priority==="low"?"":"yellow"}">${esc(t.priority||"normal")}</span>
+              </div>
+            </div>
+          `).join("")||`<div class="empty">今日の未完了タスクはありません。</div>`}
+        </div>
+      </div>`)}
+
+      ${card("timer",`
+      <div class="card">
+        <div class="card-title">
+          <h3>タイマー</h3>
+          <button onclick="go('timer')">開く</button>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:45px;font-weight:900" id="homeTimer">${timerText()}</div>
+          <div class="muted small">${esc(timerLabel())}</div>
+          <div class="actions" style="justify-content:center;margin-top:12px">
+            <button class="primary" onclick="timerQuickStart(25)">25分開始</button>
+            <button onclick="timerQuickStart(45)">45分開始</button>
+          </div>
+        </div>
+      </div>`)}
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      ${card("goals",`
+      <div class="card">
+        <div class="card-title"><h3>目標</h3><button onclick="go('goals')">管理</button></div>
+        ${S.goals.slice(0,3).map(g=>`
+          <div class="list-item" style="margin-bottom:8px">
+            <div class="between"><b>${esc(g.title)}</b><span>${Number(g.progress||0)}%</span></div>
+            <div class="progress" style="margin-top:8px"><i style="width:${clamp(Number(g.progress||0),0,100)}%"></i></div>
+          </div>
+        `).join("")||`<div class="empty">目標を追加しよう。</div>`}
+      </div>`)}
+
+      ${card("habits",`
+      <div class="card">
+        <div class="card-title"><h3>習慣</h3><button onclick="go('habits')">管理</button></div>
+        ${S.habits.slice(0,4).map(h=>`
+          <div class="list-item between">
+            <span>${esc(h.title)}</span>
+            <button class="${h.logs?.includes(today())?"success":""}" onclick="toggleHabit('${h.id}')">
+              ${h.logs?.includes(today())?"✓":"達成"}
+            </button>
+          </div>
+        `).join("")||`<div class="empty">習慣を追加しよう。</div>`}
+      </div>`)}
+
+      ${card("xp",`
+      <div class="card">
+        <div class="card-title"><h3>NEXUS RPG</h3><button onclick="go('rpg')">詳細</button></div>
+        <div class="between"><b style="font-size:28px">Lv.${S.level}</b><span>${S.xp} XP</span></div>
+        <div class="progress" style="margin-top:10px"><i style="width:${pct(S.xp,S.level*100)}%"></i></div>
+        <div class="muted small" style="margin-top:8px">次のLvまで ${S.level*100-S.xp} XP</div>
+      </div>`)}
+
+      ${card("writing",`
+      <div class="card">
+        <div class="card-title"><h3>創作</h3><button onclick="go('novels')">作品</button></div>
+        ${S.novels.slice(0,3).map(n=>`
+          <div class="list-item" style="margin-bottom:8px">
+            <div class="between"><b>${esc(n.title)}</b><span>${Number(n.pv||0).toLocaleString()} PV</span></div>
+            <div class="muted small">${Number(n.wordCount||0).toLocaleString()}文字</div>
+          </div>
+        `).join("")||`<div class="empty">作品を追加しよう。</div>`}
+      </div>`)}
+
+      ${card("activity",`
+      <div class="card">
+        <div class="card-title"><h3>最近の活動</h3><button onclick="go('activity')">すべて</button></div>
+        <div class="timeline">
+          ${S.activity.slice(0,5).map(a=>`
+            <div class="timeline-item">
+              <div><b>${esc(a.title)}</b></div>
+              <div class="muted small">${esc(a.meta)} · ${fmtDateTime(a.date)}</div>
+            </div>
+          `).join("")||`<div class="empty">まだ活動記録がありません。</div>`}
+        </div>
+      </div>`)}
+    </div>
+  `;
+}
+
+/* =========================================================
+   TASKS
+========================================================= */
+
+function viewTasks(){
+  const filter=window.taskFilter||"all";
+  const tasks=S.tasks.filter(t=>{
+    if(filter==="todo")return !t.done;
+    if(filter==="done")return t.done;
+    if(filter==="today")return t.due===today();
+    return true;
+  });
+
+  return `
+    <div class="between wrap">
+      <div>
+        <h2 style="margin:0">タスク</h2>
+        <div class="muted small">${S.tasks.filter(t=>t.done).length}/${S.tasks.length} 完了</div>
+      </div>
+      <div class="actions">
+        <button class="${filter==="all"?"primary":""}" onclick="setTaskFilter('all')">すべて</button>
+        <button class="${filter==="todo"?"primary":""}" onclick="setTaskFilter('todo')">未完了</button>
+        <button class="${filter==="today"?"primary":""}" onclick="setTaskFilter('today')">今日</button>
+        <button class="${filter==="done"?"primary":""}" onclick="setTaskFilter('done')">完了</button>
+        <button class="primary" onclick="openEntityForm('task')">＋ タスク</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:15px">
+      <div class="list">
+        ${tasks.map(t=>`
+          <div class="list-item">
+            <div class="between wrap">
+              <label class="row" style="flex:1">
+                <input type="checkbox" ${t.done?"checked":""} onchange="toggleTask('${t.id}')">
+                <span style="${t.done?"text-decoration:line-through;opacity:.55":""}">
+                  <b>${esc(t.title)}</b>
+                  ${t.due?`<span class="badge ${t.due<today()&&!t.done?"red":""}">${esc(t.due)}</span>`:""}
+                </span>
+              </label>
+              <div class="actions">
+                ${t.priority?`<span class="badge ${t.priority==="high"?"red":t.priority==="low"?"green":"yellow"}">${esc(t.priority)}</span>`:""}
+                ${t.tags?.map(x=>`<span class="badge accent">#${esc(x)}</span>`).join("")||""}
+                <button onclick="startLinkedTimer('task','${t.id}')">▶</button>
+                <button onclick="openEntityForm('task','${t.id}')">編集</button>
+                <button class="danger" onclick="moveTrash('tasks','${t.id}')">削除</button>
+              </div>
+            </div>
+            ${t.description?`<div class="muted small" style="margin-top:7px">${esc(t.description)}</div>`:""}
+            ${t.subtasks?.length?`
+              <div style="margin-top:10px">
+                ${t.subtasks.map(s=>`
+                  <label class="row small" style="margin:4px 0">
+                    <input type="checkbox" ${s.done?"checked":""} onchange="toggleSubtask('${t.id}','${s.id}')">
+                    <span>${esc(s.title)}</span>
+                  </label>
+                `).join("")}
+              </div>`:""}
+          </div>
+        `).join("")||`<div class="empty">タスクはありません。</div>`}
+      </div>
+    </div>
+  `;
+}
+
+function setTaskFilter(x){window.taskFilter=x;render()}
+function toggleTask(id){
+  const t=S.tasks.find(x=>x.id===id);
+  if(!t)return;
+  t.done=!t.done;
+  if(t.done){
+    addXP(20,"タスク完了");
+    updateStreak();
+    logActivity("task",`タスク完了: ${t.title}`);
+  }else{
+    logActivity("task",`タスクを未完了に戻した: ${t.title}`);
+  }
+  save();render();
+}
+function toggleSubtask(tid,sid){
+  const t=S.tasks.find(x=>x.id===tid);
+  const s=t?.subtasks?.find(x=>x.id===sid);
+  if(!s)return;
+  s.done=!s.done;
+  save();render();
+}
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+function viewCalendar(){
+  const y=S.calendar.year,m=S.calendar.month;
+  const first=new Date(y,m,1);
+  const last=new Date(y,m+1,0);
+  const start=first.getDay();
+  const cells=[];
+  for(let i=0;i<start;i++)cells.push(null);
+  for(let d=1;d<=last.getDate();d++)cells.push(new Date(y,m,d));
+  while(cells.length%7)cells.push(null);
+
+  return `
+    <div class="between">
+      <div>
+        <h2 style="margin:0">${y}年${m+1}月</h2>
+        <div class="muted small">予定・締切・習慣・プロジェクトをまとめて表示</div>
+      </div>
+      <div class="actions">
+        <button onclick="changeMonth(-1)">←</button>
+        <button onclick="calendarToday()">今日</button>
+        <button onclick="changeMonth(1)">→</button>
+        <button class="primary" onclick="openEntityForm('event')">＋ 予定</button>
+      </div>
+    </div>
+
+    <div class="calendar" style="margin-top:15px">
+      ${["日","月","火","水","木","金","土"].map(x=>`<div class="cal-head">${x}</div>`).join("")}
+      ${cells.map(d=>{
+        if(!d)return `<div class="cal-day muted-day"></div>`;
+        const ds=d.toISOString().slice(0,10);
+        const ev=S.events.filter(e=>e.date===ds);
+        const ts=S.tasks.filter(t=>t.due===ds);
+        const habits=S.habits.filter(h=>h.logs?.includes(ds));
+        return `
+          <div class="cal-day ${ds===today()?"today":""}" onclick="openDay('${ds}')">
+            <div class="day-num">${d.getDate()}</div>
+            ${ev.slice(0,3).map(e=>`<div class="cal-event">📅 ${esc(e.title)}</div>`).join("")}
+            ${ts.slice(0,3).map(t=>`<div class="cal-event" style="background:${t.done?"rgba(57,217,138,.16)":"rgba(124,92,255,.2)"}">✓ ${esc(t.title)}</div>`).join("")}
+            ${habits.length?`<div class="cal-event" style="background:rgba(255,202,92,.14)">🔥 ${habits.length}</div>`:""}
+          </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+function changeMonth(n){
+  S.calendar.month+=n;
+  if(S.calendar.month<0){S.calendar.month=11;S.calendar.year--}
+  if(S.calendar.month>11){S.calendar.month=0;S.calendar.year++}
+  save();render();
+}
+function calendarToday(){
+  const d=new Date();
+  S.calendar.year=d.getFullYear();
+  S.calendar.month=d.getMonth();
+  save();render();
+}
+function openDay(ds){
+  openEntityForm("event",null,ds);
+}
+
+/* =========================================================
+   GOALS
+========================================================= */
+
+function viewGoals(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">目標</h2><div class="muted small">大きな目的をNEXUSで追跡</div></div>
+      <button class="primary" onclick="openEntityForm('goal')">＋ 目標</button>
+    </div>
+
+    <div class="grid auto" style="margin-top:15px">
+      ${S.goals.map(g=>`
+        <div class="card">
+          <div class="between">
+            <div>
+              <h3 style="margin:0">${esc(g.title)}</h3>
+              <div class="muted small">${esc(g.deadline||"期限なし")}</div>
+            </div>
+            <button onclick="openEntityForm('goal','${g.id}')">編集</button>
+          </div>
+          <div style="margin:18px auto;width:120px">
+            <div class="goal-ring" style="--p:${clamp(Number(g.progress||0),0,100)}%">
+              <div class="goal-ring-inner">${Number(g.progress||0)}%</div>
+            </div>
+          </div>
+          <p class="muted">${esc(g.description||"")}</p>
+          <div class="progress"><i style="width:${clamp(Number(g.progress||0),0,100)}%"></i></div>
+          <div class="actions" style="margin-top:12px">
+            <button onclick="changeGoal('${g.id}',10)">+10%</button>
+            <button onclick="changeGoal('${g.id}',-10)">-10%</button>
+            <button class="danger" onclick="moveTrash('goals','${g.id}')">削除</button>
+          </div>
+        </div>
+      `).join("")||`<div class="card empty">目標を作ろう。</div>`}
+    </div>
+  `;
+}
+function changeGoal(id,n){
+  const g=S.goals.find(x=>x.id===id);
+  if(!g)return;
+  const old=Number(g.progress||0);
+  g.progress=clamp(old+n,0,100);
+  if(old<100&&g.progress>=100)addXP(150,"目標達成");
+  save();render();
+}
+
+/* =========================================================
+   PROJECTS
+========================================================= */
+
+function viewProjects(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">プロジェクト</h2><div class="muted small">複数のタスク・ノート・予定を1つにまとめる</div></div>
+      <button class="primary" onclick="openEntityForm('project')">＋ プロジェクト</button>
+    </div>
+
+    <div class="grid auto" style="margin-top:15px">
+      ${S.projects.map(p=>{
+        const tasks=S.tasks.filter(t=>t.projectId===p.id);
+        const done=tasks.filter(t=>t.done).length;
+        const progress=tasks.length?done/tasks.length*100:Number(p.progress||0);
+        return `
+          <div class="card">
+            <div class="between">
+              <h3 style="margin:0">${esc(p.title)}</h3>
+              <button onclick="openEntityForm('project','${p.id}')">編集</button>
+            </div>
+            <p class="muted">${esc(p.description||"")}</p>
+            <div class="between small"><span>進捗</span><b>${Math.round(progress)}%</b></div>
+            <div class="progress" style="margin:7px 0 12px"><i style="width:${progress}%"></i></div>
+            <div class="muted small">${done}/${tasks.length} タスク完了</div>
+            <div class="actions" style="margin-top:12px">
+              <button onclick="projectAddTask('${p.id}')">＋タスク</button>
+              <button onclick="openProject('${p.id}')">開く</button>
+              <button class="danger" onclick="moveTrash('projects','${p.id}')">削除</button>
+            </div>
+          </div>`;
+      }).join("")||`<div class="card empty">プロジェクトを作ろう。</div>`}
+    </div>
+  `;
+}
+function projectAddTask(pid){
+  openEntityForm("task",null,null,{projectId:pid});
+}
+function openProject(pid){
+  const p=S.projects.find(x=>x.id===pid);
+  if(!p)return;
+  const tasks=S.tasks.filter(t=>t.projectId===pid);
+  const notes=S.notes.filter(n=>n.projectId===pid);
+  showModal(`
+    <div class="between"><h2>${esc(p.title)}</h2><button onclick="closeModal()">閉じる</button></div>
+    <p class="muted">${esc(p.description||"")}</p>
+    <h3>タスク</h3>
+    <div class="list">${tasks.map(t=>`
+      <div class="list-item">
+        <label class="row">
+          <input type="checkbox" ${t.done?"checked":""} onchange="toggleTask('${t.id}');openProject('${pid}')">
+          <span>${esc(t.title)}</span>
+        </label>
+      </div>`).join("")||`<div class="empty">なし</div>`}</div>
+    <h3>ノート</h3>
+    <div class="list">${notes.map(n=>`<div class="list-item"><b>${esc(n.title)}</b><div class="muted small">${esc(n.content).slice(0,120)}</div></div>`).join("")||`<div class="empty">なし</div>`}</div>
+  `);
+}
+
+/* =========================================================
+   WORKFLOW
+========================================================= */
+
+function viewWorkflows(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">ワークフロー</h2><div class="muted small">自分の作業の流れを可視化</div></div>
+      <button class="primary" onclick="openEntityForm('workflow')">＋ ワークフロー</button>
+    </div>
+
+    ${S.workflows.map(w=>`
+      <div class="card" style="margin-top:15px">
+        <div class="between">
+          <div><h3 style="margin:0">${esc(w.title)}</h3><div class="muted small">${esc(w.description||"")}</div></div>
+          <div class="actions">
+            <button onclick="addWorkflowStep('${w.id}')">＋ステップ</button>
+            <button onclick="openEntityForm('workflow','${w.id}')">編集</button>
+            <button class="danger" onclick="moveTrash('workflows','${w.id}')">削除</button>
+          </div>
+        </div>
+        <div class="grid auto" style="margin-top:14px">
+          ${(w.steps||[]).map((s,i)=>`
+            <div class="list-item">
+              <div class="between">
+                <span><span class="badge">${i+1}</span> ${esc(s.title)}</span>
+                <button onclick="toggleWorkflowStep('${w.id}','${s.id}')">${s.done?"✓":"完了"}</button>
+              </div>
+            </div>`).join("")}
+        </div>
+      </div>
+    `).join("")||`<div class="card empty">ワークフローを作ろう。</div>`}
+  `;
+}
+function addWorkflowStep(id){
+  const w=S.workflows.find(x=>x.id===id);
+  if(!w)return;
+  const title=prompt("ステップ名");
+  if(!title)return;
+  w.steps=w.steps||[];
+  w.steps.push({id:uid("step"),title,done:false});
+  save();render();
+}
+function toggleWorkflowStep(wid,sid){
+  const w=S.workflows.find(x=>x.id===wid);
+  const s=w?.steps?.find(x=>x.id===sid);
+  if(!s)return;
+  s.done=!s.done;
+  if(s.done)addXP(10,"ワークフローステップ完了");
+  save();render();
+}
+
+/* =========================================================
+   HABITS
+========================================================= */
+
+function viewHabits(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">習慣</h2><div class="muted small">毎日の行動を積み重ねる</div></div>
+      <button class="primary" onclick="openEntityForm('habit')">＋ 習慣</button>
+    </div>
+
+    <div class="grid auto" style="margin-top:15px">
+      ${S.habits.map(h=>{
+        const done=h.logs?.includes(today());
+        const count=h.logs?.length||0;
+        return `
+          <div class="card">
+            <div class="between">
+              <h3 style="margin:0">${esc(h.title)}</h3>
+              <button class="${done?"success":""}" onclick="toggleHabit('${h.id}')">${done?"✓ 今日達成":"達成"}</button>
+            </div>
+            <p class="muted">${esc(h.description||"")}</p>
+            <div class="between">
+              <span>累計 ${count}日</span>
+              <span>🔥 ${habitStreak(h)}日</span>
+            </div>
+            <div class="actions" style="margin-top:12px">
+              <button onclick="openEntityForm('habit','${h.id}')">編集</button>
+              <button class="danger" onclick="moveTrash('habits','${h.id}')">削除</button>
+            </div>
+          </div>`;
+      }).join("")||`<div class="card empty">習慣を追加しよう。</div>`}
+    </div>
+  `;
+}
+function habitStreak(h){
+  let n=0;
+  const logs=new Set(h.logs||[]);
+  let d=new Date();
+  while(logs.has(d.toISOString().slice(0,10))){
+    n++;d.setDate(d.getDate()-1);
+  }
+  return n;
+}
+function toggleHabit(id){
+  const h=S.habits.find(x=>x.id===id);
+  if(!h)return;
+  h.logs=h.logs||[];
+  const d=today();
+  if(h.logs.includes(d)){
+    h.logs=h.logs.filter(x=>x!==d);
+  }else{
+    h.logs.push(d);
+    addXP(15,"習慣達成");
+    updateStreak();
+    logActivity("habit",`習慣達成: ${h.title}`);
+  }
+  save();render();
+}
+
+/* =========================================================
+   NOTES
+========================================================= */
+
+function viewNotes(){
+  const q=(window.noteQuery||"").toLowerCase();
+  const notes=S.notes.filter(n=>
+    !q || `${n.title} ${n.content} ${(n.tags||[]).join(" ")}`.toLowerCase().includes(q)
+  );
+
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">ノート</h2><div class="muted small">${S.notes.length}件</div></div>
+      <div class="actions">
+        <input style="width:220px" placeholder="ノート検索" value="${esc(window.noteQuery||"")}" oninput="window.noteQuery=this.value;render()">
+        <button class="primary" onclick="openEntityForm('note')">＋ ノート</button>
+      </div>
+    </div>
+    <div class="grid auto" style="margin-top:15px">
+      ${notes.map(n=>`
+        <div class="card">
+          <div class="between">
+            <h3 style="margin:0">${esc(n.title)}</h3>
+            <button onclick="openEntityForm('note','${n.id}')">編集</button>
+          </div>
+          <div class="muted small" style="margin:5px 0">${fmtDateTime(n.updatedAt||n.createdAt)}</div>
+          <p style="white-space:pre-wrap">${esc(n.content).slice(0,500)}</p>
+          <div class="actions">
+            ${(n.tags||[]).map(t=>`<span class="badge accent">#${esc(t)}</span>`).join("")}
+            ${n.pinned?`<span class="badge yellow">📌</span>`:""}
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <button onclick="startLinkedTimer('note','${n.id}')">▶集中</button>
+            <button class="danger" onclick="moveTrash('notes','${n.id}')">削除</button>
+          </div>
+        </div>
+      `).join("")||`<div class="card empty">ノートはありません。</div>`}
+    </div>
+  `;
+}
+
+/* =========================================================
+   NOVELS
+========================================================= */
+
+function viewNovels(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">小説・創作</h2><div class="muted small">作品・話数・文字数・PV・投稿状況</div></div>
+      <button class="primary" onclick="openEntityForm('novel')">＋ 作品</button>
+    </div>
+
+    <div class="grid auto" style="margin-top:15px">
+      ${S.novels.map(n=>`
+        <div class="card">
+          <div class="between">
+            <div>
+              <h3 style="margin:0">${esc(n.title)}</h3>
+              <div class="muted small">${esc(n.genre||"")}</div>
+            </div>
+            <button onclick="openNovel('${n.id}')">開く</button>
+          </div>
+          <p class="muted">${esc(n.synopsis||"")}</p>
+          <div class="grid g2">
+            <div class="list-item"><div class="stat-label">文字数</div><b>${Number(n.wordCount||0).toLocaleString()}</b></div>
+            <div class="list-item"><div class="stat-label">PV</div><b>${Number(n.pv||0).toLocaleString()}</b></div>
+            <div class="list-item"><div class="stat-label">話数</div><b>${(n.episodes||[]).length}</b></div>
+            <div class="list-item"><div class="stat-label">今日</div><b>${Number(n.todayWords||0).toLocaleString()}</b></div>
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <span class="badge ${n.status==="完結"?"green":"accent"}">${esc(n.status||"執筆中")}</span>
+            <button onclick="addNovelEpisode('${n.id}')">＋話</button>
+            <button onclick="openEntityForm('novel','${n.id}')">編集</button>
+            <button class="danger" onclick="moveTrash('novels','${n.id}')">削除</button>
+          </div>
+        </div>
+      `).join("")||`<div class="card empty">作品を追加しよう。</div>`}
+    </div>
+  `;
+}
+
+function openNovel(id){
+  const n=S.novels.find(x=>x.id===id);
+  if(!n)return;
+  showModal(`
+    <div class="between">
+      <div><h2 style="margin:0">${esc(n.title)}</h2><div class="muted">${esc(n.synopsis||"")}</div></div>
+      <button onclick="closeModal()">閉じる</button>
+    </div>
+    <div class="grid g3" style="margin-top:15px">
+      <div class="list-item"><div class="stat-label">総PV</div><b>${Number(n.pv||0).toLocaleString()}</b></div>
+      <div class="list-item"><div class="stat-label">総文字数</div><b>${Number(n.wordCount||0).toLocaleString()}</b></div>
+      <div class="list-item"><div class="stat-label">執筆時間</div><b>${Number(n.writingMinutes||0)}分</b></div>
+    </div>
+    <div class="between" style="margin-top:20px">
+      <h3>エピソード</h3>
+      <button class="primary" onclick="addNovelEpisode('${id}')">＋ エピソード</button>
+    </div>
+    <div class="list">
+      ${(n.episodes||[]).map((e,i)=>`
+        <div class="list-item">
+          <div class="between">
+            <div>
+              <b>EP${i+1} ${esc(e.title)}</b>
+              <div class="muted small">${Number(e.words||0).toLocaleString()}文字 · ${Number(e.pv||0).toLocaleString()}PV</div>
+            </div>
+            <div class="actions">
+              <button onclick="editNovelEpisode('${id}','${e.id}')">編集</button>
+              <button onclick="startNovelTimer('${id}')">▶執筆</button>
+            </div>
+          </div>
+        </div>
+      `).join("")||`<div class="empty">まだエピソードがありません。</div>`}
+    </div>
+  `);
+}
+
+function addNovelEpisode(nid){
+  const n=S.novels.find(x=>x.id===nid);
+  if(!n)return;
+  const title=prompt("エピソードタイトル");
+  if(!title)return;
+  const words=Number(prompt("文字数","0")||0);
+  const pv=Number(prompt("PV","0")||0);
+  n.episodes=n.episodes||[];
+  n.episodes.push({
+    id:uid("ep"),title,words,pv,
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  });
+  n.wordCount=n.episodes.reduce((a,b)=>a+Number(b.words||0),0);
+  n.pv=n.episodes.reduce((a,b)=>a+Number(b.pv||0),0);
+  addXP(25,"エピソード追加");
+  save();
+  openNovel(nid);
+}
+function editNovelEpisode(nid,eid){
+  const n=S.novels.find(x=>x.id===nid);
+  const e=n?.episodes?.find(x=>x.id===eid);
+  if(!e)return;
+  const title=prompt("タイトル",e.title);
+  if(title===null)return;
+  e.title=title;
+  e.words=Number(prompt("文字数",e.words)||0);
+  e.pv=Number(prompt("PV",e.pv)||0);
+  n.wordCount=n.episodes.reduce((a,b)=>a+Number(b.words||0),0);
+  n.pv=n.episodes.reduce((a,b)=>a+Number(b.pv||0),0);
+  save();
+  openNovel(nid);
+}
+function startNovelTimer(id){startLinkedTimer("novel",id)}
+
+/* =========================================================
+   JOURNAL
+========================================================= */
+
+function viewJournal(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">ジャーナル</h2><div class="muted small">その日の記録を残す</div></div>
+      <button class="primary" onclick="openEntityForm('journal')">＋ 今日の記録</button>
+    </div>
+
+    <div class="list" style="margin-top:15px">
+      ${S.journal.map(j=>`
+        <div class="card">
+          <div class="between">
+            <div><h3 style="margin:0">${esc(j.title||j.date)}</h3><div class="muted small">${esc(j.date)}</div></div>
+            <button onclick="openEntityForm('journal','${j.id}')">編集</button>
+          </div>
+          <p style="white-space:pre-wrap">${esc(j.content||"")}</p>
+          <div class="actions">
+            ${j.mood?`<span class="badge">気分: ${esc(j.mood)}</span>`:""}
+            ${j.rating?`<span class="badge yellow">★ ${j.rating}/5</span>`:""}
+          </div>
+        </div>
+      `).join("")||`<div class="card empty">まだジャーナルがありません。</div>`}
+    </div>
+  `;
+}
+
+/* =========================================================
+   TEMPLATES
+========================================================= */
+
+function viewTemplates(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">テンプレート</h2><div class="muted small">よく使う構造を保存</div></div>
+      <button class="primary" onclick="openEntityForm('template')">＋ テンプレート</button>
+    </div>
+    <div class="grid auto" style="margin-top:15px">
+      ${S.templates.map(t=>`
+        <div class="card">
+          <div class="between"><h3 style="margin:0">${esc(t.title)}</h3><button onclick="openEntityForm('template','${t.id}')">編集</button></div>
+          <div class="muted small">${esc(t.type||"custom")}</div>
+          <pre style="white-space:pre-wrap;font:inherit;color:var(--muted)">${esc(t.content||"")}</pre>
+          <button class="primary" onclick="useTemplate('${t.id}')">使う</button>
+        </div>
+      `).join("")||`<div class="card empty">テンプレートを作ろう。</div>`}
+    </div>
+  `;
+}
+function useTemplate(id){
+  const t=S.templates.find(x=>x.id===id);
+  if(!t)return;
+  if(t.type==="note")openEntityForm("note",null,null,{content:t.content,title:t.title});
+  else if(t.type==="task")openEntityForm("task",null,null,{description:t.content});
+  else toast("テンプレートを確認しました");
+}
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function timerText(){
+  let seconds=Number(S.timer.remaining||0);
+  if(S.timer.running){
+    if(S.timer.mode==="countdown"||S.timer.mode==="pomodoro"){
+      seconds=Math.max(0,Math.ceil((S.timer.endAt-Date.now())/1000));
+    }else if(S.timer.mode==="stopwatch"){
+      seconds=Math.max(0,Math.floor((Date.now()-S.timer.stopwatchStarted)/1000));
+    }
+  }
+  const h=Math.floor(seconds/3600);
+  const m=Math.floor(seconds%3600/60);
+  const s=seconds%60;
+  return h>0
+    ? `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`
+    : `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+function timerLabel(){
+  if(S.timer.linkType && S.timer.linkId){
+    const map={
+      task:S.tasks.find(x=>x.id===S.timer.linkId),
+      note:S.notes.find(x=>x.id===S.timer.linkId),
+      novel:S.novels.find(x=>x.id===S.timer.linkId),
+      game:S.games.find(x=>x.id===S.timer.linkId),
+      study:S.studies.find(x=>x.id===S.timer.linkId)
+    };
+    return map[S.timer.linkType]?.title || S.timer.title || "リンクなし";
+  }
+  return S.timer.title||"リンクなし";
+}
+
+function viewTimer(){
+  return `
+    <div class="grid g2">
+      <div class="card">
+        <div class="card-title">
+          <h2>タイマー</h2>
+          <span class="badge ${S.timer.running?"green":""}">${S.timer.running?"RUNNING":"STOPPED"}</span>
+        </div>
+        <div class="timer-ring" id="timerRing">
+          <div class="timer-display" id="timerDisplay">${timerText()}</div>
+        </div>
+        <div class="muted" style="text-align:center">${esc(timerLabel())}</div>
+        <div class="actions" style="justify-content:center;margin-top:14px">
+          <button class="primary" onclick="toggleTimer()">${S.timer.running?"一時停止":"開始"}</button>
+          <button onclick="resetTimer()">リセット</button>
+          ${S.timer.running&&S.timer.mode==="stopwatch"?`<button class="danger" onclick="stopStopwatch()">終了</button>`:""}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><h3>タイマー設定</h3></div>
+        <div class="field">
+          <label>モード</label>
+          <select id="timerMode" onchange="setTimerMode(this.value)">
+            <option value="countdown" ${S.timer.mode==="countdown"?"selected":""}>カウントダウン</option>
+            <option value="stopwatch" ${S.timer.mode==="stopwatch"?"selected":""}>ストップウォッチ</option>
+            <option value="pomodoro" ${S.timer.mode==="pomodoro"?"selected":""}>ポモドーロ</option>
+          </select>
+        </div>
+
+        <div class="grid g3" style="margin-top:12px">
+          <div class="field"><label>時間</label><input id="timerH" type="number" min="0" value="${Math.floor(S.timer.total/3600)}"></div>
+          <div class="field"><label>分</label><input id="timerM" type="number" min="0" value="${Math.floor(S.timer.total%3600/60)}"></div>
+          <div class="field"><label>秒</label><input id="timerS" type="number" min="0" value="${S.timer.total%60}"></div>
+        </div>
+
+        <div class="actions" style="margin-top:12px">
+          ${[5,10,15,25,30,45,60,90].map(x=>`<button onclick="setTimerMinutes(${x})">${x}分</button>`).join("")}
+        </div>
+
+        <div class="form-grid" style="margin-top:15px">
+          <div class="field">
+            <label>タイトル</label>
+            <input id="timerTitle" value="${esc(S.timer.title||"")}" placeholder="例：数学">
+          </div>
+          <div class="field">
+            <label>リンク</label>
+            <select id="timerLink" onchange="timerLinkChange(this.value)">
+              <option value="">リンクなし</option>
+              ${S.tasks.length?`<optgroup label="タスク">${S.tasks.filter(t=>!t.done).map(x=>`<option value="task:${x.id}" ${S.timer.linkType==="task"&&S.timer.linkId===x.id?"selected":""}>${esc(x.title)}</option>`).join("")}</optgroup>`:""}
+              ${S.novels.length?`<optgroup label="小説">${S.novels.map(x=>`<option value="novel:${x.id}" ${S.timer.linkType==="novel"&&S.timer.linkId===x.id?"selected":""}>${esc(x.title)}</option>`).join("")}</optgroup>`:""}
+              ${S.games.length?`<optgroup label="ゲーム">${S.games.map(x=>`<option value="game:${x.id}" ${S.timer.linkType==="game"&&S.timer.linkId===x.id?"selected":""}>${esc(x.title)}</option>`).join("")}</optgroup>`:""}
+            </select>
+          </div>
+        </div>
+        <button class="primary" style="margin-top:12px;width:100%" onclick="applyTimerSettings()">設定を適用</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:15px">
+      <div class="card-title"><h3>セッション履歴</h3><span class="muted small">${S.timer.sessions.length}件</span></div>
+      <div class="list">
+        ${S.timer.sessions.slice(0,20).map(s=>`
+          <div class="list-item between">
+            <div><b>${esc(s.title||"集中セッション")}</b><div class="muted small">${fmtDateTime(s.date)}</div></div>
+            <span class="badge green">${Math.round(Number(s.seconds||0)/60)}分</span>
+          </div>
+        `).join("")||`<div class="empty">まだセッションがありません。</div>`}
+      </div>
+    </div>
+  `;
+}
+
+function setTimerMode(mode){
+  if(S.timer.running)return;
+  S.timer.mode=mode;
+  if(mode==="stopwatch")S.timer.remaining=0;
+  save();render();
+}
+function setTimerMinutes(m){
+  if(S.timer.running)return;
+  S.timer.total=m*60;
+  S.timer.remaining=S.timer.total;
+  save();render();
+}
+function applyTimerSettings(){
+  if(S.timer.running)return;
+  const h=Number(document.getElementById("timerH").value||0);
+  const m=Number(document.getElementById("timerM").value||0);
+  const s=Number(document.getElementById("timerS").value||0);
+  S.timer.total=Math.max(1,h*3600+m*60+s);
+  S.timer.remaining=S.timer.total;
+  S.timer.title=document.getElementById("timerTitle").value.trim();
+  const link=document.getElementById("timerLink").value;
+  if(link){
+    [S.timer.linkType,S.timer.linkId]=link.split(":");
+  }else{
+    S.timer.linkType="";S.timer.linkId="";
+  }
+  save();render();toast("タイマー設定を保存しました");
+}
+function timerLinkChange(v){
+  if(!v){S.timer.linkType="";S.timer.linkId="";return}
+  [S.timer.linkType,S.timer.linkId]=v.split(":");
+  save();
+}
 function toggleTimer(){
- if(S.timer.running){pauseTimer();toast("タイマーを一時停止しました")}
- else{if(!S.timer.remaining)S.timer.remaining=S.timer.total;S.timer.started=Date.now();S.timer.lastTick=0;S.timer.running=true;save();toast("タイマー開始")}
+  if(S.timer.running){
+    pauseTimer();
+  }else{
+    startTimer();
+  }
 }
-function randomWall(){let keys=Object.keys(walls);S.settings.wall=keys[Math.floor(Math.random()*keys.length)];S.settings.customWall=""}
-async function requestNotify(){if(!("Notification"in window)){toast("通知非対応ブラウザです");return}let p=await Notification.requestPermission();S.settings.notifications=p==="granted";save();toast(p==="granted"?"通知ON":"通知OFF");render()}
-function addReminder(){openModal("リマインダー",`<div class="form-grid"><div class="field"><label>内容</label><input id="fTitle"></div><div class="field"><label>日時</label><input id="fAt" type="datetime-local"></div></div><div class="modal-foot"><button class="btn" data-close>キャンセル</button><button class="btn primary" data-save-reminder>保存</button></div>`)}
-function exportData(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}));a.download=`NEXUS-backup-${today()}.json`;a.click();URL.revokeObjectURL(a.href);toast("バックアップを書き出しました")}
-function importData(){let i=document.createElement("input");i.type="file";i.accept=".json";i.onchange=()=>{let r=new FileReader();r.onload=()=>{try{S={...defaults,...JSON.parse(r.result)};save();render();toast("復元しました")}catch{toast("JSONが正しくありません")}};r.readAsText(i.files[0])};i.click()}
-function setPin(){let p=prompt("4〜8桁のPINを設定");if(!p)return;if(!/^\d{4,8}$/.test(p)){toast("数字4〜8桁で設定してください");return}S.settings.pin=btoa(p);save();toast("PINを設定しました")}
-function checkPin(){if(!S.settings.pin)return true;let p=prompt("NEXUS PINを入力");if(p===atob(S.settings.pin))return true;alert("PINが違います");return false}
-function drawChart(){
- const c=document.getElementById("studyChart");if(!c)return;const ctx=c.getContext("2d"),w=c.width=c.clientWidth*devicePixelRatio,h=c.height=230*devicePixelRatio;ctx.clearRect(0,0,w,h);const vals=[],labs=[];
- for(let i=13;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let ds=d.toISOString().slice(0,10);labs.push(ds.slice(5));vals.push(S.studies.filter(x=>x.date===ds).reduce((a,x)=>a+(+x.minutes||0),0))}
- const max=Math.max(30,...vals),pad=35*devicePixelRatio;ctx.strokeStyle="rgba(255,255,255,.12)";ctx.lineWidth=1;
- for(let j=0;j<5;j++){let y=pad+(h-pad*1.5)*j/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-10,y);ctx.stroke()}
- ctx.beginPath();vals.forEach((v,i)=>{let x=pad+i*(w-pad-15)/(vals.length-1),y=h-pad-(h-pad*1.7)*v/max;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--accent");ctx.lineWidth=4;ctx.stroke();
- ctx.fillStyle="#94a3b8";ctx.font=`${11*devicePixelRatio}px sans-serif`;labs.forEach((l,i)=>{let x=pad+i*(w-pad-15)/(labs.length-1);ctx.fillText(l,x-12,h-7*devicePixelRatio)});
+function startTimer(){
+  if(S.timer.mode==="stopwatch"){
+    S.timer.stopwatchStarted=Date.now()-((S.timer.remaining||0)*1000);
+  }else{
+    const remain=Math.max(1,Number(S.timer.remaining||S.timer.total));
+    S.timer.endAt=Date.now()+remain*1000;
+  }
+  S.timer.running=true;
+  updateStreak();
+  save();
+  startTimerLoop();
+  toast("タイマー開始");
+}
+function pauseTimer(){
+  if(!S.timer.running)return;
+  if(S.timer.mode==="stopwatch"){
+    S.timer.remaining=Math.floor((Date.now()-S.timer.stopwatchStarted)/1000);
+  }else{
+    S.timer.remaining=Math.max(0,Math.ceil((S.timer.endAt-Date.now())/1000));
+  }
+  S.timer.running=false;
+  S.timer.endAt=null;
+  S.timer.stopwatchStarted=null;
+  save();
+  stopTimerLoop();
+  render();
+}
+function resetTimer(){
+  S.timer.running=false;
+  S.timer.endAt=null;
+  S.timer.stopwatchStarted=null;
+  S.timer.remaining=S.timer.mode==="stopwatch"?0:S.timer.total;
+  save();render();
+}
+function stopStopwatch(){
+  if(S.timer.mode!=="stopwatch")return;
+  S.timer.remaining=Math.floor((Date.now()-S.timer.stopwatchStarted)/1000);
+  completeTimer(S.timer.remaining);
+}
+function startTimerLoop(){
+  clearInterval(timerInterval);
+  timerInterval=setInterval(tickTimer,250);
+}
+function stopTimerLoop(){
+  clearInterval(timerInterval);
+  timerInterval=null;
+}
+function tickTimer(){
+  if(!S.timer.running)return;
+  let elapsed;
+  if(S.timer.mode==="stopwatch"){
+    elapsed=Math.floor((Date.now()-S.timer.stopwatchStarted)/1000);
+    S.timer.remaining=elapsed;
+  }else{
+    S.timer.remaining=Math.max(0,Math.ceil((S.timer.endAt-Date.now())/1000));
+    elapsed=S.timer.total-S.timer.remaining;
+  }
+
+  updateTimerUI();
+
+  if((S.timer.mode==="countdown"||S.timer.mode==="pomodoro")&&S.timer.remaining<=0){
+    completeTimer(elapsed);
+  }
+}
+function completeTimer(seconds){
+  seconds=Math.max(0,Math.floor(seconds||0));
+  if(seconds>0){
+    S.timer.sessions.unshift({
+      id:uid("session"),
+      title:S.timer.title||timerLabel(),
+      seconds,
+      date:new Date().toISOString(),
+      linkType:S.timer.linkType,
+      linkId:S.timer.linkId
+    });
+    S.timer.sessions=S.timer.sessions.slice(0,200);
+
+    if(S.timer.linkType==="novel"){
+      const n=S.novels.find(x=>x.id===S.timer.linkId);
+      if(n)n.writingMinutes=Number(n.writingMinutes||0)+Math.round(seconds/60);
+    }
+    if(S.timer.linkType==="game"){
+      const g=S.games.find(x=>x.id===S.timer.linkId);
+      if(g)g.playMinutes=Number(g.playMinutes||0)+Math.round(seconds/60);
+    }
+
+    addXP(Math.max(1,Math.floor(seconds/60)),"集中時間");
+    logActivity("timer",`タイマー完了: ${S.timer.title||"集中セッション"}`,`${Math.round(seconds/60)}分`);
+  }
+
+  S.timer.running=false;
+  S.timer.endAt=null;
+  S.timer.stopwatchStarted=null;
+
+  if(S.timer.mode==="pomodoro"){
+    notify("🍅 ポモドーロ完了","集中セッションが終了しました。");
+  }else{
+    notify("⏱ タイマー完了",S.timer.title||"タイマーが終了しました。");
+  }
+  playSound("done");
+
+  if(S.timer.mode==="stopwatch")S.timer.remaining=0;
+  else S.timer.remaining=S.timer.total;
+
+  save();
+  stopTimerLoop();
+  if(route==="timer")render();
+}
+function timerQuickStart(min){
+  if(S.timer.running)return;
+  S.timer.mode="countdown";
+  S.timer.total=min*60;
+  S.timer.remaining=S.timer.total;
+  startTimer();
+  if(route==="home")render();
+}
+function startLinkedTimer(type,id){
+  const item=type==="task"?S.tasks.find(x=>x.id===id):
+             type==="note"?S.notes.find(x=>x.id===id):
+             type==="novel"?S.novels.find(x=>x.id===id):
+             type==="game"?S.games.find(x=>x.id===id):
+             S.studies.find(x=>x.id===id);
+  if(!item)return;
+  S.timer.linkType=type;
+  S.timer.linkId=id;
+  S.timer.title=item.title||"";
+  if(!S.timer.running){
+    if(!S.timer.total)S.timer.total=25*60;
+    S.timer.remaining=S.timer.total;
+    S.timer.mode="countdown";
+    startTimer();
+  }
+  go("timer");
+}
+function updateTimerUI(){
+  const d=document.getElementById("timerDisplay");
+  if(d)d.textContent=timerText();
+  const h=document.getElementById("homeTimer");
+  if(h)h.textContent=timerText();
+  const ring=document.getElementById("timerRing");
+  if(ring){
+    const p=S.timer.mode==="stopwatch"
+      ? Math.min(100,(S.timer.remaining%3600)/3600*100)
+      : pct(S.timer.total-S.timer.remaining,S.timer.total);
+    ring.style.setProperty("--timer-progress",p+"%");
+  }
 }
 
-document.addEventListener("click",e=>{
- if(e.target.closest("[data-save-reminder]")){let r={id:uid(),title:g("fTitle"),at:g("fAt")};S.settings.reminders=S.settings.reminders||[];S.settings.reminders.push(r);save();closeModal();render()}
+/* =========================================================
+   STUDY
+========================================================= */
+
+function viewStudy(){
+  const total=S.studies.reduce((a,b)=>a+Number(b.minutes||0),0);
+  const todayM=S.studies.filter(x=>x.date===today()).reduce((a,b)=>a+Number(b.minutes||0),0);
+
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">勉強</h2><div class="muted small">学習時間・教材・進捗を管理</div></div>
+      <button class="primary" onclick="openEntityForm('study')">＋ 記録</button>
+    </div>
+
+    <div class="kpi-grid" style="margin-top:15px">
+      <div class="card stat"><div class="stat-icon">📚</div><div class="stat-value">${todayM}m</div><div class="stat-label">今日</div></div>
+      <div class="card stat"><div class="stat-icon">⏱</div><div class="stat-value">${Math.floor(total/60)}h</div><div class="stat-label">累計</div></div>
+      <div class="card stat"><div class="stat-icon">📈</div><div class="stat-value">${S.studies.length}</div><div class="stat-label">記録数</div></div>
+      <div class="card stat"><div class="stat-icon">🔥</div><div class="stat-value">${S.streak}</div><div class="stat-label">ストリーク</div></div>
+      <div class="card stat"><div class="stat-icon">XP</div><div class="stat-value">${total}</div><div class="stat-label">学習分</div></div>
+      <div class="card stat"><div class="stat-icon">🎯</div><div class="stat-value">${Math.round(total/60)}h</div><div class="stat-label">総時間</div></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:15px">
+      <div class="card">
+        <div class="card-title"><h3>教科別</h3></div>
+        <div class="list">
+          ${Object.entries(S.studies.reduce((a,x)=>{
+            a[x.subject||"その他"]=(a[x.subject||"その他"]||0)+Number(x.minutes||0);return a;
+          },{})).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+            <div class="list-item between"><span>${esc(k)}</span><b>${v}分</b></div>
+          `).join("")||`<div class="empty">記録なし</div>`}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><h3>最近の学習</h3></div>
+        <div class="list">
+          ${S.studies.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10).map(x=>`
+            <div class="list-item between">
+              <div><b>${esc(x.subject||"その他")}</b><div class="muted small">${esc(x.material||"")} · ${esc(x.date)}</div></div>
+              <span class="badge green">${x.minutes}分</span>
+            </div>
+          `).join("")||`<div class="empty">記録なし</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   GAMES
+========================================================= */
+
+function viewGames(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">ゲーム</h2><div class="muted small">プレイ時間・進捗・スコア・実績</div></div>
+      <button class="primary" onclick="openEntityForm('game')">＋ ゲーム</button>
+    </div>
+
+    <div class="grid auto" style="margin-top:15px">
+      ${S.games.map(g=>`
+        <div class="card">
+          <div class="between">
+            <div><h3 style="margin:0">${esc(g.title)}</h3><div class="muted small">${esc(g.platform||"")}</div></div>
+            <button onclick="openEntityForm('game','${g.id}')">編集</button>
+          </div>
+          <div class="grid g2" style="margin-top:12px">
+            <div class="list-item"><div class="stat-label">プレイ時間</div><b>${Math.floor(Number(g.playMinutes||0)/60)}h</b></div>
+            <div class="list-item"><div class="stat-label">レベル</div><b>${esc(g.level||"-")}</b></div>
+            <div class="list-item"><div class="stat-label">スコア</div><b>${esc(g.score||"-")}</b></div>
+            <div class="list-item"><div class="stat-label">ランク</div><b>${esc(g.rank||"-")}</b></div>
+          </div>
+          <p class="muted">${esc(g.note||"")}</p>
+          <div class="actions">
+            <button onclick="startLinkedTimer('game','${g.id}')">▶プレイ</button>
+            <button onclick="gameAchievement('${g.id}')">🏆実績</button>
+            <button class="danger" onclick="moveTrash('games','${g.id}')">削除</button>
+          </div>
+        </div>
+      `).join("")||`<div class="card empty">ゲームを追加しよう。</div>`}
+    </div>
+  `;
+}
+function gameAchievement(id){
+  const g=S.games.find(x=>x.id===id);
+  if(!g)return;
+  g.achievements=g.achievements||[];
+  const name=prompt("実績名");
+  if(!name)return;
+  g.achievements.push({id:uid("ga"),name,date:today()});
+  addXP(15,"ゲーム実績");
+  save();render();
+}
+
+/* =========================================================
+   LINK
+========================================================= */
+
+function viewLink(){
+  const all=[
+    ...S.tasks.map(x=>({type:"タスク",icon:"✓",id:x.id,title:x.title,route:"tasks"})),
+    ...S.notes.map(x=>({type:"ノート",icon:"✎",id:x.id,title:x.title,route:"notes"})),
+    ...S.novels.map(x=>({type:"小説",icon:"📖",id:x.id,title:x.title,route:"novels"})),
+    ...S.games.map(x=>({type:"ゲーム",icon:"🎮",id:x.id,title:x.title,route:"games"})),
+    ...S.goals.map(x=>({type:"目標",icon:"◎",id:x.id,title:x.title,route:"goals"})),
+    ...S.projects.map(x=>({type:"プロジェクト",icon:"▣",id:x.id,title:x.title,route:"projects"}))
+  ];
+
+  return `
+    <div class="card">
+      <div class="card-title">
+        <div><h2>NEXUS LINK</h2><div class="muted small">データ同士の関係を作る</div></div>
+        <button class="primary" onclick="openEntityForm('link')">＋ LINK</button>
+      </div>
+
+      <div class="grid g2">
+        <div>
+          <h3>登録済みリンク</h3>
+          <div class="list">
+            ${S.links.map(l=>{
+              const a=findEntity(l.fromType,l.fromId);
+              const b=findEntity(l.toType,l.toId);
+              return `
+                <div class="list-item">
+                  <div class="between">
+                    <span>${entityIcon(l.fromType)} ${esc(a?.title||"不明")}</span>
+                    <span>→</span>
+                    <span>${entityIcon(l.toType)} ${esc(b?.title||"不明")}</span>
+                  </div>
+                  ${l.note?`<div class="muted small">${esc(l.note)}</div>`:""}
+                </div>`;
+            }).join("")||`<div class="empty">まだリンクがありません。</div>`}
+          </div>
+        </div>
+
+        <div>
+          <h3>関連データ</h3>
+          <div class="list">
+            ${all.slice(0,15).map(x=>`
+              <button class="list-item" style="text-align:left" onclick="showRelated('${x.type}','${x.id}')">
+                ${x.icon} <b>${esc(x.title)}</b>
+                <span class="muted small">関連を見る →</span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function entityIcon(t){
+  return ({task:"✓",note:"✎",novel:"📖",game:"🎮",goal:"◎",project:"▣",event:"📅",study:"📚",habit:"🔥"}[t]||"•");
+}
+function findEntity(type,id){
+  const map={task:S.tasks,note:S.notes,novel:S.novels,game:S.games,goal:S.goals,project:S.projects,event:S.events,study:S.studies,habit:S.habits};
+  return map[type]?.find(x=>x.id===id);
+}
+function showRelated(type,id){
+  const rel=S.links.filter(l=>
+    (l.fromType===type&&l.fromId===id)||(l.toType===type&&l.toId===id)
+  );
+  const e=findEntity(type,id);
+  showModal(`
+    <div class="between"><h2>${entityIcon(type)} ${esc(e?.title||"")}</h2><button onclick="closeModal()">閉じる</button></div>
+    <h3>関連データ</h3>
+    <div class="list">
+      ${rel.map(l=>{
+        const other=l.fromType===type&&l.fromId===id
+          ?findEntity(l.toType,l.toId)
+          :findEntity(l.fromType,l.fromId);
+        const ot=l.fromType===type&&l.fromId===id?l.toType:l.fromType;
+        return `<div class="list-item">${entityIcon(ot)} ${esc(other?.title||"不明")}${l.note?`<div class="muted small">${esc(l.note)}</div>`:""}</div>`;
+      }).join("")||`<div class="empty">関連データなし</div>`}
+    </div>
+  `);
+}
+
+/* =========================================================
+   DATABASE
+========================================================= */
+
+function viewDatabase(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">データベース</h2><div class="muted small">自分で好きなデータ構造を作る</div></div>
+      <button class="primary" onclick="openEntityForm('database')">＋ DB</button>
+    </div>
+
+    <div class="grid auto" style="margin-top:15px">
+      ${S.databases.map(db=>{
+        const records=S.dbRecords.filter(r=>r.dbId===db.id);
+        return `
+          <div class="card">
+            <div class="between"><h3 style="margin:0">${esc(db.title)}</h3><button onclick="openDatabase('${db.id}')">開く</button></div>
+            <div class="muted small">${esc(db.description||"")}</div>
+            <div class="actions" style="margin-top:12px">
+              ${(db.fields||[]).map(f=>`<span class="badge">${esc(f.name)}</span>`).join("")}
+            </div>
+            <div class="muted small" style="margin-top:12px">${records.length} レコード</div>
+          </div>`;
+      }).join("")||`<div class="card empty">自由なデータベースを作ろう。</div>`}
+    </div>
+  `;
+}
+function openDatabase(id){
+  const db=S.databases.find(x=>x.id===id);
+  if(!db)return;
+  const records=S.dbRecords.filter(r=>r.dbId===id);
+  showModal(`
+    <div class="between">
+      <div><h2>${esc(db.title)}</h2><div class="muted">${esc(db.description||"")}</div></div>
+      <button onclick="closeModal()">閉じる</button>
+    </div>
+    <div class="actions" style="margin:12px 0">
+      <button class="primary" onclick="addDBRecord('${id}')">＋ レコード</button>
+      <button onclick="openEntityForm('database','${id}')">設定</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>${(db.fields||[]).map(f=>`<th>${esc(f.name)}</th>`).join("")}<th></th></tr></thead>
+        <tbody>
+          ${records.map(r=>`
+            <tr>
+              ${(db.fields||[]).map(f=>`<td>${esc(r.data?.[f.id]??"")}</td>`).join("")}
+              <td><button class="danger" onclick="deleteDBRecord('${r.id}','${id}')">削除</button></td>
+            </tr>`).join("")||`<tr><td colspan="${(db.fields||[]).length+1}" class="empty">レコードなし</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `);
+}
+function addDBRecord(dbid){
+  const db=S.databases.find(x=>x.id===dbid);
+  if(!db)return;
+  const data={};
+  for(const f of db.fields||[]){
+    const v=prompt(f.name);
+    if(v===null)return;
+    data[f.id]=v;
+  }
+  S.dbRecords.push({id:uid("record"),dbId:dbid,data,createdAt:new Date().toISOString()});
+  addXP(5,"データベース記録");
+  save();openDatabase(dbid);
+}
+function deleteDBRecord(id,dbid){
+  S.dbRecords=S.dbRecords.filter(x=>x.id!==id);
+  save();openDatabase(dbid);
+}
+
+/* =========================================================
+   FILES
+========================================================= */
+
+function viewFiles(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">ファイル</h2><div class="muted small">NEXUS内の資料・リンクを管理</div></div>
+      <button class="primary" onclick="addFile()">＋ ファイル / URL</button>
+    </div>
+    <div class="grid auto" style="margin-top:15px">
+      ${S.files.map(f=>`
+        <div class="card">
+          <div class="between"><h3 style="margin:0">${esc(f.title)}</h3><button onclick="deleteFile('${f.id}')">削除</button></div>
+          <div class="badge">${esc(f.type||"link")}</div>
+          ${f.url?`<a href="${esc(f.url)}" target="_blank" rel="noopener" style="display:block;margin-top:10px;color:#8cbcff;word-break:break-all">${esc(f.url)}</a>`:""}
+          ${f.note?`<p class="muted">${esc(f.note)}</p>`:""}
+        </div>
+      `).join("")||`<div class="card empty">ファイルや資料を登録しよう。</div>`}
+    </div>
+  `;
+}
+function addFile(){
+  const title=prompt("名前");
+  if(!title)return;
+  const url=prompt("URL（任意）")||"";
+  const note=prompt("メモ（任意）")||"";
+  S.files.unshift({id:uid("file"),title,url,note,type:url?"URL":"資料",createdAt:new Date().toISOString()});
+  save();render();
+}
+function deleteFile(id){
+  S.files=S.files.filter(x=>x.id!==id);
+  save();render();
+}
+
+/* =========================================================
+   ANALYTICS
+========================================================= */
+
+function viewAnalytics(){
+  const taskTotal=S.tasks.length;
+  const taskDone=S.tasks.filter(x=>x.done).length;
+  const study=S.studies.reduce((a,b)=>a+Number(b.minutes||0),0);
+  const game=S.games.reduce((a,b)=>a+Number(b.playMinutes||0),0);
+  const writing=S.novels.reduce((a,b)=>a+Number(b.wordCount||0),0);
+  const pv=S.novels.reduce((a,b)=>a+Number(b.pv||0),0);
+  const habitTotal=S.habits.reduce((a,b)=>a+(b.logs?.length||0),0);
+
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">NEXUS ANALYTICS</h2><div class="muted small">自分の活動を数字で見る</div></div>
+      <button onclick="exportCSV()">CSV出力</button>
+    </div>
+
+    <div class="kpi-grid" style="margin-top:15px">
+      <div class="card stat"><div class="stat-value">${taskTotal?Math.round(taskDone/taskTotal*100):0}%</div><div class="stat-label">タスク達成率</div></div>
+      <div class="card stat"><div class="stat-value">${Math.floor(study/60)}h</div><div class="stat-label">勉強時間</div></div>
+      <div class="card stat"><div class="stat-value">${Math.floor(game/60)}h</div><div class="stat-label">ゲーム時間</div></div>
+      <div class="card stat"><div class="stat-value">${writing.toLocaleString()}</div><div class="stat-label">総文字数</div></div>
+      <div class="card stat"><div class="stat-value">${pv.toLocaleString()}</div><div class="stat-label">小説PV</div></div>
+      <div class="card stat"><div class="stat-value">${habitTotal}</div><div class="stat-label">習慣達成数</div></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:15px">
+      <div class="card">
+        <div class="card-title"><h3>勉強時間推移</h3></div>
+        <canvas class="chart" id="analyticsCanvas"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title"><h3>カテゴリ別活動</h3></div>
+        <div class="list">
+          ${[
+            ["📚 勉強",study],
+            ["🎮 ゲーム",game],
+            ["✍️ 文字数",writing],
+            ["📖 PV",pv],
+            ["✓ 完了タスク",taskDone],
+            ["🔥 習慣",habitTotal]
+          ].map(([n,v])=>`
+            <div class="list-item between"><span>${n}</span><b>${Number(v).toLocaleString()}</b></div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function drawAnalyticsChart(){
+  const c=document.getElementById("analyticsCanvas");
+  if(!c)return;
+  const dpr=devicePixelRatio||1;
+  const rect=c.getBoundingClientRect();
+  c.width=rect.width*dpr;c.height=rect.height*dpr;
+  const ctx=c.getContext("2d");
+  ctx.scale(dpr,dpr);
+  const w=rect.width,h=rect.height;
+
+  const days=[];
+  for(let i=13;i>=0;i--){
+    const d=new Date();
+    d.setDate(d.getDate()-i);
+    days.push(d.toISOString().slice(0,10));
+  }
+  const vals=days.map(day=>S.studies.filter(x=>x.date===day).reduce((a,b)=>a+Number(b.minutes||0),0));
+  const max=Math.max(30,...vals);
+
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle="rgba(255,255,255,.08)";
+  ctx.fillStyle="rgba(255,255,255,.55)";
+  ctx.font="11px sans-serif";
+
+  for(let i=0;i<5;i++){
+    const y=20+i*(h-45)/4;
+    ctx.beginPath();ctx.moveTo(35,y);ctx.lineTo(w-15,y);ctx.stroke();
+  }
+
+  ctx.beginPath();
+  vals.forEach((v,i)=>{
+    const x=35+i*(w-55)/(vals.length-1);
+    const y=h-30-(v/max)*(h-55);
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue("--accent");
+  ctx.lineWidth=3;
+  ctx.stroke();
+
+  vals.forEach((v,i)=>{
+    const x=35+i*(w-55)/(vals.length-1);
+    const y=h-30-(v/max)*(h-55);
+    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle=getComputedStyle(document.body).getPropertyValue("--accent");
+    ctx.fill();
+    if(i%2===0){
+      ctx.fillStyle="rgba(255,255,255,.5)";
+      ctx.fillText(days[i].slice(5),x-13,h-8);
+    }
+  });
+}
+
+/* =========================================================
+   GRAPH
+========================================================= */
+
+function viewGraph(){
+  return `
+    <div class="card">
+      <div class="card-title">
+        <div><h2>NEXUS GRAPH</h2><div class="muted small">NEXUS内のデータ接続を可視化</div></div>
+        <button onclick="drawGraph()">再描画</button>
+      </div>
+      <canvas id="graphCanvas" class="graph-canvas"></canvas>
+    </div>
+  `;
+}
+
+function drawGraph(){
+  const c=document.getElementById("graphCanvas");
+  if(!c)return;
+  const rect=c.getBoundingClientRect();
+  const dpr=devicePixelRatio||1;
+  c.width=rect.width*dpr;c.height=450*dpr;
+  const ctx=c.getContext("2d");
+  ctx.scale(dpr,dpr);
+
+  const nodes=[
+    ...S.tasks.slice(0,8).map(x=>({id:"task:"+x.id,name:x.title,type:"task"})),
+    ...S.notes.slice(0,5).map(x=>({id:"note:"+x.id,name:x.title,type:"note"})),
+    ...S.novels.slice(0,5).map(x=>({id:"novel:"+x.id,name:x.title,type:"novel"})),
+    ...S.games.slice(0,5).map(x=>({id:"game:"+x.id,name:x.title,type:"game"})),
+    ...S.goals.slice(0,4).map(x=>({id:"goal:"+x.id,name:x.title,type:"goal"}))
+  ];
+  const links=S.links;
+
+  ctx.clearRect(0,0,rect.width,450);
+  const cx=rect.width/2,cy=225;
+  const center={x:cx,y:cy,name:"NEXUS",type:"center"};
+
+  const positions=new Map();
+  nodes.forEach((n,i)=>{
+    const a=i/nodes.length*Math.PI*2;
+    const r=Math.min(rect.width,450)*.34;
+    positions.set(n.id,{x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r});
+  });
+
+  ctx.lineWidth=1;
+  links.forEach(l=>{
+    const a=positions.get(l.fromType+":"+l.fromId);
+    const b=positions.get(l.toType+":"+l.toId);
+    if(a&&b){
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle="rgba(124,92,255,.35)";ctx.stroke();
+    }
+  });
+
+  nodes.forEach(n=>{
+    const p=positions.get(n.id);
+    if(!p)return;
+    ctx.beginPath();ctx.arc(p.x,p.y,25,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,255,255,.07)";ctx.fill();
+    ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue("--accent");
+    ctx.stroke();
+    ctx.fillStyle="#fff";
+    ctx.font="11px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText(n.name.slice(0,13),p.x,p.y+4);
+  });
+
+  ctx.beginPath();ctx.arc(cx,cy,45,0,Math.PI*2);
+  ctx.fillStyle=getComputedStyle(document.body).getPropertyValue("--accent");
+  ctx.fill();
+  ctx.fillStyle="#fff";
+  ctx.font="bold 16px sans-serif";
+  ctx.textAlign="center";
+  ctx.fillText("NEXUS",cx,cy+5);
+}
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+function viewActivity(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">活動履歴</h2><div class="muted small">NEXUSで行ったこと</div></div>
+      <button class="danger" onclick="clearActivity()">履歴削除</button>
+    </div>
+    <div class="card" style="margin-top:15px">
+      <div class="timeline">
+        ${S.activity.map(a=>`
+          <div class="timeline-item">
+            <b>${esc(a.title)}</b>
+            <div class="muted small">${esc(a.meta)} · ${fmtDateTime(a.date)}</div>
+          </div>
+        `).join("")||`<div class="empty">活動履歴はありません。</div>`}
+      </div>
+    </div>
+  `;
+}
+function clearActivity(){
+  if(!confirm("活動履歴を削除しますか？"))return;
+  S.activity=[];save();render();
+}
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+function viewNotifications(){
+  const unread=S.notifications.filter(x=>!x.read).length;
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">通知センター</h2><div class="muted small">${unread}件の未読</div></div>
+      <div class="actions">
+        <button onclick="requestNotificationPermission()">通知を許可</button>
+        <button onclick="markNotificationsRead()">すべて既読</button>
+        <button class="primary" onclick="openEntityForm('reminder')">＋ リマインダー</button>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:15px">
+      <div class="card">
+        <div class="card-title"><h3>通知</h3></div>
+        <div class="list">
+          ${S.notifications.map(n=>`
+            <div class="list-item" style="opacity:${n.read?.5:1}">
+              <div class="between">
+                <b>${esc(n.title)}</b>
+                <span class="muted small">${fmtDateTime(n.date)}</span>
+              </div>
+              <div class="muted small">${esc(n.body)}</div>
+            </div>
+          `).join("")||`<div class="empty">通知はありません。</div>`}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><h3>リマインダー</h3></div>
+        <div class="list">
+          ${S.reminders.map(r=>`
+            <div class="list-item">
+              <div class="between"><b>${esc(r.title)}</b><button onclick="deleteReminder('${r.id}')">削除</button></div>
+              <div class="muted small">${esc(r.date)} ${esc(r.time||"")}</div>
+            </div>
+          `).join("")||`<div class="empty">リマインダーなし</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+function requestNotificationPermission(){
+  if(!("Notification" in window)){toast("このブラウザは通知に対応していません");return}
+  Notification.requestPermission().then(p=>{
+    toast(p==="granted"?"通知を許可しました":"通知は許可されませんでした");
+    save();
+  });
+}
+function markNotificationsRead(){
+  S.notifications.forEach(n=>n.read=true);
+  save();render();
+}
+function deleteReminder(id){
+  S.reminders=S.reminders.filter(x=>x.id!==id);
+  save();render();
+}
+
+/* =========================================================
+   ACHIEVEMENTS / RPG
+========================================================= */
+
+function viewAchievements(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">実績</h2><div class="muted small">${S.achievements.length}個解除</div></div>
+    </div>
+    <div class="grid auto" style="margin-top:15px">
+      ${[
+        ["first_task","はじめの一歩","タスクを1つ完了",20],
+        ["ten_tasks","タスクマスター","10タスク完了",50],
+        ["ten_notes","記録者","10ノート作成",50],
+        ["week_streak","継続者","7日連続活動",100],
+        ["study10","10時間","勉強10時間",100],
+        ["writer","創作者","作品を登録",30],
+        ["goal_clear","目標達成","目標を完了",150]
+      ].map(a=>{
+        const unlocked=S.achievements.some(x=>x.id===a[0]);
+        return `
+          <div class="card" style="opacity:${unlocked?1:.45}">
+            <div style="font-size:35px">${unlocked?"🏆":"🔒"}</div>
+            <h3>${a[1]}</h3>
+            <div class="muted">${a[2]}</div>
+            <div class="badge accent">+${a[3]} XP</div>
+          </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+function viewRPG(){
+  const need=S.level*100;
+  return `
+    <div class="grid g2">
+      <div class="card">
+        <div style="text-align:center">
+          <div class="muted">NEXUS LEVEL</div>
+          <div style="font-size:80px;font-weight:900">${S.level}</div>
+          <div class="progress"><i style="width:${pct(S.xp,need)}%"></i></div>
+          <div class="muted small" style="margin-top:8px">${S.xp} / ${need} XP</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>NEXUS SCORE</h3>
+        <div style="font-size:55px;font-weight:900">${S.score.toLocaleString()}</div>
+        <div class="muted">活動・達成・集中などを総合したスコア</div>
+        <div class="grid g2" style="margin-top:15px">
+          <div class="list-item"><div class="stat-label">Streak</div><b>${S.streak}</b></div>
+          <div class="list-item"><div class="stat-label">Best</div><b>${S.bestStreak}</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:15px">
+      <div class="card-title"><h3>最近のXP</h3></div>
+      <div class="list">
+        ${S.activity.filter(x=>x.type==="xp").slice(0,20).map(a=>`
+          <div class="list-item between"><span>${esc(a.meta)}</span><b>${esc(a.title)}</b></div>
+        `).join("")||`<div class="empty">XP履歴なし</div>`}
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   TRASH
+========================================================= */
+
+function viewTrash(){
+  return `
+    <div class="between">
+      <div><h2 style="margin:0">ゴミ箱</h2><div class="muted small">削除したデータを復元できます</div></div>
+      <button class="danger" onclick="emptyTrash()">完全削除</button>
+    </div>
+    <div class="card" style="margin-top:15px">
+      <div class="list">
+        ${S.trash.map(x=>`
+          <div class="list-item between">
+            <div><b>${esc(x.title||"データ")}</b><div class="muted small">${esc(x.collection)} · ${fmtDateTime(x.deletedAt)}</div></div>
+            <div class="actions">
+              <button onclick="restoreTrash('${x.id}')">復元</button>
+              <button class="danger" onclick="deleteTrash('${x.id}')">完全削除</button>
+            </div>
+          </div>
+        `).join("")||`<div class="empty">ゴミ箱は空です。</div>`}
+      </div>
+    </div>
+  `;
+}
+function moveTrash(collection,id){
+  const arr=S[collection];
+  if(!Array.isArray(arr))return;
+  const idx=arr.findIndex(x=>x.id===id);
+  if(idx<0)return;
+  const item=arr.splice(idx,1)[0];
+  S.trash.unshift({
+    id:uid("trash"),
+    collection,
+    originalId:item.id,
+    item,
+    title:item.title||item.name||"データ",
+    deletedAt:new Date().toISOString()
+  });
+  save();render();
+}
+function restoreTrash(id){
+  const x=S.trash.find(t=>t.id===id);
+  if(!x)return;
+  S[x.collection]=S[x.collection]||[];
+  S[x.collection].push(x.item);
+  S.trash=S.trash.filter(t=>t.id!==id);
+  save();render();
+}
+function deleteTrash(id){
+  S.trash=S.trash.filter(x=>x.id!==id);
+  save();render();
+}
+function emptyTrash(){
+  if(!confirm("ゴミ箱を完全に空にしますか？"))return;
+  S.trash=[];save();render();
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function viewSettings(){
+  return `
+    <div class="grid g2">
+      <div class="card">
+        <div class="card-title"><h2>外観</h2></div>
+        <div class="field">
+          <label>テーマ</label>
+          <select onchange="setSetting('theme',this.value)">
+            <option value="dark" ${S.settings.theme==="dark"?"selected":""}>Dark</option>
+            <option value="light" ${S.settings.theme==="light"?"selected":""}>Light</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label>アクセントカラー</label>
+          <input type="color" value="${esc(S.settings.accent)}" onchange="setSetting('accent',this.value)">
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label>カード密度</label>
+          <input type="range" min=".75" max="1.3" step=".05" value="${S.settings.density}" oninput="setSetting('density',Number(this.value))">
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label>文字サイズ</label>
+          <input type="range" min="12" max="19" value="${S.settings.font}" oninput="setSetting('font',Number(this.value))">
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label>サイドバー幅</label>
+          <input type="range" min="220" max="340" value="${S.settings.sidebar}" oninput="setSetting('sidebar',Number(this.value))">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><h2>壁紙</h2></div>
+        <div class="wallpapers">
+          ${Object.entries(WALLPAPERS).map(([k,v])=>`
+            <div>
+              <div class="wall ${S.settings.wall===k&&!S.settings.customWall?"active":""}" style="background:${v}" onclick="setWallpaper('${k}')"></div>
+              <div class="wall-label">${esc(k)}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="actions" style="margin-top:12px">
+          <button onclick="randomWallpaper()">🎲 ランダム</button>
+          <button onclick="setDailyWallpaper()">📅 日替わり</button>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label>カスタム画像</label>
+          <input type="file" accept="image/*" onchange="setCustomWallpaper(this.files[0])">
+        </div>
+        <div class="overlay-preview" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:15px">
+      <div class="card">
+        <div class="card-title"><h2>通知・サウンド</h2></div>
+        <label class="row" style="margin:10px 0"><input type="checkbox" ${S.settings.notifications?"checked":""} onchange="setSetting('notifications',this.checked)"> ブラウザ通知</label>
+        <label class="row" style="margin:10px 0"><input type="checkbox" ${S.settings.sounds?"checked":""} onchange="setSetting('sounds',this.checked)"> サウンド</label>
+        <button onclick="requestNotificationPermission()">通知権限を確認</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><h2>壁紙エフェクト</h2></div>
+        <div class="field"><label>暗幕</label><input type="range" min="0" max=".5" step=".01" value="${S.settings.overlay}" oninput="setSetting('overlay',Number(this.value))"></div>
+        <div class="field" style="margin-top:12px"><label>ぼかし</label><input type="range" min="0" max="15" value="${S.settings.blur}" oninput="setSetting('blur',Number(this.value))"></div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:15px">
+      <div class="card">
+        <div class="card-title"><h2>バックアップ</h2></div>
+        <p class="muted">NEXUSの全データをJSONで保存・復元できます。</p>
+        <div class="actions">
+          <button class="primary" onclick="exportJSON()">JSONバックアップ</button>
+          <label>
+            <button onclick="document.getElementById('importFile').click()">JSON復元</button>
+          </label>
+          <input id="importFile" type="file" accept=".json,application/json" style="display:none" onchange="importJSON(this.files[0])">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><h2>セキュリティ</h2></div>
+        <p class="muted">簡易PINロック。ブラウザ上のローカル保護機能です。</p>
+        <div class="actions">
+          <button onclick="setPIN()">PIN設定</button>
+          <button class="danger" onclick="removePIN()">PIN解除</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:15px">
+      <div class="card-title"><h2>SYSTEM</h2></div>
+      <div class="grid g3">
+        <div class="list-item"><div class="stat-label">Version</div><b>${VERSION}</b></div>
+        <div class="list-item"><div class="stat-label">Storage</div><b>localStorage</b></div>
+        <div class="list-item"><div class="stat-label">Items</div><b>${countAllData()}</b></div>
+      </div>
+      <div class="actions" style="margin-top:15px">
+        <button class="danger" onclick="resetAll()">NEXUSを初期化</button>
+      </div>
+    </div>
+  `;
+}
+
+function setSetting(k,v){
+  S.settings[k]=v;
+  save();
+  applySettings();
+}
+function applySettings(){
+  document.body.classList.toggle("light",S.settings.theme==="light");
+  document.documentElement.style.setProperty("--accent",S.settings.accent);
+  document.documentElement.style.setProperty("--density",S.settings.density);
+  document.documentElement.style.setProperty("--font",S.settings.font+"px");
+  document.documentElement.style.setProperty("--sidebar",S.settings.sidebar+"px");
+  document.documentElement.style.setProperty("--overlay",S.settings.overlay);
+  document.documentElement.style.setProperty("--blur",S.settings.blur+"px");
+
+  let bg=WALLPAPERS[S.settings.wall]||WALLPAPERS.space;
+  if(S.settings.customWall)bg=`url("${S.settings.customWall}") center/cover fixed no-repeat`;
+  document.body.style.setProperty("--wallpaper",bg);
+}
+function setWallpaper(k){
+  S.settings.wall=k;
+  S.settings.customWall="";
+  save();applySettings();render();
+}
+function randomWallpaper(){
+  const keys=Object.keys(WALLPAPERS);
+  setWallpaper(keys[Math.floor(Math.random()*keys.length)]);
+}
+function setDailyWallpaper(){
+  S.settings.dailyWall=!S.settings.dailyWall;
+  if(S.settings.dailyWall){
+    const keys=Object.keys(WALLPAPERS);
+    const idx=Math.floor(Date.now()/86400000)%keys.length;
+    S.settings.wall=keys[idx];
+    S.settings.customWall="";
+  }
+  save();applySettings();render();
+}
+function setCustomWallpaper(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    S.settings.customWall=reader.result;
+    save();applySettings();render();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* =========================================================
+   QUICK ADD
+========================================================= */
+
+function openQuick(){
+  showModal(`
+    <h2>Quick Add</h2>
+    <div class="grid g3" style="margin-top:15px">
+      ${[
+        ["✓","タスク","task"],
+        ["✎","ノート","note"],
+        ["📅","予定","event"],
+        ["📚","勉強","study"],
+        ["📖","小説","novel"],
+        ["🎮","ゲーム","game"],
+        ["🔥","習慣","habit"],
+        ["◎","目標","goal"],
+        ["▣","プロジェクト","project"],
+        ["◷","タイマー","timer"],
+        ["☀","ジャーナル","journal"],
+        ["🔗","LINK","link"]
+      ].map(x=>`
+        <button class="card" style="text-align:left" onclick="closeModal();${x[2]==="timer"?"go('timer')":`openEntityForm('${x[2]}')`}">
+          <div style="font-size:24px">${x[0]}</div><b>${x[1]}</b>
+        </button>
+      `).join("")}
+    </div>
+  `);
+}
+
+/* =========================================================
+   COMMAND
+========================================================= */
+
+function openCommand(){
+  const c=document.getElementById("command");
+  c.classList.add("show");
+  const input=document.getElementById("commandInput");
+  input.value="";
+  input.focus();
+  renderCommandResults("");
+}
+function closeCommand(){
+  document.getElementById("command").classList.remove("show");
+}
+function renderCommandResults(q){
+  const results=document.getElementById("commandResults");
+  const commands=[
+    ["タスクを追加","task"],
+    ["ノートを追加","note"],
+    ["予定を追加","event"],
+    ["勉強を記録","study"],
+    ["作品を追加","novel"],
+    ["ゲームを追加","game"],
+    ["習慣を追加","habit"],
+    ["目標を追加","goal"],
+    ["プロジェクトを追加","project"],
+    ["タイマーを開く","timer"],
+    ["今日のジャーナル","journal"],
+    ["NEXUS統計","analytics"],
+    ["設定","settings"]
+  ];
+  const filtered=commands.filter(x=>!q||x[0].includes(q));
+  results.innerHTML=filtered.map(x=>`
+    <div class="command-result" onclick="executeCommand('${x[1]}')">${esc(x[0])}</div>
+  `).join("")||`<div class="empty">コマンドがありません。</div>`;
+}
+function executeCommand(cmd){
+  closeCommand();
+  if(cmd==="timer"){go("timer");return}
+  openEntityForm(cmd);
+}
+function parseFreeCommand(text){
+  text=text.trim();
+  if(!text)return;
+  S.settings.commandHistory.unshift(text);
+  S.settings.commandHistory=S.settings.commandHistory.slice(0,50);
+
+  const timerMatch=text.match(/(.+?)\s+(\d+)\s*(秒|分|時間|h|m|s)$/i);
+  if(timerMatch){
+    const title=timerMatch[1];
+    const n=Number(timerMatch[2]);
+    const unit=timerMatch[3];
+    const sec=unit==="時間"||unit.toLowerCase()==="h"?n*3600:
+              unit==="分"||unit.toLowerCase()==="m"?n*60:n;
+    S.timer.mode="countdown";
+    S.timer.total=sec;
+    S.timer.remaining=sec;
+    S.timer.title=title;
+    S.timer.linkType="";
+    S.timer.linkId="";
+    save();
+    closeCommand();
+    startTimer();
+    go("timer");
+    return;
+  }
+
+  if(text.startsWith("タスク ")){
+    closeCommand();
+    openEntityForm("task",null,null,{title:text.slice(3)});
+    return;
+  }
+  if(text.startsWith("ノート ")){
+    closeCommand();
+    openEntityForm("note",null,null,{title:text.slice(3)});
+    return;
+  }
+
+  const q=text.toLowerCase();
+  closeCommand();
+  globalSearch(q);
+}
+
+/* =========================================================
+   MODALS / FORMS
+========================================================= */
+
+function showModal(html){
+  document.getElementById("modal").innerHTML=html;
+  document.getElementById("modalBackdrop").classList.add("show");
+}
+function closeModal(){
+  document.getElementById("modalBackdrop").classList.remove("show");
+}
+document.getElementById("modalBackdrop").addEventListener("click",e=>{
+  if(e.target.id==="modalBackdrop")closeModal();
 });
-function reminderLoop(){
- const now=Date.now();(S.settings.reminders||[]).forEach(r=>{if(!r.done&&new Date(r.at).getTime()<=now){notify("🔔 NEXUS リマインダー",r.title);r.done=true;save()}});
- S.events.forEach(e=>{if(e.date===today()&&e.time&&!e._notified){let t=new Date(`${e.date}T${e.time}`).getTime();if(t-now<60000&&t-now>-60000){notify("📅 NEXUS 予定",e.title);e._notified=true;save()}}});
- S.tasks.forEach(t=>{if(!t.done&&t.due===today()&&!t._notified){notify("📋 NEXUS タスク",`期限：${t.title}`);t._notified=true;save()}});
-}
-setInterval(reminderLoop,30000);
 
-if(S.settings.dailyWall){
- const key="NEXUS_WALL_DATE",d=today();
- if(localStorage.getItem(key)!==d){randomWall();localStorage.setItem(key,d);save()}
-}else if(S.settings.wallRandom){randomWall();save()}
+function field(label,input,full=false){
+  return `<div class="field ${full?"full":""}"><label>${label}</label>${input}</div>`;
+}
+
+function openEntityForm(type,id=null,extraDate=null,extra={}){
+  const data=id?getFormData(type,id):extra;
+  const title=id?`編集: ${esc(data.title||"")}`:`新規 ${TITLES[type]||type}`;
+
+  let body="";
+
+  if(type==="task"){
+    body=`
+      <div class="form-grid">
+        ${field("タイトル",`<input id="fTitle" value="${esc(data.title||"")}" autofocus>`)}
+        ${field("期限",`<input id="fDue" type="date" value="${esc(data.due||"")}">`)}
+        ${field("優先度",`<select id="fPriority">
+          ${["low","normal","high"].map(x=>`<option ${data.priority===x?"selected":""}>${x}</option>`).join("")}
+        </select>`)}
+        ${field("タグ",`<input id="fTags" value="${esc((data.tags||[]).join(", "))}" placeholder="study, important">`)}
+        ${field("プロジェクト",`<select id="fProject"><option value="">なし</option>${S.projects.map(p=>`<option value="${p.id}" ${data.projectId===p.id?"selected":""}>${esc(p.title)}</option>`).join("")}</select>`)}
+        ${field("繰り返し",`<select id="fRepeat"><option value="">なし</option><option value="daily">毎日</option><option value="weekly">毎週</option><option value="monthly">毎月</option></select>`)}
+        ${field("説明",`<textarea id="fDescription">${esc(data.description||"")}</textarea>`,true)}
+        ${field("サブタスク（1行1項目）",`<textarea id="fSubtasks">${esc((data.subtasks||[]).map(x=>x.title).join("\\n"))}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="note"){
+    body=`
+      <div class="form-grid">
+        ${field("タイトル",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("タグ",`<input id="fTags" value="${esc((data.tags||[]).join(", "))}">`)}
+        ${field("プロジェクト",`<select id="fProject"><option value="">なし</option>${S.projects.map(p=>`<option value="${p.id}" ${data.projectId===p.id?"selected":""}>${esc(p.title)}</option>`).join("")}</select>`)}
+        ${field("本文",`<textarea id="fContent" style="min-height:260px">${esc(data.content||"")}</textarea>`,true)}
+      </div>
+      <label class="row" style="margin-top:12px"><input id="fPinned" type="checkbox" ${data.pinned?"checked":""}> ピン留め</label>`;
+  }
+
+  if(type==="event"){
+    body=`
+      <div class="form-grid">
+        ${field("タイトル",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("日付",`<input id="fDate" type="date" value="${esc(data.date||extraDate||today())}">`)}
+        ${field("開始",`<input id="fStart" type="time" value="${esc(data.start||"")}">`)}
+        ${field("終了",`<input id="fEnd" type="time" value="${esc(data.end||"")}">`)}
+        ${field("場所",`<input id="fPlace" value="${esc(data.place||"")}">`)}
+        ${field("繰り返し",`<select id="fRepeat"><option value="">なし</option><option value="daily">毎日</option><option value="weekly">毎週</option><option value="monthly">毎月</option></select>`)}
+        ${field("内容",`<textarea id="fDescription">${esc(data.description||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="novel"){
+    body=`
+      <div class="form-grid">
+        ${field("タイトル",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("ジャンル",`<input id="fGenre" value="${esc(data.genre||"")}">`)}
+        ${field("ステータス",`<select id="fStatus">${["企画","執筆中","休止","完結"].map(x=>`<option ${data.status===x?"selected":""}>${x}</option>`).join("")}</select>`)}
+        ${field("投稿先",`<input id="fPlatform" value="${esc(data.platform||"")}">`)}
+        ${field("PV",`<input id="fPV" type="number" value="${Number(data.pv||0)}">`)}
+        ${field("今日の文字数",`<input id="fTodayWords" type="number" value="${Number(data.todayWords||0)}">`)}
+        ${field("あらすじ",`<textarea id="fSynopsis">${esc(data.synopsis||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="game"){
+    body=`
+      <div class="form-grid">
+        ${field("ゲーム名",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("プラットフォーム",`<input id="fPlatform" value="${esc(data.platform||"")}">`)}
+        ${field("レベル",`<input id="fLevel" value="${esc(data.level||"")}">`)}
+        ${field("スコア",`<input id="fScore" value="${esc(data.score||"")}">`)}
+        ${field("ランク",`<input id="fRank" value="${esc(data.rank||"")}">`)}
+        ${field("通貨",`<input id="fCurrency" value="${esc(data.currency||"")}">`)}
+        ${field("メモ",`<textarea id="fNote">${esc(data.note||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="study"){
+    body=`
+      <div class="form-grid">
+        ${field("教科",`<input id="fSubject" value="${esc(data.subject||"")}">`)}
+        ${field("日付",`<input id="fDate" type="date" value="${esc(data.date||today())}">`)}
+        ${field("教材",`<input id="fMaterial" value="${esc(data.material||"")}">`)}
+        ${field("分数",`<input id="fMinutes" type="number" min="1" value="${Number(data.minutes||30)}">`)}
+        ${field("ページ / 範囲",`<input id="fRange" value="${esc(data.range||"")}">`)}
+        ${field("点数",`<input id="fScore" type="number" value="${esc(data.score??"")}">`)}
+        ${field("メモ",`<textarea id="fNote">${esc(data.note||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="habit"){
+    body=`
+      <div class="form-grid">
+        ${field("習慣名",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("リマインド時刻",`<input id="fTime" type="time" value="${esc(data.time||"")}">`)}
+        ${field("説明",`<textarea id="fDescription">${esc(data.description||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="goal"){
+    body=`
+      <div class="form-grid">
+        ${field("目標名",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("期限",`<input id="fDeadline" type="date" value="${esc(data.deadline||"")}">`)}
+        ${field("進捗 %",`<input id="fProgress" type="number" min="0" max="100" value="${Number(data.progress||0)}">`)}
+        ${field("説明",`<textarea id="fDescription">${esc(data.description||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="project"){
+    body=`
+      <div class="form-grid">
+        ${field("プロジェクト名",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("期限",`<input id="fDeadline" type="date" value="${esc(data.deadline||"")}">`)}
+        ${field("説明",`<textarea id="fDescription">${esc(data.description||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="workflow"){
+    body=`
+      <div class="form-grid">
+        ${field("名前",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("説明",`<textarea id="fDescription">${esc(data.description||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="journal"){
+    body=`
+      <div class="form-grid">
+        ${field("タイトル",`<input id="fTitle" value="${esc(data.title||today())}">`)}
+        ${field("日付",`<input id="fDate" type="date" value="${esc(data.date||today())}">`)}
+        ${field("気分",`<input id="fMood" value="${esc(data.mood||"")}">`)}
+        ${field("評価",`<input id="fRating" type="number" min="1" max="5" value="${Number(data.rating||5)}">`)}
+        ${field("本文",`<textarea id="fContent" style="min-height:250px">${esc(data.content||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="template"){
+    body=`
+      <div class="form-grid">
+        ${field("名前",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("タイプ",`<select id="fType">${["custom","note","task"].map(x=>`<option ${data.type===x?"selected":""}>${x}</option>`).join("")}</select>`)}
+        ${field("内容",`<textarea id="fContent">${esc(data.content||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="link"){
+    body=`
+      <div class="form-grid">
+        ${field("元データ",`
+          <select id="fFrom">${entityOptions(data.fromType,data.fromId)}</select>
+        `)}
+        ${field("関連データ",`
+          <select id="fTo">${entityOptions(data.toType,data.toId)}</select>
+        `)}
+        ${field("メモ",`<textarea id="fNote">${esc(data.note||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="database"){
+    body=`
+      <div class="form-grid">
+        ${field("DB名",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("説明",`<input id="fDescription" value="${esc(data.description||"")}">`)}
+        ${field("項目",`<textarea id="fFields">${esc((data.fields||[]).map(x=>x.name).join("\\n"))}</textarea>`,true)}
+      </div>`;
+  }
+
+  if(type==="reminder"){
+    body=`
+      <div class="form-grid">
+        ${field("タイトル",`<input id="fTitle" value="${esc(data.title||"")}">`)}
+        ${field("日付",`<input id="fDate" type="date" value="${esc(data.date||today())}">`)}
+        ${field("時刻",`<input id="fTime" type="time" value="${esc(data.time||"12:00")}">`)}
+        ${field("内容",`<textarea id="fDescription">${esc(data.description||"")}</textarea>`,true)}
+      </div>`;
+  }
+
+  showModal(`
+    <div class="between">
+      <div><h2>${title}</h2><div class="muted small">NEXUSデータ</div></div>
+      <button onclick="closeModal()">✕</button>
+    </div>
+    ${body}
+    <div class="modal-actions">
+      <button onclick="closeModal()">キャンセル</button>
+      <button class="primary" onclick="saveEntity('${type}','${id||""}')">保存</button>
+    </div>
+  `);
+}
+
+function getFormData(type,id){
+  const map={
+    task:S.tasks,note:S.notes,event:S.events,novel:S.novels,game:S.games,
+    study:S.studies,habit:S.habits,goal:S.goals,project:S.projects,
+    workflow:S.workflows,journal:S.journal,template:S.templates,
+    link:S.links,database:S.databases,reminder:S.reminders
+  };
+  return map[type]?.find(x=>x.id===id)||{};
+}
+
+function entityOptions(selectedType,selectedId){
+  const groups=[
+    ["task","タスク",S.tasks],
+    ["note","ノート",S.notes],
+    ["novel","小説",S.novels],
+    ["game","ゲーム",S.games],
+    ["goal","目標",S.goals],
+    ["project","プロジェクト",S.projects],
+    ["event","予定",S.events],
+    ["study","勉強",S.studies],
+    ["habit","習慣",S.habits]
+  ];
+  return groups.map(([t,label,arr])=>`
+    <optgroup label="${label}">
+      ${arr.map(x=>`
+        <option value="${t}:${x.id}" ${selectedType===t&&selectedId===x.id?"selected":""}>${esc(x.title||x.subject||x.name||x.date)}</option>
+      `).join("")}
+    </optgroup>
+  `).join("");
+}
+
+function saveEntity(type,id){
+  const existing=id?getFormData(type,id):null;
+  const obj=existing||{id:uid(type),createdAt:new Date().toISOString()};
+
+  if(type==="task"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    if(!obj.title)return;
+    obj.due=document.getElementById("fDue").value;
+    obj.priority=document.getElementById("fPriority").value;
+    obj.tags=document.getElementById("fTags").value.split(",").map(x=>x.trim()).filter(Boolean);
+    obj.projectId=document.getElementById("fProject").value;
+    obj.repeat=document.getElementById("fRepeat").value;
+    obj.description=document.getElementById("fDescription").value;
+    const old=obj.subtasks||[];
+    obj.subtasks=document.getElementById("fSubtasks").value.split("\n").map(x=>x.trim()).filter(Boolean).map((title,i)=>({
+      id:old[i]?.id||uid("sub"),title,done:old[i]?.done||false
+    }));
+    if(!existing)S.tasks.unshift(obj);
+  }
+
+  if(type==="note"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.tags=document.getElementById("fTags").value.split(",").map(x=>x.trim()).filter(Boolean);
+    obj.projectId=document.getElementById("fProject").value;
+    obj.content=document.getElementById("fContent").value;
+    obj.pinned=document.getElementById("fPinned").checked;
+    obj.updatedAt=new Date().toISOString();
+    if(!existing)S.notes.unshift(obj);
+  }
+
+  if(type==="event"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.date=document.getElementById("fDate").value;
+    obj.start=document.getElementById("fStart").value;
+    obj.end=document.getElementById("fEnd").value;
+    obj.place=document.getElementById("fPlace").value;
+    obj.repeat=document.getElementById("fRepeat").value;
+    obj.description=document.getElementById("fDescription").value;
+    if(!existing)S.events.unshift(obj);
+  }
+
+  if(type==="novel"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.genre=document.getElementById("fGenre").value;
+    obj.status=document.getElementById("fStatus").value;
+    obj.platform=document.getElementById("fPlatform").value;
+    obj.pv=Number(document.getElementById("fPV").value||0);
+    obj.todayWords=Number(document.getElementById("fTodayWords").value||0);
+    obj.synopsis=document.getElementById("fSynopsis").value;
+    obj.episodes=obj.episodes||[];
+    obj.wordCount=obj.episodes.reduce((a,b)=>a+Number(b.words||0),0);
+    obj.writingMinutes=Number(obj.writingMinutes||0);
+    if(!existing)S.novels.unshift(obj);
+  }
+
+  if(type==="game"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.platform=document.getElementById("fPlatform").value;
+    obj.level=document.getElementById("fLevel").value;
+    obj.score=document.getElementById("fScore").value;
+    obj.rank=document.getElementById("fRank").value;
+    obj.currency=document.getElementById("fCurrency").value;
+    obj.note=document.getElementById("fNote").value;
+    obj.playMinutes=Number(obj.playMinutes||0);
+    obj.achievements=obj.achievements||[];
+    if(!existing)S.games.unshift(obj);
+  }
+
+  if(type==="study"){
+    obj.subject=document.getElementById("fSubject").value.trim();
+    obj.date=document.getElementById("fDate").value;
+    obj.material=document.getElementById("fMaterial").value;
+    obj.minutes=Number(document.getElementById("fMinutes").value||0);
+    obj.range=document.getElementById("fRange").value;
+    obj.score=document.getElementById("fScore").value;
+    obj.note=document.getElementById("fNote").value;
+    if(!existing){
+      S.studies.unshift(obj);
+      addXP(Math.max(1,Math.floor(obj.minutes)),"勉強記録");
+      updateStreak();
+    }
+  }
+
+  if(type==="habit"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.time=document.getElementById("fTime").value;
+    obj.description=document.getElementById("fDescription").value;
+    obj.logs=obj.logs||[];
+    if(!existing)S.habits.unshift(obj);
+  }
+
+  if(type==="goal"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.deadline=document.getElementById("fDeadline").value;
+    obj.progress=clamp(Number(document.getElementById("fProgress").value||0),0,100);
+    obj.description=document.getElementById("fDescription").value;
+    if(!existing)S.goals.unshift(obj);
+  }
+
+  if(type==="project"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.deadline=document.getElementById("fDeadline").value;
+    obj.description=document.getElementById("fDescription").value;
+    if(!existing)S.projects.unshift(obj);
+  }
+
+  if(type==="workflow"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.description=document.getElementById("fDescription").value;
+    obj.steps=obj.steps||[];
+    if(!existing)S.workflows.unshift(obj);
+  }
+
+  if(type==="journal"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.date=document.getElementById("fDate").value;
+    obj.mood=document.getElementById("fMood").value;
+    obj.rating=Number(document.getElementById("fRating").value||5);
+    obj.content=document.getElementById("fContent").value;
+    if(!existing)S.journal.unshift(obj);
+  }
+
+  if(type==="template"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.type=document.getElementById("fType").value;
+    obj.content=document.getElementById("fContent").value;
+    if(!existing)S.templates.unshift(obj);
+  }
+
+  if(type==="link"){
+    const f=document.getElementById("fFrom").value.split(":");
+    const t=document.getElementById("fTo").value.split(":");
+    obj.fromType=f[0];obj.fromId=f.slice(1).join(":");
+    obj.toType=t[0];obj.toId=t.slice(1).join(":");
+    obj.note=document.getElementById("fNote").value;
+    if(!existing)S.links.unshift(obj);
+  }
+
+  if(type==="database"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.description=document.getElementById("fDescription").value;
+    const old=obj.fields||[];
+    obj.fields=document.getElementById("fFields").value.split("\n").map(x=>x.trim()).filter(Boolean).map((name,i)=>({
+      id:old[i]?.id||uid("field"),name
+    }));
+    if(!existing)S.databases.unshift(obj);
+  }
+
+  if(type==="reminder"){
+    obj.title=document.getElementById("fTitle").value.trim();
+    obj.date=document.getElementById("fDate").value;
+    obj.time=document.getElementById("fTime").value;
+    obj.description=document.getElementById("fDescription").value;
+    if(!existing)S.reminders.unshift(obj);
+  }
+
+  logActivity("create",`${existing?"更新":"作成"}: ${obj.title||obj.subject||type}`);
+  save();
+  closeModal();
+  render();
+}
+
+/* =========================================================
+   GLOBAL SEARCH
+========================================================= */
+
+function globalSearch(q){
+  q=(q||"").trim().toLowerCase();
+  if(!q)return;
+  const data=[
+    ...S.tasks.map(x=>({type:"タスク",title:x.title,route:"tasks",id:x.id})),
+    ...S.notes.map(x=>({type:"ノート",title:x.title,route:"notes",id:x.id})),
+    ...S.novels.map(x=>({type:"小説",title:x.title,route:"novels",id:x.id})),
+    ...S.games.map(x=>({type:"ゲーム",title:x.title,route:"games",id:x.id})),
+    ...S.goals.map(x=>({type:"目標",title:x.title,route:"goals",id:x.id})),
+    ...S.projects.map(x=>({type:"プロジェクト",title:x.title,route:"projects",id:x.id})),
+    ...S.habits.map(x=>({type:"習慣",title:x.title,route:"habits",id:x.id}))
+  ].filter(x=>x.title?.toLowerCase().includes(q));
+
+  showModal(`
+    <div class="between"><h2>検索結果</h2><button onclick="closeModal()">閉じる</button></div>
+    <div class="list">
+      ${data.map(x=>`
+        <button class="list-item" style="text-align:left" onclick="closeModal();go('${x.route}')">
+          <span class="badge">${x.type}</span> <b>${esc(x.title)}</b>
+        </button>
+      `).join("")||`<div class="empty">見つかりませんでした。</div>`}
+    </div>
+  `);
+}
+
+/* =========================================================
+   BACKUP
+========================================================= */
+
+function downloadBlob(name,text,type="application/json"){
+  const blob=new Blob([text],{type});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function exportJSON(){
+  downloadBlob(`NEXUS_backup_${today()}.json`,JSON.stringify(S,null,2));
+  toast("バックアップを書き出しました");
+}
+function importJSON(file){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const imported=JSON.parse(r.result);
+      if(!imported.version&&!imported.tasks)throw new Error("invalid");
+      S=mergeDefaults(defaults,imported);
+      save();render();
+      toast("バックアップを復元しました");
+    }catch{
+      toast("復元に失敗しました");
+    }
+  };
+  r.readAsText(file);
+}
+function exportCSV(){
+  const rows=[["type","title","date","value"]];
+  S.tasks.forEach(x=>rows.push(["task",x.title,x.due,x.done?"done":"todo"]));
+  S.studies.forEach(x=>rows.push(["study",x.subject,x.date,x.minutes]));
+  S.novels.forEach(x=>rows.push(["novel",x.title,"",x.pv]));
+  const csv=rows.map(r=>r.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(",")).join("\n");
+  downloadBlob(`NEXUS_data_${today()}.csv`,csv,"text/csv");
+}
+
+/* =========================================================
+   PIN
+========================================================= */
+
+function hashPIN(pin){
+  return btoa(unescape(encodeURIComponent(pin)));
+}
+function setPIN(){
+  const pin=prompt("4〜12桁のPIN");
+  if(!pin||pin.length<4)return;
+  S.settings.pin=hashPIN(pin);
+  S.settings.autoLock=true;
+  save();toast("PINを設定しました");
+}
+function removePIN(){
+  S.settings.pin="";
+  S.settings.autoLock=false;
+  save();toast("PINロックを解除しました");
+}
+function checkPin(){
+  if(!S.settings.autoLock||!S.settings.pin)return;
+  document.getElementById("lockScreen").classList.add("show");
+}
+function unlockApp(){
+  const pin=document.getElementById("unlockPin").value;
+  if(hashPIN(pin)===S.settings.pin){
+    document.getElementById("lockScreen").classList.remove("show");
+    document.getElementById("unlockError").textContent="";
+  }else{
+    document.getElementById("unlockError").textContent="PINが違います";
+  }
+}
+
+/* =========================================================
+   SYSTEM
+========================================================= */
+
+function countAllData(){
+  return [
+    "tasks","notes","events","novels","games","studies","habits","goals",
+    "projects","workflows","databases","dbRecords","links","activity",
+    "journal","trash","reminders","notifications","templates","files"
+  ].reduce((a,k)=>a+(S[k]?.length||0),0);
+}
+function resetAll(){
+  if(!confirm("NEXUSの全データを削除します。本当に初期化しますか？"))return;
+  if(!confirm("バックアップなしでは復元できません。本当に削除しますか？"))return;
+  localStorage.removeItem(KEY);
+  location.reload();
+}
+
+/* =========================================================
+   REMINDER ENGINE
+========================================================= */
+
+function checkReminders(){
+  const nowD=new Date();
+  const date=nowD.toISOString().slice(0,10);
+  const time=nowD.toTimeString().slice(0,5);
+
+  S.reminders.forEach(r=>{
+    if(r.date===date&&r.time===time&&!r.notified){
+      r.notified=true;
+      notify("🔔 "+r.title,r.description||"リマインダー");
+      playSound("done");
+    }
+  });
+
+  S.tasks.filter(t=>!t.done&&t.due===date).forEach(t=>{
+    const key="task_"+t.id+"_"+date;
+    if(!sessionStorage.getItem(key)){
+      sessionStorage.setItem(key,"1");
+      notify("📌 今日が期限",t.title);
+    }
+  });
+
+  S.habits.filter(h=>h.time===time&&!h.logs?.includes(date)).forEach(h=>{
+    const key="habit_"+h.id+"_"+date;
+    if(!sessionStorage.getItem(key)){
+      sessionStorage.setItem(key,"1");
+      notify("🔥 習慣リマインド",h.title);
+    }
+  });
+
+  save();
+}
+function startReminderLoop(){
+  clearInterval(reminderInterval);
+  reminderInterval=setInterval(checkReminders,30000);
+  checkReminders();
+}
+
+/* =========================================================
+   MOBILE / KEYBOARD / SEARCH
+========================================================= */
+
+document.getElementById("mobileMenu").addEventListener("click",()=>{
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+document.getElementById("quickBtn").addEventListener("click",openQuick);
+document.getElementById("commandBtn").addEventListener("click",openCommand);
+
+document.getElementById("globalSearch").addEventListener("keydown",e=>{
+  if(e.key==="Enter")globalSearch(e.target.value);
+});
+
+document.getElementById("command").addEventListener("click",e=>{
+  if(e.target.id==="command")closeCommand();
+});
+
+document.getElementById("commandInput").addEventListener("input",e=>{
+  renderCommandResults(e.target.value.trim());
+});
+
+document.getElementById("commandInput").addEventListener("keydown",e=>{
+  if(e.key==="Escape")closeCommand();
+  if(e.key==="Enter")parseFreeCommand(e.target.value);
+});
 
 document.addEventListener("keydown",e=>{
- if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();document.getElementById("globalSearch").focus()}
- if(e.key==="Escape")closeModal();
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){
+    e.preventDefault();
+    openCommand();
+  }
+  if(e.key==="Escape"){
+    closeCommand();
+    closeModal();
+  }
 });
-S.calendar=S.calendar||{year:new Date().getFullYear(),month:new Date().getMonth()};
-if(!checkPin())document.body.innerHTML="<div style='height:100vh;display:grid;place-items:center;background:#080b12;color:white;font-family:sans-serif'><h2>🔒 NEXUS Locked</h2></div>";
-else{render();if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});}
+
+window.addEventListener("hashchange",()=>{
+  route=location.hash.replace("#/","")||"home";
+  render();
+});
+
+window.addEventListener("beforeunload",()=>{
+  if(S.timer.running)save();
+});
+
+/* =========================================================
+   DAILY WALLPAPER
+========================================================= */
+
+function applyDailyWallpaper(){
+  if(!S.settings.dailyWall)return;
+  const keys=Object.keys(WALLPAPERS);
+  const index=Math.floor(Date.now()/86400000)%keys.length;
+  S.settings.wall=keys[index];
+  S.settings.customWall="";
+  save();
+}
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+applyDailyWallpaper();
+applySettings();
+render();
+startReminderLoop();
+checkPin();
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+
+/* First-run sample missions */
+if(!localStorage.getItem("NEXUS_FIRST_RUN")){
+  S.missions=[
+    {id:"m1",title:"タスクを1つ完了",reward:20,done:false},
+    {id:"m2",title:"30分勉強する",reward:30,done:false},
+    {id:"m3",title:"ノートを書く",reward:20,done:false}
+  ];
+  localStorage.setItem("NEXUS_FIRST_RUN","1");
+  save();
+}
 </script>
 </body>
 </html>
