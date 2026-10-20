@@ -1,13 +1,11 @@
 {
   "name": "NEXUS 2.0",
   "short_name": "NEXUS",
-  "description": "NEXUS 2.0 Personal OS",
+  "description": "Personal OS",
   "start_url": "./",
-  "scope": "./",
   "display": "standalone",
+  "background_color": "#080b12",
+  "theme_color": "#7c3aed",
   "orientation": "any",
-  "background_color": "#080b14",
-  "theme_color": "#6c7cff",
-  "lang": "ja",
-  "categories": ["productivity", "utilities", "lifestyle"]
+  "lang": "ja"
 }
